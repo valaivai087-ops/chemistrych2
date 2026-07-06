@@ -1,0 +1,1183 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>癌症理解導航｜Cancer Understanding OS</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --navy: #1A2B5F;
+            --gold: #C9960C;
+            --teal: #0A7A72;
+            --cream: #FAF6EE;
+            --light-gray: #F5F3F0;
+            --border: #E5DDD0;
+        }
+
+        body {
+            background: white;
+            color: var(--navy);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+            line-height: 1.8;
+            font-size: 18px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 60px;
+            border-bottom: 3px solid var(--gold);
+            padding-bottom: 30px;
+        }
+
+        header h1 {
+            font-size: 42px;
+            margin-bottom: 10px;
+            color: var(--navy);
+            font-weight: 700;
+        }
+
+        header .subtitle {
+            font-size: 20px;
+            color: var(--teal);
+            margin-bottom: 5px;
+        }
+
+        header .divider {
+            display: inline-block;
+            width: 50px;
+            height: 2px;
+            background: var(--gold);
+            margin: 15px 0;
+        }
+
+        .english-title {
+            font-size: 16px;
+            color: var(--teal);
+            letter-spacing: 2px;
+            margin-top: 15px;
+        }
+
+        nav {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 50px;
+            justify-content: center;
+        }
+
+        nav button {
+            padding: 12px 24px;
+            background: var(--navy);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background 0.3s;
+            font-weight: 600;
+        }
+
+        nav button.active {
+            background: var(--gold);
+            color: var(--navy);
+        }
+
+        nav button:hover:not(.active) {
+            background: var(--teal);
+        }
+
+        section {
+            display: none;
+            animation: fadeIn 0.4s ease-in;
+        }
+
+        section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .section-title {
+            font-size: 36px;
+            color: var(--navy);
+            margin-bottom: 30px;
+            font-weight: 700;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--gold);
+        }
+
+        .intro-box {
+            background: var(--cream);
+            padding: 30px;
+            border-left: 5px solid var(--gold);
+            margin-bottom: 40px;
+            border-radius: 4px;
+            font-size: 20px;
+            line-height: 2;
+        }
+
+        .intro-box strong {
+            color: var(--teal);
+        }
+
+        .accordion {
+            margin-bottom: 40px;
+        }
+
+        .accordion-item {
+            border: 2px solid var(--light-gray);
+            margin-bottom: 20px;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .accordion-header {
+            padding: 25px;
+            background: var(--light-gray);
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--navy);
+            transition: background 0.3s;
+            user-select: none;
+        }
+
+        .accordion-header:hover {
+            background: var(--cream);
+        }
+
+        .accordion-header.active {
+            background: var(--teal);
+            color: white;
+        }
+
+        .accordion-toggle {
+            font-size: 24px;
+            transition: transform 0.3s;
+            display: inline-block;
+        }
+
+        .accordion-header.active .accordion-toggle {
+            transform: rotate(180deg);
+        }
+
+        .accordion-content {
+            display: none;
+            padding: 30px;
+            background: white;
+            border-top: 2px solid var(--light-gray);
+            font-size: 18px;
+            line-height: 1.9;
+        }
+
+        .accordion-content.active {
+            display: block;
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+
+        .feature-card {
+            border: 2px solid var(--border);
+            padding: 25px;
+            border-radius: 4px;
+            background: var(--cream);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(26, 43, 95, 0.1);
+        }
+
+        .feature-card h3 {
+            color: var(--gold);
+            font-size: 22px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .feature-card .icon {
+            font-size: 28px;
+        }
+
+        .feature-card p {
+            color: var(--navy);
+            line-height: 1.8;
+        }
+
+        .comparison-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 30px 0;
+            border: 2px solid var(--navy);
+        }
+
+        .comparison-table th {
+            background: var(--navy);
+            color: white;
+            padding: 20px;
+            text-align: left;
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .comparison-table td {
+            padding: 18px 20px;
+            border-bottom: 1px solid var(--border);
+            font-size: 17px;
+        }
+
+        .comparison-table tr:nth-child(even) {
+            background: var(--cream);
+        }
+
+        .comparison-table tr:hover {
+            background: rgba(201, 150, 12, 0.1);
+        }
+
+        .highlight {
+            background: rgba(201, 150, 12, 0.15);
+            padding: 20px;
+            border-left: 4px solid var(--gold);
+            margin: 25px 0;
+            border-radius: 2px;
+        }
+
+        .highlight strong {
+            color: var(--gold);
+            font-size: 20px;
+        }
+
+        .metaphor-box {
+            background: var(--light-gray);
+            padding: 25px;
+            border-radius: 4px;
+            margin: 20px 0;
+            border-left: 5px solid var(--teal);
+        }
+
+        .metaphor-title {
+            color: var(--teal);
+            font-weight: 700;
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+
+        .metaphor-content {
+            color: var(--navy);
+            line-height: 1.9;
+        }
+
+        .qa-pair {
+            margin-bottom: 30px;
+            padding: 20px;
+            background: var(--cream);
+            border-radius: 4px;
+        }
+
+        .qa-question {
+            font-weight: 700;
+            color: var(--gold);
+            font-size: 19px;
+            margin-bottom: 12px;
+        }
+
+        .qa-answer {
+            color: var(--navy);
+            line-height: 1.9;
+        }
+
+        .nutrition-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .nutrition-item {
+            background: white;
+            border: 2px solid var(--teal);
+            padding: 20px;
+            border-radius: 4px;
+            text-align: center;
+        }
+
+        .nutrition-item .name {
+            font-weight: 700;
+            color: var(--teal);
+            margin-bottom: 10px;
+            font-size: 18px;
+        }
+
+        .nutrition-item .effect {
+            color: var(--navy);
+            font-size: 16px;
+            line-height: 1.6;
+        }
+
+        .future-timeline {
+            position: relative;
+            padding: 40px 0;
+        }
+
+        .timeline-item {
+            display: flex;
+            gap: 30px;
+            margin-bottom: 40px;
+            position: relative;
+            padding-left: 80px;
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: 22px;
+            top: 25px;
+            width: 16px;
+            height: 16px;
+            background: var(--gold);
+            border-radius: 50%;
+            border: 3px solid white;
+            box-shadow: 0 0 0 2px var(--gold);
+        }
+
+        .timeline-item:not(:last-child)::after {
+            content: '';
+            position: absolute;
+            left: 30px;
+            top: 45px;
+            width: 2px;
+            height: calc(100% + 35px);
+            background: var(--gold);
+        }
+
+        .timeline-gen {
+            font-weight: 700;
+            color: var(--gold);
+            font-size: 20px;
+            margin-bottom: 10px;
+        }
+
+        .timeline-title {
+            color: var(--navy);
+            font-size: 22px;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .timeline-desc {
+            color: var(--navy);
+            font-size: 17px;
+            line-height: 1.8;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 60px;
+            padding-top: 30px;
+            border-top: 2px solid var(--gold);
+            color: var(--navy);
+            font-size: 16px;
+        }
+
+        .tts-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            background: var(--teal);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: background 0.3s;
+            margin-left: 10px;
+        }
+
+        .tts-button:hover {
+            background: var(--navy);
+        }
+
+        .tts-button.speaking {
+            background: var(--gold);
+            color: var(--navy);
+        }
+
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 32px;
+            }
+
+            .section-title {
+                font-size: 28px;
+            }
+
+            nav {
+                flex-direction: column;
+            }
+
+            nav button {
+                width: 100%;
+            }
+
+            .feature-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .timeline-item {
+                padding-left: 0;
+            }
+
+            .timeline-item::before {
+                display: none;
+            }
+
+            .timeline-item::after {
+                display: none;
+            }
+
+            .comparison-table {
+                font-size: 14px;
+            }
+
+            .comparison-table th,
+            .comparison-table td {
+                padding: 12px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>癌症真正想告訴你的事</h1>
+            <div class="divider"></div>
+            <p class="subtitle">用白話文理解身體控制系統</p>
+            <p class="english-title">CANCER UNDERSTANDING OS｜破除迷思．認識本質．拆解未來治療</p>
+        </header>
+
+        <nav>
+            <button class="nav-btn active" data-section="misconceptions">❌ 破除迷思</button>
+            <button class="nav-btn" data-section="four-features">🎯 四大特徵</button>
+            <button class="nav-btn" data-section="control-system">⚙️ 控制系統</button>
+            <button class="nav-btn" data-section="faqs">❓ Q&A</button>
+            <button class="nav-btn" data-section="nutrition">🥗 營養支持</button>
+            <button class="nav-btn" data-section="future">🚀 未來治療</button>
+        </nav>
+
+        <!-- 1. 破除迷思 -->
+        <section id="misconceptions" class="active">
+            <h2 class="section-title">❌ 破除迷思｜What Cancer IS NOT</h2>
+
+            <div class="intro-box">
+                <strong>重新認識癌症：</strong><br>
+                你對癌症的理解可能都是錯的。<br>
+                癌症不是一張單純的「腫瘤照片」，<br>
+                而是一套被癌細胞接管的「控制系統」。
+            </div>
+
+            <div class="accordion">
+                <div class="accordion-item">
+                    <div class="accordion-header" onclick="toggleAccordion(this)">
+                        <span>❌ 迷思1：癌症是單一基因突變</span>
+                        <span class="accordion-toggle">▼</span>
+                    </div>
+                    <div class="accordion-content">
+                        <p><strong style="color: var(--gold);">真相：</strong> 癌症涉及數十條路徑同時失控</p>
+                        <div class="metaphor-box">
+                            <div class="metaphor-title">📞 比喻：集團詐騙不是只改電話號碼</div>
+                            <div class="metaphor-content">
+                                不是改一個細節，而是整個組織的通訊、財務、人事、供應鏈都重新設計。<br>
+                                癌症也是——基因突變只是開始，接著病毒、訊號、代謝、免疫都跟著改變。
+                            </div>
+                        </div>
+                        <p style="margin-top: 20px;">一個腫瘤可能有100種不同的癌細胞亞種，每一種都有自己的突變組合。</p>
+                    </div>
+                </div>
+
+                <div class="accordion-item">
+                    <div class="accordion-header" onclick="toggleAccordion(this)">
+                        <span>❌ 迷思2：癌症是細胞長太快</span>
+                        <span class="accordion-toggle">▼</span>
+                    </div>
+                    <div class="accordion-content">
+                        <p><strong style="color: var(--gold);">真相：</strong> 癌症是「活太久」，不是「長太快」</p>
+                        <div class="metaphor-box">
+                            <div class="metaphor-title">🌱 比喻：雜草vs樹</div>
+                            <div class="metaphor-content">
+                                一株雜草長得快，但活不了三個月。<br>
+                                一棵樹長得慢，但能活100年。<br>
+                                癌細胞就像得到「永生」的種子。它停止自殺訊號，擁有無限複製的能力。
+                            </div>
+                        </div>
+                        <p style="margin-top: 20px;">核心能力：「永生複製」(Replicative Immortality) 遠比「快速分裂」更危險。</p>
+                    </div>
+                </div>
+
+                <div class="accordion-item">
+                    <div class="accordion-header" onclick="toggleAccordion(this)">
+                        <span>❌ 迷思3：殺死腫瘤就治好癌症</span>
+                        <span class="accordion-toggle">▼</span>
+                    </div>
+                    <div class="accordion-content">
+                        <p><strong style="color: var(--gold);">真相：</strong> 治療本身成為選擇壓力，加速癌症進化</p>
+                        <div class="metaphor-box">
+                            <div class="metaphor-title">🧬 比喻：殺蟑螂用滅蟲劑</div>
+                            <div class="metaphor-content">
+                                第一次殺死99%的蟑螂。<br>
+                                但活下來的1%對滅蟲劑有抗性。<br>
+                                三個月後，蟑螂回來，而且不怕那種藥了。<br>
+                                癌細胞也是——治療越猛，倖存者越會進化出新的抗藥機制。
+                            </div>
+                        </div>
+                        <p style="margin-top: 20px;">真正的未來治療是「控制」，不是「消滅」。</p>
+                    </div>
+                </div>
+
+                <div class="accordion-item">
+                    <div class="accordion-header" onclick="toggleAccordion(this)">
+                        <span>❌ 迷思4：有癌症腫瘤就是癌症</span>
+                        <span class="accordion-toggle">▼</span>
+                    </div>
+                    <div class="accordion-content">
+                        <p><strong style="color: var(--gold);">真相：</strong> 許多人身上都有小腫瘤，但沒發病</p>
+                        <div class="metaphor-box">
+                            <div class="metaphor-title">🏘️ 比喻：有房子 ≠ 有幫派佔據</div>
+                            <div class="metaphor-content">
+                                空房子≠被黑幫佔領的房子。<br>
+                                同樣的，身上有小腫瘤≠癌症爆發。<br>
+                                真正關鍵是：免疫系統有沒有失守？環境有沒有被癌細胞改造？
+                            </div>
+                        </div>
+                        <p style="margin-top: 20px;">癌症的發生需要「組織環境允許」、「免疫監控失敗」、「養分充足」三個條件同時滿足。</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 2. 四大特徵 -->
+        <section id="four-features">
+            <h2 class="section-title">🎯 癌症四大核心特徵</h2>
+
+            <div class="intro-box">
+                <strong>為什麼同一個癌症會越來越難治？</strong><br>
+                因為癌細胞一直在學。<br>
+                它們逐漸習得四種超級能力。
+            </div>
+
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <h3><span class="icon">🚪</span> ① 侵襲性</h3>
+                    <p><strong style="color: var(--teal);">Invasion</strong></p>
+                    <p style="margin-top: 10px;">癌細胞打破邊界，從一個地方逃出去。就像有人把圍牆拆掉。</p>
+                    <div class="metaphor-box" style="margin-top: 15px; margin-bottom: 0; border-left-color: var(--gold);">
+                        <div class="metaphor-title" style="color: var(--gold);">核心機制</div>
+                        <div class="metaphor-content">分泌酵素MMP拆掉細胞外基質(ECM) → 失去黏附 → 向外侵襲</div>
+                    </div>
+                </div>
+
+                <div class="feature-card">
+                    <h3><span class="icon">✈️</span> ② 轉移性</h3>
+                    <p><strong style="color: var(--teal);">Metastasis</strong></p>
+                    <p style="margin-top: 10px;">癌細胞搬家到遠方器官。導致死亡的往往不是原發腫瘤，而是轉移。</p>
+                    <div class="metaphor-box" style="margin-top: 15px; margin-bottom: 0; border-left-color: var(--gold);">
+                        <div class="metaphor-title" style="color: var(--gold);">核心機制</div>
+                        <div class="metaphor-content">進入血管 → 逃過免疫 → 循環全身 → 在新地方扎根 → 重新長大</div>
+                    </div>
+                </div>
+
+                <div class="feature-card">
+                    <h3><span class="icon">🌳</span> ③ 異質性</h3>
+                    <p><strong style="color: var(--teal);">Heterogeneity</strong></p>
+                    <p style="margin-top: 10px;">一個腫瘤不是「一種癌」。裡面混著100種不同的癌細胞。</p>
+                    <div class="metaphor-box" style="margin-top: 15px; margin-bottom: 0; border-left-color: var(--gold);">
+                        <div class="metaphor-title" style="color: var(--gold);">核心機制</div>
+                        <div class="metaphor-content">不同突變 → 不同速度 → 不同代謝 → 不同抗藥 → 無法一種藥全滅</div>
+                    </div>
+                </div>
+
+                <div class="feature-card">
+                    <h3><span class="icon">🛡️</span> ④ 抗藥性</h3>
+                    <p><strong style="color: var(--teal);">Drug Resistance</strong></p>
+                    <p style="margin-top: 10px;">治療越多次，癌細胞進化越快。它學會了破解你的藥。</p>
+                    <div class="metaphor-box" style="margin-top: 15px; margin-bottom: 0; border-left-color: var(--gold);">
+                        <div class="metaphor-title" style="color: var(--gold);">核心機制</div>
+                        <div class="metaphor-content">基因突變 → 旁路活化 → 增加藥物排出 → 降低細胞凋亡 → 存活下來</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="highlight">
+                <strong>🎯 關鍵認知：</strong><br>
+                這四個能力不是獨立的，而是互相支援、形成閉環。<br>
+                侵襲 → 轉移 → 新環境裡產生新突變 → 異質性增加 → 抗藥性增加 → 再次侵襲<br>
+                這就是為什麼癌症一再復發。
+            </div>
+        </section>
+
+        <!-- 3. 控制系統 -->
+        <section id="control-system">
+            <h2 class="section-title">⚙️ 癌症控制系統導覽</h2>
+
+            <div class="intro-box">
+                <strong>把癌症看成一個Operating System（作業系統）：</strong><br>
+                不是一場「戰爭」，而是一個「失控的程式」。<br>
+                七個控制中心同時失衡，才形成癌症。
+            </div>
+
+            <div class="accordion">
+                <div class="accordion-item">
+                    <div class="accordion-header" onclick="toggleAccordion(this)">
+                        <span>① 持續增殖｜Sustained Proliferation</span>
+                        <span class="accordion-toggle">▼</span>
+                    </div>
+                    <div class="accordion-content">
+                        <p><strong style="font-size: 18px; color: var(--gold);">核心問題：</strong> 細胞永遠停不下來</p>
+                        <p style="margin-top: 15px;">正常細胞有上限 → 分裂50次就停止</p>
+                        <p>癌細胞無上限 → 永遠分裂，永不停止</p>
+                        <p style="margin-top: 15px;"><strong>控制路徑：</strong> EGFR → RAS → RAF → MEK → ERK → MYC</p>
+                        <p style="margin-top: 15px;"><strong>營養支持：</strong> 美寶(EGCG)、EPA+DHA、粒線寶</p>
+                    </div>
+                </div>
+
+                <div class="accordion-item">
+                    <div class="accordion-header" onclick="toggleAccordion(this)">
+                        <span>② 逃避抑制｜Evading Growth Suppressors</span>
+                        <span class="accordion-toggle">▼</span>
+                    </div>
+                    <div class="accordion-content">
+                        <p><strong style="font-size: 18px; color: var(--gold);">核心問題：</strong> 把身體的煞車拆掉</p>
+                        <p style="margin-top: 15px;">正常有P53煞車 → 細胞不會亂長</p>
+                        <p>癌細胞把P53破壞 → 煞車失靈</p>
+                        <p style="margin-top: 15px;"><strong>控制路徑：</strong> p53、RB、Cyclin、CDK</p>
+                        <p style="margin-top: 15px;"><strong>營養支持：</strong> NAC、維生素C、B群</p>
+                    </div>
+                </div>
+
+                <div class="accordion-item">
+                    <div class="accordion-header" onclick="toggleAccordion(this)">
+                        <span>③ 抵抗凋亡｜Avoiding Apoptosis</span>
+                        <span class="accordion-toggle">▼</span>
+                    </div>
+                    <div class="accordion-content">
+                        <p><strong style="font-size: 18px; color: var(--gold);">核心問題：</strong> 該死不死</p>
+                        <p style="margin-top: 15px;">正常細胞有自殺程式(Apoptosis) → 活該時自己消失</p>
+                        <p>癌細胞關閉自殺程式 → 永遠活著</p>
+                        <p style="margin-top: 15px;"><strong>控制路徑：</strong> BCL-2、BAX、Caspase、Survivin</p>
+                        <p style="margin-top: 15px;"><strong>營養支持：</strong> CoQ10、維生素E、綠茶多酚</p>
+                    </div>
+                </div>
+
+                <div class="accordion-item">
+                    <div class="accordion-header" onclick="toggleAccordion(this)">
+                        <span>④ 無限複製｜Replicative Immortality</span>
+                        <span class="accordion-toggle">▼</span>
+                    </div>
+                    <div class="accordion-content">
+                        <p><strong style="font-size: 18px; color: var(--gold);">核心問題：</strong> 細胞壽命無限延長</p>
+                        <p style="margin-top: 15px;">正常細胞有端粒(Telomere) → 每分裂一次就短一點 → 最後消失 → 細胞停止複製</p>
+                        <p>癌細胞激活端粒酶(Telomerase) → 每次分裂都自動修復 → 永不衰老</p>
+                        <p style="margin-top: 15px;"><strong>控制路徑：</strong> TERT、Telomerase</p>
+                        <p style="margin-top: 15px;"><strong>營養支持：</strong> 支持DNA修復與正常細胞衰老機制</p>
+                    </div>
+                </div>
+
+                <div class="accordion-item">
+                    <div class="accordion-header" onclick="toggleAccordion(this)">
+                        <span>⑤ 血管新生｜Angiogenesis</span>
+                        <span class="accordion-toggle">▼</span>
+                    </div>
+                    <div class="accordion-content">
+                        <p><strong style="font-size: 18px; color: var(--gold);">核心問題：</strong> 自己蓋水管，運送養分</p>
+                        <p style="margin-top: 15px;">腫瘤如果沒有血管 → 長不超過1mm → 活不了</p>
+                        <p>癌細胞分泌VEGF → 吸引身體長新血管 → 提供源源不絕的氧氣與養分</p>
+                        <p style="margin-top: 15px;"><strong>控制路徑：</strong> VEGF、HIF-1α、FGF</p>
+                        <p style="margin-top: 15px;"><strong>營養支持：</strong> 美寶、EPA+DHA、粒線寶、NAC</p>
+                    </div>
+                </div>
+
+                <div class="accordion-item">
+                    <div class="accordion-header" onclick="toggleAccordion(this)">
+                        <span>⑥ 免疫逃脫｜Immune Escape</span>
+                        <span class="accordion-toggle">▼</span>
+                    </div>
+                    <div class="accordion-content">
+                        <p><strong style="font-size: 18px; color: var(--gold);">核心問題：</strong> 躲過免疫警察</p>
+                        <p style="margin-top: 15px;">正常細胞 → NK細胞認識、摧毀</p>
+                        <p>癌細胞穿上隱形斗篷(PD-L1) → 免疫細胞看不到 → 或把免疫細胞變成自己的保鑣</p>
+                        <p style="margin-top: 15px;"><strong>控制路徑：</strong> PD-1、PD-L1、CTLA-4、Treg、MDSC</p>
+                        <p style="margin-top: 15px;"><strong>營養支持：</strong> 酶菌醣體、孢子益生菌、EPA+DHA、維生素D</p>
+                    </div>
+                </div>
+
+                <div class="accordion-item">
+                    <div class="accordion-header" onclick="toggleAccordion(this)">
+                        <span>⑦ 代謝重編程｜Metabolic Reprogramming</span>
+                        <span class="accordion-toggle">▼</span>
+                    </div>
+                    <div class="accordion-content">
+                        <p><strong style="font-size: 18px; color: var(--gold);">核心問題：</strong> 改變發電方式</p>
+                        <p style="margin-top: 15px;">正常細胞 → 有氧呼吸 → ATP很多 → 能量充足</p>
+                        <p>癌細胞 → 改用糖解作用(Warburg) → 快速產能但效率低 → 但能快速生長與適應缺氧環境</p>
+                        <p style="margin-top: 15px;"><strong>控制路徑：</strong> AMPK、mTOR、GLUT1、LDHA</p>
+                        <p style="margin-top: 15px;"><strong>營養支持：</strong> 粒線寶、能量方、苦瓜、黃連素、B群</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="highlight">
+                <strong>⚡ 系統論領悟：</strong><br>
+                癌症不是「一個壞」，而是「七個系統同時失控」。<br>
+                真正的治療不是打一條路徑，而是「同時調理多條路徑」的Network Modulation。<br>
+                未來精準醫療就是根據每位患者的「特定失控模式」，設計個人化的組合治療。
+            </div>
+        </section>
+
+        <!-- 4. 常見問題 -->
+        <section id="faqs">
+            <h2 class="section-title">❓ 常見問題 Q&A</h2>
+
+            <div class="qa-pair">
+                <div class="qa-question">❓ 為什麼同一種癌症，有人治好，有人沒治好？</div>
+                <div class="qa-answer">
+                    因為<strong>每位患者的癌症DNA、RNA、蛋白質、路徑、微環境都不同</strong>。<br>
+                    A病人的肺癌可能由EGFR驅動，B病人的肺癌由ROS1驅動。<br>
+                    同樣的藥對A有效，對B無效，因為他們的癌症「程式碼」不一樣。<br>
+                    <br>
+                    <strong>未來方向：</strong> NGS基因檢測、RNA分析、免疫分型 → 找到「你的癌症」的獨特弱點 → 設計專屬療法
+                </div>
+            </div>
+
+            <div class="qa-pair">
+                <div class="qa-question">❓ 為什麼化療、標靶、免疫都試過，癌症還是回來？</div>
+                <div class="qa-answer">
+                    你殺死了敵人主力軍隊，但<strong>沒有消滅敵人母巢（癌幹細胞）</strong>。<br>
+                    <br>
+                    癌幹細胞的特色：<br>
+                    • 休眠 → 躲過大部分治療<br>
+                    • 自我更新 → 一個變十個<br>
+                    • 高度可塑性 → 環境改變就變身<br>
+                    <br>
+                    治療結束後，癌幹細胞甦醒 → 重新長出癌症 → 往往比前一次更抗藥<br>
+                    <br>
+                    <strong>未來方向：</strong> 不只殺癌細胞，還要「關閉癌幹細胞開關」(WNT、NOTCH、YAP抑制劑)
+                </div>
+            </div>
+
+            <div class="qa-pair">
+                <div class="qa-question">❓ 營養品能治療癌症嗎？</div>
+                <div class="qa-answer">
+                    <strong>不能。</strong> 藥物治療癌症，營養支持正常細胞。<br>
+                    <br>
+                    營養品的真正角色：<br>
+                    ✓ 提供DNA修復所需原料(B群、葉酸、NAC)<br>
+                    ✓ 支持粒線體功能，維持能量代謝<br>
+                    ✓ 降低氧化壓力，減少慢性發炎<br>
+                    ✓ 支持腸道菌相與免疫監控<br>
+                    ✓ 幫助身體從治療副作用復原<br>
+                    <br>
+                    <strong>比喻：</strong> 藥是「醫生做手術」，營養是「家人在旁邊照顧、餵飯、擦汗」。<br>
+                    家人再貼心，也不能代替手術。<br>
+                    但没有家人照顧，患者恢復會很慢。
+                </div>
+            </div>
+
+            <div class="qa-pair">
+                <div class="qa-question">❓ 如何預防癌症？</div>
+                <div class="qa-answer">
+                    <strong>記住六個預防支柱：</strong><br>
+                    <br>
+                    1️⃣ <strong>高品質睡眠</strong> → 免疫修復、激素平衡<br>
+                    2️⃣ <strong>穩定血糖</strong> → 減少代謝失衡、慢性發炎<br>
+                    3️⃣ <strong>規律運動</strong> → 提高NK細胞、改善循環、降低體脂<br>
+                    4️⃣ <strong>植物營養</strong> → 多酚、類黃酮、植化素，支持抗氧化<br>
+                    5️⃣ <strong>健康腸道</strong> → 70%免疫在腸道，菌相失衡是許多慢性病根源<br>
+                    6️⃣ <strong>壓力管理</strong> → 長期高壓 → 皮質醇升高 → 免疫抑制 → 癌症風險增加<br>
+                    <br>
+                    <strong>這六項做好，癌症風險下降50%以上。</strong>
+                </div>
+            </div>
+
+            <div class="qa-pair">
+                <div class="qa-question">❓ 為什麼有人長年吸菸沒得癌症，有人不吸菸卻得癌症？</div>
+                <div class="qa-answer">
+                    因為<strong>癌症不是「一個因素」造成的，而是「多個風險因素累積」</strong>。<br>
+                    <br>
+                    多因素模式：<br>
+                    吸菸 + 缺乏運動 + 壓力大 + 睡眠差 + 免疫失衡 = 高風險<br>
+                    吸菸 + 運動、睡眠好、管理壓力、免疫強 = 中等風險<br>
+                    不吸菸 + 但缺乏這些健康習慣 = 還是有風險<br>
+                    <br>
+                    這就是為什麼有人「看起來危險」卻長壽，有人「看起來健康」卻生病。<br>
+                    <strong>真正重要的是整個生活型態，不是單一因素。</strong>
+                </div>
+            </div>
+
+            <div class="qa-pair">
+                <div class="qa-question">❓ 癌症能預防嗎？還是看命？</div>
+                <div class="qa-answer">
+                    <strong>既不是「完全可預防」，也不是「看命」，而是「風險管理」。</strong><br>
+                    <br>
+                    你可以控制的部分(70%)：<br>
+                    • 飲食習慣<br>
+                    • 運動習慣<br>
+                    • 睡眠品質<br>
+                    • 壓力管理<br>
+                    • 戒菸限酒<br>
+                    • 體重管理<br>
+                    • 腸道健康<br>
+                    <br>
+                    你控制不了的部分(30%)：<br>
+                    • 遺傳基因<br>
+                    • 環境污染<br>
+                    • 感染病史<br>
+                    • 年齡<br>
+                    <br>
+                    <strong>把「能控制的70%」做到最好，就已經大幅降低癌症風險了。</strong>
+                </div>
+            </div>
+        </section>
+
+        <!-- 5. 營養支持 -->
+        <section id="nutrition">
+            <h2 class="section-title">🥗 營養支持對應表</h2>
+
+            <div class="intro-box">
+                <strong>營養不是治療，而是身體修復的基礎原料。</strong><br>
+                就像蓋房子需要水泥、鋼筋、木料一樣，<br>
+                身體對抗癌症也需要各種營養支援。
+            </div>
+
+            <h3 style="color: var(--navy); font-size: 24px; margin: 40px 0 20px;">核心營養支持清單</h3>
+
+            <div class="nutrition-grid">
+                <div class="nutrition-item">
+                    <div class="name">① 美寶(EGCG)</div>
+                    <div class="effect">支持AMPK活化<br>降低EGFR、PI3K<br>支持抗氧化</div>
+                </div>
+                <div class="nutrition-item">
+                    <div class="name">② 粒線寶</div>
+                    <div class="effect">支持ATP生成<br>支持粒線體功能<br>降低ROS</div>
+                </div>
+                <div class="nutrition-item">
+                    <div class="name">③ EPA+DHA</div>
+                    <div class="effect">支持細胞膜健康<br>支持正常發炎調節<br>支持心血管</div>
+                </div>
+                <div class="nutrition-item">
+                    <div class="name">④ NAC</div>
+                    <div class="effect">提升穀胱甘肽<br>支持肝臟解毒<br>降低氧化壓力</div>
+                </div>
+                <div class="nutrition-item">
+                    <div class="name">⑤ 王牌(槲皮素)</div>
+                    <div class="effect">支持免疫調節<br>降低NF-κB<br>支持細胞健康</div>
+                </div>
+                <div class="nutrition-item">
+                    <div class="name">⑥ 丁酸鈉</div>
+                    <div class="effect">支持腸道屏障<br>支持菌相平衡<br>支持免疫</div>
+                </div>
+                <div class="nutrition-item">
+                    <div class="name">⑦ 孢子益生菌</div>
+                    <div class="effect">維持菌相多樣性<br>支持免疫監控<br>支持腸道穩態</div>
+                </div>
+                <div class="nutrition-item">
+                    <div class="name">⑧ 全酶</div>
+                    <div class="effect">支持消化酵素<br>支持膽汁分泌<br>提升營養吸收</div>
+                </div>
+                <div class="nutrition-item">
+                    <div class="name">⑨ 鎂</div>
+                    <div class="effect">支持300+酵素反應<br>支持睡眠質量<br>支持神經肌肉</div>
+                </div>
+                <div class="nutrition-item">
+                    <div class="name">⑩ 維生素D+K2</div>
+                    <div class="effect">支持免疫功能<br>支持骨骼代謝<br>支持鈣吸收</div>
+                </div>
+            </div>
+
+            <h3 style="color: var(--navy); font-size: 24px; margin: 40px 0 20px;">控制系統 × 營養對應表</h3>
+
+            <table class="comparison-table">
+                <thead>
+                    <tr>
+                        <th>失控系統</th>
+                        <th>營養支持</th>
+                        <th>核心作用</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>慢性發炎</strong></td>
+                        <td>EPA+DHA、王牌、丁酸鈉、孢子益生菌</td>
+                        <td>降低IL-6、TNF-α、NF-κB</td>
+                    </tr>
+                    <tr>
+                        <td><strong>粒線體失能</strong></td>
+                        <td>粒線寶、能量方、B群、鎂</td>
+                        <td>恢復ATP生成、電子傳遞鏈</td>
+                    </tr>
+                    <tr>
+                        <td><strong>氧化壓力</strong></td>
+                        <td>NAC、美寶、王牌、維生素C</td>
+                        <td>提升穀胱甘肽、抗氧化酵素</td>
+                    </tr>
+                    <tr>
+                        <td><strong>免疫失控</strong></td>
+                        <td>孢子益生菌、酶菌醣體、EPA+DHA、維生素D</td>
+                        <td>提升NK細胞、恢復Th1/Th2平衡</td>
+                    </tr>
+                    <tr>
+                        <td><strong>代謝失衡</strong></td>
+                        <td>美寶、能量方、鎂、B群</td>
+                        <td>支持AMPK、穩定血糖、提升代謝</td>
+                    </tr>
+                    <tr>
+                        <td><strong>腸道屏障</strong></td>
+                        <td>丁酸鈉、5R、孢子益生菌、全酶</td>
+                        <td>修復腸黏膜、提升營養吸收</td>
+                    </tr>
+                    <tr>
+                        <td><strong>DNA修復</strong></td>
+                        <td>B群、葉酸、B12、NAC、蛋白質</td>
+                        <td>提供DNA合成與修復原料</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <div class="highlight">
+                <strong>🔑 營養使用原則：</strong><br>
+                ✓ 不是「越多越好」，而是「符合路徑最好」<br>
+                ✓ 支持正常細胞功能，不是殺死癌細胞<br>
+                ✓ 與醫學治療配合，不是替代<br>
+                ✓ 個人化組合，根據患者狀態調整<br>
+                ✓ 長期補充，短期效果不明顯
+            </div>
+        </section>
+
+        <!-- 6. 未來治療 -->
+        <section id="future">
+            <h2 class="section-title">🚀 未來癌症治療五大革命</h2>
+
+            <div class="intro-box">
+                <strong>癌症治療正在經歷最大的進化。</strong><br>
+                從「一種藥殺所有癌症」進化到「每個患者一份客製化治療方案」。
+            </div>
+
+            <div class="future-timeline">
+                <div class="timeline-item">
+                    <div class="timeline-gen">第一代 (1950~1980)</div>
+                    <div class="timeline-title">化學治療｜Chemotherapy</div>
+                    <div class="timeline-desc">
+                        <strong style="color: var(--gold);">核心概念：</strong> 殺死快速分裂的細胞<br>
+                        <strong>缺點：</strong> 好細胞壞細胞一起殺，副作用很大<br>
+                        <strong>今天角色：</strong> 某些血液癌與胚胎癌仍有效，但多用作為組合治療的一部分
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-gen">第二代 (1995~2010)</div>
+                    <div class="timeline-title">標靶治療｜Target Therapy</div>
+                    <div class="timeline-desc">
+                        <strong style="color: var(--gold);">核心概念：</strong> 關閉癌症的驅動基因(Driver Gene)<br>
+                        <strong>代表：</strong> EGFR抑制劑、ALK抑制劑、BRAF抑制劑、HER2抑制劑<br>
+                        <strong>問題：</strong> 癌細胞不斷進化，單一標靶很容易就被抗藥化<br>
+                        <strong>今天角色：</strong> 仍是主流，但往往需要「多標靶組合治療」
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-gen">第三代 (2010~現在)</div>
+                    <div class="timeline-title">免疫治療｜Immunotherapy</div>
+                    <div class="timeline-desc">
+                        <strong style="color: var(--gold);">核心概念：</strong> 恢復免疫系統辨識、攻擊癌細胞的能力<br>
+                        <strong>代表：</strong> PD-1/PD-L1抑制劑、CTLA-4抑制劑、CAR-T療法<br>
+                        <strong>突破：</strong> 有些晚期癌症被完全緩解，效果超越前代治療<br>
+                        <strong>問題：</strong> 對部分患者無效，需要精準選擇<br>
+                        <strong>未來：</strong> 從「通用免疫療法」進化到「個人化免疫組合」
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-gen">第四代 (2020~現在)</div>
+                    <div class="timeline-title">可程式化醫療｜Programmable Medicine</div>
+                    <div class="timeline-desc">
+                        <strong style="color: var(--gold);">核心概念：</strong> 不只抑制蛋白質，而是直接修改或摧毀它<br>
+                        <strong>新技術：</strong><br>
+                        • <strong>PROTAC：</strong> 把癌蛋白送進垃圾場降解<br>
+                        • <strong>Molecular Glue：</strong> 用分子膠把癌蛋白黏到E3酵素，強制降解<br>
+                        • <strong>CRISPR基因編輯：</strong> 剪掉致癌基因<br>
+                        • <strong>Base Editing：</strong> 直接修改DNA鹼基<br>
+                        • <strong>Prime Editing：</strong> 精準插入、刪除、替換DNA<br>
+                        <strong>階段：</strong> 多項進入臨床試驗，部分已核准上市
+                    </div>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-gen">第五代 (2024~未來)</div>
+                    <div class="timeline-title">AI精準腫瘤學｜AI Precision Oncology</div>
+                    <div class="timeline-desc">
+                        <strong style="color: var(--gold);">核心概念：</strong> AI為每位患者設計最佳個人化治療<br>
+                        <strong>技術：</strong><br>
+                        • <strong>多體學分析：</strong> 同時分析基因(Genome)、RNA、蛋白質、代謝、微環境、免疫<br>
+                        • <strong>Digital Twin(數位分身)：</strong> AI建立患者癌症的虛擬模型，預測治療效果<br>
+                        • <strong>個人化疫苗：</strong> 根據患者Neoantigen製作專屬mRNA疫苗<br>
+                        • <strong>自適應治療：</strong> 根據患者反應動態調整治療策略<br>
+                        <strong>階段：</strong> 快速發展中，多項臨床試驗進行
+                    </div>
+                </div>
+            </div>
+
+            <h3 style="color: var(--navy); font-size: 24px; margin: 40px 0 20px;">最新重點治療方向(2026)</h3>
+
+            <div class="accordion">
+                <div class="accordion-item">
+                    <div class="accordion-header" onclick="toggleAccordion(this)">
+                        <span>🔬 WNT抑制劑｜對抗癌幹細胞</span>
+                        <span class="accordion-toggle">▼</span>
+                    </div>
+                    <div class="accordion-content">
+                        <p><strong>作用：</strong> 關閉癌幹細胞的「自我更新開關」</p>
+                        <p style="margin-top: 10px;"><strong>為何重要：</strong> 癌幹細胞是復發根源，傳統療法往往殺不死它</p>
+                        <p style="margin-top: 10px;"><strong>代表藥物：</strong> LGK974、DKN-01(臨床試驗中)</p>
+                        <p style="margin-top: 10px;"><strong>挑戰：</strong> WNT對正常腸道、骨骼也重要，副作用控制困難</p>
+                    </div>
+                </div>
+
+                <div class="accordion-item">
+                    <div class="accordion-header" onclick="toggleAccordion(this)">
+                        <span>🔬 PROTAC｜革命性蛋白質降解技術</span>
+                        <span class="accordion-toggle">▼</span>
+                    </div>
+                    <div class="accordion-content">
+                        <p><strong>作用：</strong> 不只阻斷蛋白質，而是把它直接送進垃圾場</p>
+                        <p style="margin-top: 10px;"><strong>優勢：</strong> 克服「蛋白質突變後仍活躍」的問題</p>
+                        <p style="margin-top: 10px;"><strong>開發中標靶：</strong> KRAS、EGFR、AR、ER、BRD4、BCL6等</p>
+                        <p style="margin-top: 10px;"><strong>多項臨床試驗進行中，未來5年將有多個新藥上市</strong></p>
+                    </div>
+                </div>
+
+                <div class="accordion-item">
+                    <div class="accordion-header" onclick="toggleAccordion(this)">
+                        <span>🔬 個人化癌症疫苗｜neoantigen + mRNA</span>
+                        <span class="accordion-toggle">▼</span>
+                    </div>
+                    <div class="accordion-content">
+                        <p><strong>流程：</strong> NGS定序 → 找neoantigen → mRNA製造 → 訓練免疫 → 攻擊癌細胞</p>
+                        <p style="margin-top: 10px;"><strong>優勢：</strong> 每位患者疫苗都不同，專一性最高，副作用小</p>
+                        <p style="margin-top: 10px;"><strong>目前：</strong> 多項臨床試驗顯示有效，部分已進入後期試驗</p>
+                        <p style="margin-top: 10px;"><strong>挑戰：</strong> 製作時間長、成本高、需要與其他療法配合</p>
+                    </div>
+                </div>
+
+                <div class="accordion-item">
+                    <div class="accordion-header" onclick="toggleAccordion(this)">
+                        <span>🔬 自適應治療｜Adaptive Therapy</span>
+                        <span class="accordion-toggle">▼</span>
+                    </div>
+                    <div class="accordion-content">
+                        <p><strong>概念：</strong> 不是一直加大藥量，而是「觀察癌症如何改變，動態調整策略」</p>
+                        <p style="margin-top: 10px;"><strong>優勢：</strong> 避免把所有敏感癌細胞殺光後，只剩最抗藥的爆炸性增長</p>
+                        <p style="margin-top: 10px;"><strong>目標：</strong> 從「治癒」轉為「長期控制」，讓癌症變成慢性病</p>
+                        <p style="margin-top: 10px;"><strong>臨床試驗進行中，初步成果令人鼓舞</strong></p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="highlight">
+                <strong>🎯 未來五年癌症治療最確定的趨勢：</strong><br>
+                <br>
+                1️⃣ <strong>從「單一藥物」→ 「多藥物組合」：</strong> 同時作用於多條路徑<br>
+                2️⃣ <strong>從「通用治療」→ 「個人化治療」：</strong> AI+多體學分析決定每人的療法<br>
+                3️⃣ <strong>從「消滅癌症」→ 「控制癌症」：</strong> 目標變為長期緩解，而非根治<br>
+                4️⃣ <strong>從「治療後」→ 「治療中動態調整」：</strong> 實時監測，即時改策略<br>
+                5️⃣ <strong>從「器官分類」→ 「分子分類」：</strong> 肺癌、肝癌的分類被「EGFR陽性」「PD-L1高表達」取代
+            </div>
+        </section>
+
+        <footer class="footer">
+            <p>💚 癌症理解導航 OS｜Cancer Understanding Operating System</p>
+            <p style="margin-top: 15px; font-size: 14px;">
+                本APP為教育用途，旨在幫助理解癌症的科學本質與控制系統。<br>
+                所有醫療建議請洽專業醫療團隊。All medical decisions should be made with professional healthcare providers.
+            </p>
+            <p style="margin-top: 20px; font-size: 13px; color: #999;">
+                編製：王欣蓉｜最後更新：2026年7月
+            </p>
+        </footer>
+    </div>
+
+    <script>
+        // 導航切換
+        document.querySelectorAll('.nav-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const sectionId = this.dataset.section;
+                
+                // 移除所有active
+                document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+                document.querySelectorAll('section').forEach(s => s.classList.remove('active'));
+                
+                // 添加active
+                this.classList.add('active');
+                document.getElementById(sectionId).classList.add('active');
+                
+                // 滾動到頂部
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+        });
+
+        // 手風琴功能
+        function toggleAccordion(header) {
+            const content = header.nextElementSibling;
+            const item = header.parentElement;
+            
+            // 關閉其他同級的手風琴
+            item.parentElement.querySelectorAll('.accordion-item').forEach(i => {
+                if (i !== item) {
+                    i.querySelector('.accordion-header').classList.remove('active');
+                    i.querySelector('.accordion-content').classList.remove('active');
+                }
+            });
+            
+            // 切換當前的
+            header.classList.toggle('active');
+            content.classList.toggle('active');
+        }
+
+        // Web Speech API TTS (針對英文)
+        function speakEnglish(text) {
+            if ('speechSynthesis' in window) {
+                speechSynthesis.cancel();
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.lang = 'en-US';
+                utterance.rate = 0.9;
+                speechSynthesis.speak(utterance);
+            }
+        }
+    </script>
+</body>
+</html>
