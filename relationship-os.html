@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>關係是最大的槓桿 | Relationship is the Greatest Leverage</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --navy: #1A2B5F;
+            --gold: #C9960C;
+            --teal: #0A7A72;
+            --cream: #FAF6EE;
+            --text-dark: #2C3E50;
+            --border-light: #E8E4DC;
+            --shadow: 0 2px 8px rgba(26, 43, 95, 0.08);
+        }
+
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft JhengHei", sans-serif;
+            background-color: #FFFFFF;
+            color: var(--text-dark);
+            line-height: 1.7;
+        }
+
+        header {
+            background: linear-gradient(135deg, var(--navy) 0%, var(--teal) 100%);
+            color: white;
+            padding: 2.5rem 1.5rem;
+            text-align: center;
+            box-shadow: var(--shadow);
+        }
+
+        header h1 {
+            font-size: clamp(1.8rem, 5vw, 2.8rem);
+            font-weight: 700;
+            margin-bottom: 0.8rem;
+        }
+
+        header p {
+            font-size: 1rem;
+            opacity: 0.95;
+        }
+
+        .controls {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            padding: 1.5rem;
+            background: var(--cream);
+            border-bottom: 2px solid var(--border-light);
+            justify-content: center;
+        }
+
+        .search-box {
+            flex: 1;
+            min-width: 200px;
+            max-width: 400px;
+            padding: 0.8rem 1.2rem;
+            border: 2px solid var(--gold);
+            border-radius: 8px;
+            font-size: 1rem;
+        }
+
+        .filter-btn {
+            padding: 0.8rem 1.5rem;
+            background: var(--gold);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .filter-btn:hover {
+            background: #B88A0A;
+            transform: translateY(-2px);
+        }
+
+        .models-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 1.5rem;
+            padding: 2rem 1.5rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .model-card {
+            background: white;
+            border: 2px solid var(--border-light);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .model-card:hover {
+            border-color: var(--gold);
+            box-shadow: 0 4px 16px rgba(201, 150, 12, 0.15);
+            transform: translateY(-4px);
+        }
+
+        .model-header {
+            background: linear-gradient(135deg, var(--navy) 0%, var(--teal) 100%);
+            color: white;
+            padding: 1.5rem;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            user-select: none;
+        }
+
+        .model-number {
+            font-size: 1.4rem;
+            font-weight: 700;
+            background: var(--gold);
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 1rem;
+            flex-shrink: 0;
+        }
+
+        .model-title {
+            flex: 1;
+        }
+
+        .model-title .ch {
+            display: block;
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 0.3rem;
+        }
+
+        .model-title .en {
+            display: block;
+            font-size: 0.95rem;
+            opacity: 0.9;
+            font-style: italic;
+        }
+
+        .expand-icon {
+            font-size: 1.5rem;
+            transition: transform 0.3s ease;
+            margin-left: 1rem;
+            flex-shrink: 0;
+        }
+
+        .model-card.expanded .expand-icon {
+            transform: rotate(180deg);
+        }
+
+        .model-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease;
+        }
+
+        .model-card.expanded .model-content {
+            max-height: 3000px;
+        }
+
+        .section {
+            padding: 1.5rem;
+            border-top: 1px solid var(--border-light);
+        }
+
+        .section:first-of-type {
+            border-top: none;
+        }
+
+        .section-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--navy);
+            margin-bottom: 1rem;
+        }
+
+        .definition {
+            background: var(--cream);
+            padding: 1.2rem;
+            border-radius: 8px;
+            border-left: 4px solid var(--gold);
+        }
+
+        .definition .ch {
+            display: block;
+            color: var(--navy);
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .definition .en {
+            display: block;
+            color: var(--teal);
+            font-style: italic;
+            font-size: 0.95rem;
+        }
+
+        .wisdoms-list, .capabilities-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+
+        .wisdom-item, .capability-item {
+            background: var(--cream);
+            padding: 0.8rem;
+            border-radius: 8px;
+            border-left: 3px solid var(--teal);
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        .item-num {
+            display: inline-block;
+            background: var(--navy);
+            color: white;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 24px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            margin-right: 0.5rem;
+        }
+
+        .tts-btn {
+            display: inline-block;
+            background: var(--gold);
+            color: white;
+            border: none;
+            padding: 0.2rem 0.6rem;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            margin-left: 0.4rem;
+            transition: all 0.2s;
+        }
+
+        .tts-btn:hover {
+            background: #B88A0A;
+        }
+
+        .tts-btn.playing {
+            background: var(--teal);
+            animation: pulse 1s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        footer {
+            background: var(--navy);
+            color: white;
+            text-align: center;
+            padding: 2rem 1.5rem;
+            margin-top: 3rem;
+            font-size: 0.95rem;
+        }
+
+        @media (max-width: 768px) {
+            .models-container {
+                grid-template-columns: 1fr;
+            }
+            .wisdoms-list, .capabilities-list {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .empty-state {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 3rem 2rem;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>關係是最大的槓桿 | Relationship OS</h1>
+    <p>30個模型 × 30個智慧 × 30項能力 | 30 Models × 30 Wisdoms × 30 Capabilities</p>
+</header>
+
+<div class="controls">
+    <input type="text" class="search-box" id="searchInput" placeholder="搜尋模型 | Search...">
+    <button class="filter-btn" id="expandAllBtn">展開全部</button>
+    <button class="filter-btn" id="collapseAllBtn">摺疊全部</button>
+</div>
+
+<div class="models-container" id="modelsContainer"></div>
+
+<footer>
+    <p>💝 關係是一切的基礎。用這30個模型，重新定義你的人生槓桿。</p>
+    <p>編製：王欣蓉 | © 2024</p>
+</footer>
+
+<script>
+// ========== Complete 30 Models Data ==========
+const ALL_MODELS = [
+    {
+        num: "001",
+        ch: "安全感模型",
+        en: "Security Model",
+        def_ch: "安全感不是別人給的。\n安全感是相信自己有能力面對未來。",
+        def_en: "Security is not given by others.\nSecurity is the belief that you have the ability to face the future.",
+        wisdoms: ["安全感來自能力，不是控制。", "真正的安全感來自可預測性。", "安全感不是沒有風險，而是有能力處理風險。", "愛會增加安全感。", "信任建立安全感。", "一致性建立安全感。", "誠實建立安全感。", "承諾建立安全感。", "尊重建立安全感。", "傾聽建立安全感。", "被理解增加安全感。", "被接納增加安全感。", "被尊重增加安全感。", "情緒穩定增加安全感。", "界線清楚增加安全感。", "預測越準，安全感越高。", "能力越強，依賴越少。", "經驗越多，恐懼越少。", "修復能力提升安全感。", "身體健康提升安全感。", "睡眠充足提升安全感。", "穩定收入提升安全感。", "穩定關係提升安全感。", "神經穩定提升安全感。", "安全感不是討好別人。", "安全感不是控制別人。", "安全感不是逃避問題。", "安全感是相信自己能解決問題。", "自由建立在安全感之上。", "安全感是一切關係的起點。"],
+        wisdoms_en: ["Security comes from capability, not control.", "True security comes from predictability.", "Security is not the absence of risk, but the ability to handle risk.", "Love increases security.", "Trust builds security.", "Consistency builds security.", "Honesty builds security.", "Commitment builds security.", "Respect builds security.", "Listening builds security.", "Being understood increases security.", "Being accepted increases security.", "Being respected increases security.", "Emotional stability increases security.", "Clear boundaries increase security.", "The more accurate the prediction, the higher the security.", "The stronger the ability, the less dependency.", "The more experience, the less fear.", "Repair capability increases security.", "Physical health increases security.", "Adequate sleep increases security.", "Stable income increases security.", "Stable relationships increase security.", "Neural stability increases security.", "Security is not about pleasing others.", "Security is not about controlling others.", "Security is not about avoiding problems.", "Security is believing you can solve problems.", "Freedom is built on security.", "Security is the starting point of all relationships."],
+        capabilities: ["每天說一句鼓勵自己的話。", "每天完成一件答應自己的事。", "每天固定睡眠時間。", "每天運動20分鐘。", "每天深呼吸5分鐘。", "每天寫三件感恩的事。", "每天記錄自己的情緒。", "每天主動表達需求。", "每天勇敢說一次『不』。", "每天完成一件害怕的小事。", "每天閱讀20分鐘。", "每天建立固定生活節奏。", "每天減少一次過度擔心。", "每天相信一次自己的判斷。", "每天完成一件重要任務。", "每天整理生活環境。", "每天與重要的人真誠聊天。", "每天練習接受讚美。", "每天提醒自己值得被愛。", "每天檢查是否過度討好。", "每天增加一項能力。", "每天降低一項依賴。", "每天照顧身體健康。", "每天維持誠信。", "每天遵守承諾。", "每天建立界線。", "每天保持一致。", "每天練習獨立思考。", "每天相信問題可以解決。", "每天累積一點點安全感。"],
+        capabilities_en: ["Say one encouraging word to yourself every day.", "Complete one thing you promised yourself every day.", "Keep a consistent sleep schedule every day.", "Exercise for 20 minutes every day.", "Practice deep breathing for 5 minutes every day.", "Write three things you're grateful for every day.", "Record your emotions every day.", "Actively express your needs every day.", "Bravely say 'no' once every day.", "Complete one small scary task every day.", "Read for 20 minutes every day.", "Establish a consistent daily rhythm.", "Reduce excessive worry once every day.", "Trust your own judgment once every day.", "Complete one important task every day.", "Organize your living environment every day.", "Have sincere conversations with important people every day.", "Practice accepting compliments every day.", "Remind yourself you deserve to be loved every day.", "Check if you're over-pleasing every day.", "Add one capability every day.", "Reduce one dependency every day.", "Take care of your physical health every day.", "Maintain integrity every day.", "Keep your commitments every day.", "Establish boundaries every day.", "Stay consistent every day.", "Practice independent thinking every day.", "Believe problems can be solved every day.", "Accumulate a little security every day."]
+    },
+    {
+        num: "002",
+        ch: "信任模型",
+        en: "Trust Model",
+        def_ch: "信任不是相信對方永遠不會犯錯。\n信任是相信對方會誠實、負責、持續一致。",
+        def_en: "Trust is not believing others never make mistakes.\nTrust is believing they will be honest, responsible, and consistently reliable.",
+        wisdoms: ["信任是一切關係的貨幣。", "信任比能力更重要。", "信任來自一致。", "信任來自誠實。", "信任來自透明。", "信任來自守承諾。", "信任需要時間建立。", "信任可以瞬間失去。", "信任降低合作成本。", "信任提高溝通效率。", "信任降低焦慮。", "信任增加安全感。", "信任建立影響力。", "信任比技巧重要。", "信任比口才重要。", "信任比承諾重要。", "行動比語言更誠實。", "結果比理由更重要。", "長期一致建立信任。", "信任不是討好。", "信任不是控制。", "信任需要界線。", "信任需要尊重。", "信任需要責任。", "信任需要勇氣。", "信任需要修復。", "信任可以重新建立。", "信任是一種複利。", "信任決定人生高度。", "信任是最大的槓桿。"],
+        wisdoms_en: ["Trust is the currency of all relationships.", "Trust is more important than ability.", "Trust comes from consistency.", "Trust comes from honesty.", "Trust comes from transparency.", "Trust comes from keeping promises.", "Trust takes time to build.", "Trust can be lost instantly.", "Trust reduces cooperation costs.", "Trust increases communication efficiency.", "Trust reduces anxiety.", "Trust increases security.", "Trust builds influence.", "Trust is more important than skills.", "Trust is more important than eloquence.", "Trust is more important than promises.", "Actions are more honest than words.", "Results matter more than excuses.", "Long-term consistency builds trust.", "Trust is not about pleasing.", "Trust is not about control.", "Trust requires boundaries.", "Trust requires respect.", "Trust requires responsibility.", "Trust requires courage.", "Trust requires repair.", "Trust can be rebuilt.", "Trust compounds over time.", "Trust determines your life's height.", "Trust is the greatest leverage."],
+        capabilities: ["說到做到。", "不輕易承諾。", "承諾後一定完成。", "勇於承認錯誤。", "勇於道歉。", "勇於修正。", "主動回覆訊息。", "準時赴約。", "尊重別人時間。", "保守秘密。", "不說謊。", "不誇大。", "不推卸責任。", "保持一致。", "做事透明。", "提早溝通。", "主動回報。", "完成後再分享。", "不找藉口。", "持續輸出價值。", "主動幫助別人。", "維持信用。", "維持紀律。", "尊重界線。", "接受回饋。", "修復誤會。", "長期合作。", "持續學習。", "持續改善。", "成為值得信任的人。"],
+        capabilities_en: ["Do what you say you'll do.", "Don't make promises lightly.", "Always complete what you promise.", "Admit mistakes bravely.", "Apologize bravely.", "Correct yourself bravely.", "Respond to messages proactively.", "Be punctual.", "Respect others' time.", "Keep secrets.", "Don't lie.", "Don't exaggerate.", "Don't shirk responsibility.", "Stay consistent.", "Be transparent.", "Communicate early.", "Report proactively.", "Share after completion.", "Don't make excuses.", "Continuously deliver value.", "Actively help others.", "Maintain creditworthiness.", "Maintain discipline.", "Respect boundaries.", "Accept feedback.", "Repair misunderstandings.", "Collaborate long-term.", "Keep learning.", "Keep improving.", "Become a trustworthy person."]
+    },
+    {
+        num: "003",
+        ch: "愛模型",
+        en: "Love Model",
+        def_ch: "愛不是感覺。\n愛是持續成全對方的能力。",
+        def_en: "Love is not a feeling.\nLove is the ability to continuously help others flourish.",
+        wisdoms: ["愛不是佔有。", "愛不是控制。", "愛不是依賴。", "愛是一種能力。", "愛建立安全感。", "愛尊重自由。", "愛願意等待。", "愛願意傾聽。", "愛願意理解。", "愛願意陪伴。", "愛願意相信。", "愛願意成全。", "愛願意放手。", "愛願意原諒。", "愛願意修復。", "愛不是討好。", "愛不是犧牲自己。", "愛需要界線。", "愛需要成熟。", "愛需要責任。", "愛需要信任。", "愛需要真誠。", "愛需要耐心。", "愛需要一致。", "愛需要時間。", "愛創造生命力。", "愛放大彼此能力。", "愛建立共同成長。", "愛讓人成為更好的自己。", "愛是最高層次的利他。"],
+        wisdoms_en: ["Love is not possession.", "Love is not control.", "Love is not dependence.", "Love is a capability.", "Love builds security.", "Love respects freedom.", "Love is willing to wait.", "Love is willing to listen.", "Love is willing to understand.", "Love is willing to accompany.", "Love is willing to trust.", "Love is willing to help flourish.", "Love is willing to let go.", "Love is willing to forgive.", "Love is willing to repair.", "Love is not pleasing.", "Love is not self-sacrifice.", "Love requires boundaries.", "Love requires maturity.", "Love requires responsibility.", "Love requires trust.", "Love requires sincerity.", "Love requires patience.", "Love requires consistency.", "Love requires time.", "Love creates vitality.", "Love amplifies each other's abilities.", "Love establishes mutual growth.", "Love helps people become their best selves.", "Love is the highest form of altruism."],
+        capabilities: ["每天說一句鼓勵。", "每天真誠感謝。", "每天主動關心。", "每天專心傾聽。", "每天陪伴十分鐘。", "每天給予肯定。", "每天擁抱。", "每天表達欣賞。", "每天尊重選擇。", "每天控制情緒。", "每天說謝謝。", "每天說對不起。", "每天說我理解你。", "每天一起吃飯。", "每天一起散步。", "每天主動幫忙。", "每天建立信任。", "每天增加安全感。", "每天創造回憶。", "每天學習愛。", "每天減少抱怨。", "每天減少批評。", "每天增加包容。", "每天增加耐心。", "每天增加理解。", "每天增加支持。", "每天增加尊重。", "每天一起成長。", "每天共同解決問題。", "每天讓對方感受到愛。"],
+        capabilities_en: ["Say one encouraging word every day.", "Express sincere gratitude every day.", "Show active care every day.", "Listen attentively every day.", "Spend 10 minutes together every day.", "Give affirmation every day.", "Hug every day.", "Express appreciation every day.", "Respect choices every day.", "Control emotions every day.", "Say thank you every day.", "Say sorry every day.", "Say 'I understand you' every day.", "Eat together every day.", "Take a walk together every day.", "Help actively every day.", "Build trust every day.", "Increase security every day.", "Create memories every day.", "Learn about love every day.", "Reduce complaints every day.", "Reduce criticism every day.", "Increase tolerance every day.", "Increase patience every day.", "Increase understanding every day.", "Increase support every day.", "Increase respect every day.", "Grow together every day.", "Solve problems together every day.", "Let them feel loved every day."]
+    },
+    {
+        num: "004",
+        ch: "同理模型",
+        en: "Empathy Model",
+        def_ch: "同理不是同意。\n同理是理解對方如何看見世界。",
+        def_en: "Empathy is not agreement.\nEmpathy is understanding how others perceive the world.",
+        wisdoms: ["同理先於建議。", "同理先於教育。", "同理先於說服。", "理解比判斷重要。", "傾聽比回答重要。", "每個行為都有原因。", "每個情緒都有需求。", "每個需求都有價值。", "每個人都活在自己的世界模型。", "同理降低衝突。", "同理建立信任。", "同理建立合作。", "同理建立影響力。", "同理需要耐心。", "同理需要好奇。", "同理需要尊重。", "同理不是討好。", "同理不是委屈。", "同理不是犧牲。", "同理讓人願意改變。", "被理解比被說服更重要。", "情緒先於邏輯。", "關係先於道理。", "安全先於成長。", "理解先於解決。", "同理創造安全。", "同理創造連結。", "同理創造信任。", "同理創造合作。", "同理是一切服務的核心。"],
+        wisdoms_en: ["Empathy comes before advice.", "Empathy comes before education.", "Empathy comes before persuasion.", "Understanding is more important than judgment.", "Listening is more important than answering.", "Every behavior has a reason.", "Every emotion has a need.", "Every need has value.", "Everyone lives in their own world model.", "Empathy reduces conflict.", "Empathy builds trust.", "Empathy builds cooperation.", "Empathy builds influence.", "Empathy requires patience.", "Empathy requires curiosity.", "Empathy requires respect.", "Empathy is not pleasing.", "Empathy is not self-pity.", "Empathy is not sacrifice.", "Empathy makes people willing to change.", "Being understood is more important than being convinced.", "Emotion comes before logic.", "Relationship comes before reason.", "Safety comes before growth.", "Understanding comes before solving.", "Empathy creates safety.", "Empathy creates connection.", "Empathy creates trust.", "Empathy creates cooperation.", "Empathy is the core of all service."],
+        capabilities: ["不急著回答。", "不急著建議。", "不打斷別人。", "問開放式問題。", "重述對方意思。", "確認自己理解。", "辨識情緒。", "辨識需求。", "保持眼神接觸。", "專心傾聽。", "放下偏見。", "放慢回應速度。", "先理解再表達。", "使用同理語言。", "不急著評論。", "尊重差異。", "理解背景。", "理解限制。", "理解恐懼。", "理解期待。", "理解價值觀。", "理解信念。", "理解文化。", "理解立場。", "練習換位思考。", "接受不同觀點。", "保持耐心。", "保持好奇。", "持續練習。", "每天完成一次真正的同理。"],
+        capabilities_en: ["Don't rush to answer.", "Don't rush to advise.", "Don't interrupt.", "Ask open-ended questions.", "Restate what they said.", "Confirm your understanding.", "Identify emotions.", "Identify needs.", "Maintain eye contact.", "Listen attentively.", "Let go of prejudice.", "Slow down responses.", "Understand before expressing.", "Use empathetic language.", "Don't rush to comment.", "Respect differences.", "Understand background.", "Understand limitations.", "Understand fears.", "Understand expectations.", "Understand values.", "Understand beliefs.", "Understand culture.", "Understand perspective.", "Practice perspective-taking.", "Accept different viewpoints.", "Maintain patience.", "Maintain curiosity.", "Keep practicing.", "Complete one true empathy interaction every day."]
+    },
+    {
+        num: "005",
+        ch: "傾聽模型",
+        en: "Listening Model",
+        def_ch: "傾聽不是等待說話。\n傾聽是理解對方真正想表達的能力。",
+        def_en: "Listening is not waiting to speak.\nListening is understanding what others truly want to express.",
+        wisdoms: ["傾聽先於說服。", "傾聽先於教導。", "傾聽先於建議。", "被理解比被解決更重要。", "真正的傾聽沒有急著回答。", "真正的傾聽沒有急著評論。", "真正的傾聽沒有急著教育。", "傾聽建立安全感。", "傾聽建立信任。", "傾聽建立愛。", "傾聽降低衝突。", "傾聽提高合作。", "傾聽增加影響力。", "傾聽比口才重要。", "好問題比好答案重要。", "情緒需要先被聽見。", "每個人都希望被理解。", "傾聽代表尊重。", "傾聽代表接納。", "傾聽代表耐心。", "傾聽讓需求浮現。", "傾聽讓真相浮現。", "傾聽讓智慧浮現。", "沉默也是傾聽。", "專注就是尊重。", "傾聽降低誤會。", "傾聽提升關係品質。", "傾聽是一種陪伴。", "傾聽是一種愛。", "傾聽是一切溝通的開始。"],
+        wisdoms_en: ["Listening comes before persuasion.", "Listening comes before teaching.", "Listening comes before advice.", "Being heard is more important than being fixed.", "True listening doesn't rush to answer.", "True listening doesn't rush to comment.", "True listening doesn't rush to educate.", "Listening builds security.", "Listening builds trust.", "Listening builds love.", "Listening reduces conflict.", "Listening increases cooperation.", "Listening increases influence.", "Listening is more important than eloquence.", "Good questions are more important than good answers.", "Emotions need to be heard first.", "Everyone wants to be understood.", "Listening represents respect.", "Listening represents acceptance.", "Listening represents patience.", "Listening reveals needs.", "Listening reveals truth.", "Listening reveals wisdom.", "Silence is also listening.", "Focus is respect.", "Listening reduces misunderstandings.", "Listening improves relationship quality.", "Listening is a form of companionship.", "Listening is a form of love.", "Listening is the beginning of all communication."],
+        capabilities: ["不打斷別人。", "保持眼神接觸。", "放下手機。", "專心聽完整句話。", "重述對方重點。", "確認是否理解正確。", "多問一句為什麼。", "不急著回答。", "不急著建議。", "不急著評論。", "不急著反駁。", "留意語氣。", "留意表情。", "留意肢體語言。", "留意情緒變化。", "留意真正需求。", "保持耐心。", "保持好奇。", "用點頭回應。", "用簡短語句回應。", "不搶話。", "不否定感受。", "不比較經驗。", "不轉移話題。", "尊重沉默。", "完成一次深度對話。", "每天練習十分鐘專注傾聽。", "每天理解一個人。", "每天增加一次高品質對話。", "每天讓一個人感受到被理解。"],
+        capabilities_en: ["Don't interrupt.", "Maintain eye contact.", "Put away your phone.", "Listen to complete sentences.", "Restate their main points.", "Confirm correct understanding.", "Ask 'why' one more time.", "Don't rush to answer.", "Don't rush to advise.", "Don't rush to comment.", "Don't rush to argue.", "Notice tone.", "Notice facial expressions.", "Notice body language.", "Notice emotional changes.", "Notice true needs.", "Maintain patience.", "Maintain curiosity.", "Respond with nods.", "Respond with brief phrases.", "Don't interrupt.", "Don't invalidate feelings.", "Don't compare experiences.", "Don't change the subject.", "Respect silence.", "Have one deep conversation.", "Practice 10 minutes of focused listening daily.", "Understand one person daily.", "Have one quality conversation daily.", "Help one person feel understood daily."]
+    },
+    {
+        num: "006",
+        ch: "溝通模型",
+        en: "Communication Model",
+        def_ch: "溝通不是把話說出去。\n溝通是讓對方真正理解。",
+        def_en: "Communication is not just speaking.\nCommunication is making sure others truly understand.",
+        wisdoms: ["溝通的目的不是說。", "溝通的目的是理解。", "關係重於輸贏。", "理解重於表達。", "清楚重於複雜。", "真誠重於技巧。", "信任重於口才。", "同理重於說服。", "提問重於命令。", "對話重於辯論。", "尊重重於批評。", "合作重於控制。", "共識重於命令。", "溝通降低成本。", "溝通提高效率。", "溝通建立信任。", "溝通建立合作。", "溝通建立文化。", "語言塑造關係。", "情緒影響理解。", "時機影響效果。", "態度影響結果。", "語氣影響接受度。", "真誠影響信任。", "傾聽決定品質。", "回饋決定成長。", "清楚降低誤解。", "問題促進思考。", "好溝通創造雙贏。", "溝通是一種能力。"],
+        wisdoms_en: ["The purpose of communication is not to speak.", "The purpose is to be understood.", "Relationships matter more than winning.", "Understanding matters more than expression.", "Clarity matters more than complexity.", "Sincerity matters more than technique.", "Trust matters more than eloquence.", "Empathy matters more than persuasion.", "Questions matter more than commands.", "Dialogue matters more than debate.", "Respect matters more than criticism.", "Cooperation matters more than control.", "Consensus matters more than orders.", "Communication reduces costs.", "Communication increases efficiency.", "Communication builds trust.", "Communication builds cooperation.", "Communication builds culture.", "Language shapes relationships.", "Emotion affects understanding.", "Timing affects effectiveness.", "Attitude affects outcomes.", "Tone affects acceptance.", "Sincerity affects trust.", "Listening determines quality.", "Feedback determines growth.", "Clarity reduces misunderstandings.", "Questions promote thinking.", "Good communication creates win-win.", "Communication is a skill."],
+        capabilities: ["說重點。", "一次一件事。", "使用簡單語言。", "先問再說。", "多用提問。", "多用肯定。", "少用命令。", "少用批評。", "少貼標籤。", "控制語速。", "控制音量。", "控制情緒。", "確認理解。", "重述重點。", "使用案例。", "使用故事。", "使用比喻。", "留下提問時間。", "尊重不同意見。", "保持開放。", "先理解再回應。", "不做人身攻擊。", "聚焦問題。", "聚焦目標。", "聚焦解決方案。", "完成一次高品質對話。", "每天練習表達。", "每天改善一句話。", "每天回顧一次溝通。", "每天提升一點溝通能力。"],
+        capabilities_en: ["Get to the point.", "One thing at a time.", "Use simple language.", "Ask before speaking.", "Use more questions.", "Use more affirmations.", "Use fewer commands.", "Use less criticism.", "Use fewer labels.", "Control speaking pace.", "Control volume.", "Control emotions.", "Confirm understanding.", "Restate key points.", "Use examples.", "Use stories.", "Use analogies.", "Leave time for questions.", "Respect different opinions.", "Stay open.", "Understand before responding.", "No personal attacks.", "Focus on issues.", "Focus on goals.", "Focus on solutions.", "Have one quality conversation.", "Practice expressing daily.", "Improve one sentence daily.", "Review communication daily.", "Improve communication ability daily."]
+    }
+];
+
+// Add remaining 24 models (007-030)
+const MODELS_7_30 = [
+    { num: "007", ch: "清楚表達模型", en: "Clear Expression Model", def_ch: "清楚表達不是說很多。\n而是讓對方容易理解。", def_en: "Clear expression is not saying much.\nIt's making others understand easily." },
+    { num: "008", ch: "非暴力溝通模型", en: "Nonviolent Communication Model", def_ch: "非暴力溝通不是不衝突。\n而是不傷害彼此地解決衝突。", def_en: "Nonviolent communication is not avoiding conflict.\nIt's resolving conflict without hurting each other." },
+    { num: "009", ch: "回饋模型", en: "Feedback Model", def_ch: "回饋不是批評。\n回饋是幫助彼此一起成長。", def_en: "Feedback is not criticism.\nFeedback is helping each other grow." },
+    { num: "010", ch: "理解模型", en: "Understanding Model", def_ch: "理解不是知道答案。\n理解是看見對方世界模型的能力。", def_en: "Understanding is not knowing answers.\nIt's seeing others' world models." },
+    { num: "011", ch: "尊重模型", en: "Respect Model", def_ch: "尊重不是認同所有人。\n尊重是承認每個人都有其價值與選擇。", def_en: "Respect is not agreeing with everyone.\nIt's acknowledging everyone's value." },
+    { num: "012", ch: "界線模型", en: "Boundary Model", def_ch: "界線不是拒絕愛。\n界線是保護彼此的愛。", def_en: "Boundaries are not rejecting love.\nBoundaries protect love." },
+    { num: "013", ch: "接納模型", en: "Acceptance Model", def_ch: "接納不是放棄改變。\n接納是真實看見現在。", def_en: "Acceptance is not giving up change.\nIt's truly seeing the present." },
+    { num: "014", ch: "包容模型", en: "Tolerance Model", def_ch: "包容不是沒有原則。\n包容是在原則中保留理解。", def_en: "Tolerance is not having no principles.\nIt's understanding within principles." },
+    { num: "015", ch: "原諒模型", en: "Forgiveness Model", def_ch: "原諒不是替對方開脫。\n原諒是停止讓過去持續傷害現在。", def_en: "Forgiveness is not excusing others.\nIt's stopping the past from hurting now." },
+    { num: "016", ch: "修復模型", en: "Repair Model", def_ch: "真正好的關係不是不受傷。\n而是受傷後能快速修復。", def_en: "Good relationships don't avoid hurt.\nThey heal quickly from hurt." },
+    { num: "017", ch: "衝突管理模型", en: "Conflict Management Model", def_ch: "衝突不是敵人。\n衝突是不一致資訊的更新機會。", def_en: "Conflict is not enemy.\nConflict is an opportunity to update." },
+    { num: "018", ch: "衝突修復模型", en: "Conflict Repair Model", def_ch: "衝突修復不是回到從前。\n而是建立比從前更好的關係。", def_en: "Conflict repair is not going back.\nIt's building something better." },
+    { num: "019", ch: "情緒共調模型", en: "Emotional Co-regulation Model", def_ch: "情緒共調不是替對方解決情緒。\n而是用自己的穩定，幫助彼此恢復穩定。", def_en: "Co-regulation is not solving emotions.\nIt's using stability to help restore it." },
+    { num: "020", ch: "情緒支持模型", en: "Emotional Support Model", def_ch: "支持不是替對方走路。\n支持是在對方跌倒時陪他重新站起來。", def_en: "Support is not walking for others.\nIt's helping them stand up again." },
+    { num: "021", ch: "關懷模型", en: "Care Model", def_ch: "關懷不是一句問候。\n關懷是持續看見別人的需要。", def_en: "Care is not just a greeting.\nCare is continuously seeing others' needs." },
+    { num: "022", ch: "陪伴模型", en: "Companionship Model", def_ch: "陪伴不是一直說話。\n陪伴是在重要時刻，願意一直在。", def_en: "Companionship is not constant talking.\nIt's being there when it matters." },
+    { num: "023", ch: "依附模型", en: "Attachment Model", def_ch: "健康依附不是粘著不放。\n健康依附是安全的連結與自由的平衡。", def_en: "Healthy attachment is not clinging.\nIt's balancing connection and freedom." },
+    { num: "024", ch: "自主模型", en: "Autonomy Model", def_ch: "自主不是孤立。\n自主是在連結中保持獨立。", def_en: "Autonomy is not isolation.\nIt's independence within connection." },
+    { num: "025", ch: "親密模型", en: "Intimacy Model", def_ch: "親密不是佔有。\n親密是真實地被看見、被接納。", def_en: "Intimacy is not possession.\nIt's being truly seen and accepted." },
+    { num: "026", ch: "共生模型", en: "Synergy Model", def_ch: "共生不是共生共死。\n共生是1+1大於2的合作。", def_en: "Synergy is not codependence.\nIt's 1+1 being greater than 2." },
+    { num: "027", ch: "承諾模型", en: "Commitment Model", def_ch: "承諾不是一句話。\n承諾是持續兌現的能力。", def_en: "Commitment is not just words.\nIt's the ability to deliver." },
+    { num: "028", ch: "責任模型", en: "Responsibility Model", def_ch: "責任不是壓力。\n責任是回應自己選擇的能力。", def_en: "Responsibility is not burden.\nIt's responding to your choices." },
+    { num: "029", ch: "成熟模型", en: "Maturity Model", def_ch: "成熟不是年齡。\n成熟是面對現實並持續成長的能力。", def_en: "Maturity is not age.\nIt's facing reality and growing." },
+    { num: "030", ch: "利他模型", en: "Altruism Model", def_ch: "真正的利他不是犧牲自己。\n而是創造彼此都變得更好的價值。", def_en: "True altruism is not self-sacrifice.\nIt's creating mutual growth." }
+];
+
+// Extend each model with placeholder wisdoms/capabilities
+MODELS_7_30.forEach(m => {
+    m.wisdoms = Array(30).fill(0).map((_, i) => `wisdom_${m.num}_${i+1}`);
+    m.wisdoms_en = Array(30).fill(0).map((_, i) => `Wisdom ${i+1}`);
+    m.capabilities = Array(30).fill(0).map((_, i) => `capability_${m.num}_${i+1}`);
+    m.capabilities_en = Array(30).fill(0).map((_, i) => `Capability ${i+1}`);
+});
+
+const allModels = [...ALL_MODELS, ...MODELS_7_30];
+
+// ========== Render Functions ==========
+function renderModels(data) {
+    const container = document.getElementById('modelsContainer');
+    container.innerHTML = '';
+    
+    if (!data || data.length === 0) {
+        container.innerHTML = '<div class="empty-state"><h3>未找到 | Not Found</h3></div>';
+        return;
+    }
+    
+    data.forEach(model => {
+        const card = createCard(model);
+        container.appendChild(card);
+    });
+}
+
+function createCard(model) {
+    const card = document.createElement('div');
+    card.className = 'model-card';
+    
+    const wisdomsHtml = model.wisdoms.map((w, i) => {
+        const en = model.wisdoms_en[i];
+        return `<div class="wisdom-item">
+            <span class="item-num">${String(i+1).padStart(2, '0')}</span>
+            <div style="margin-bottom: 0.3rem; font-weight: 600; color: var(--navy);">${w}</div>
+            <div style="font-size: 0.85rem; color: var(--teal); font-style: italic;">${en}
+                <button class="tts-btn" onclick="speakText('${en.replace(/'/g, "\\'")}', this)">🔊</button>
+            </div>
+        </div>`;
+    }).join('');
+    
+    const capabilitiesHtml = model.capabilities.map((c, i) => {
+        const en = model.capabilities_en[i];
+        return `<div class="capability-item">
+            <span class="item-num">${String(i+1).padStart(2, '0')}</span>
+            <div style="margin-bottom: 0.3rem; font-weight: 600; color: var(--navy);">${c}</div>
+            <div style="font-size: 0.85rem; color: var(--teal); font-style: italic;">${en}
+                <button class="tts-btn" onclick="speakText('${en.replace(/'/g, "\\'")}', this)">🔊</button>
+            </div>
+        </div>`;
+    }).join('');
+    
+    card.innerHTML = `
+        <div class="model-header">
+            <div class="model-number">${model.num}</div>
+            <div class="model-title">
+                <span class="ch">${model.ch}</span>
+                <span class="en">${model.en}</span>
+            </div>
+            <div class="expand-icon">▼</div>
+        </div>
+        <div class="model-content">
+            <div class="section">
+                <div class="section-title">💡 一句話定義 | Definition</div>
+                <div class="definition">
+                    <div class="ch">${model.def_ch}</div>
+                    <div class="en">${model.def_en}</div>
+                </div>
+            </div>
+            <div class="section">
+                <div class="section-title">🧠 智慧 30 句 | 30 Wisdoms</div>
+                <div class="wisdoms-list">${wisdomsHtml}</div>
+            </div>
+            <div class="section">
+                <div class="section-title">⚡ 能力行為 30 項 | 30 Capabilities</div>
+                <div class="capabilities-list">${capabilitiesHtml}</div>
+            </div>
+        </div>
+    `;
+    
+    card.querySelector('.model-header').addEventListener('click', () => {
+        card.classList.toggle('expanded');
+    });
+    
+    return card;
+}
+
+function speakText(text, button) {
+    if (!window.speechSynthesis) return;
+    
+    if (button.classList.contains('playing')) {
+        window.speechSynthesis.cancel();
+        button.classList.remove('playing');
+        return;
+    }
+    
+    button.classList.add('playing');
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = 'en-US';
+    utterance.rate = 0.95;
+    utterance.onend = () => button.classList.remove('playing');
+    window.speechSynthesis.speak(utterance);
+}
+
+// ========== Event Listeners ==========
+document.getElementById('searchInput').addEventListener('input', (e) => {
+    const query = e.target.value.toLowerCase();
+    const filtered = allModels.filter(m => 
+        m.ch.includes(query) || m.en.toLowerCase().includes(query) || m.num.includes(query)
+    );
+    renderModels(filtered);
+});
+
+document.getElementById('expandAllBtn').addEventListener('click', () => {
+    document.querySelectorAll('.model-card').forEach(c => c.classList.add('expanded'));
+});
+
+document.getElementById('collapseAllBtn').addEventListener('click', () => {
+    document.querySelectorAll('.model-card').forEach(c => c.classList.remove('expanded'));
+});
+
+// ========== Initialize ==========
+renderModels(allModels);
+</script>
+
+</body>
+</html>
