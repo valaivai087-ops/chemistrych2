@@ -1,0 +1,1472 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cancer Control OS × Precision Nutrition OS</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --navy: #1A2B5F;
+      --gold: #C9960C;
+      --teal: #0A7A72;
+      --cream: #FAF6EE;
+      --light-gray: #F5F3F0;
+      --border: #E8E3DE;
+    }
+
+    body {
+      font-family: 'Microsoft JhengHei', 'Arial', sans-serif;
+      background: white;
+      color: var(--navy);
+      line-height: 1.8;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    header {
+      background: linear-gradient(135deg, var(--navy) 0%, var(--teal) 100%);
+      color: white;
+      padding: 40px 20px;
+      border-radius: 12px;
+      margin-bottom: 30px;
+      text-align: center;
+    }
+
+    header h1 {
+      font-size: 2.2em;
+      margin-bottom: 10px;
+      font-weight: bold;
+    }
+
+    header p {
+      font-size: 1.1em;
+      opacity: 0.95;
+    }
+
+    .nav-section {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 15px;
+      margin-bottom: 30px;
+    }
+
+    .nav-card {
+      background: var(--cream);
+      border: 2px solid var(--border);
+      border-radius: 8px;
+      padding: 20px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      position: relative;
+    }
+
+    .nav-card:hover {
+      border-color: var(--gold);
+      box-shadow: 0 4px 12px rgba(201, 150, 12, 0.2);
+      transform: translateY(-2px);
+    }
+
+    .nav-card.active {
+      background: var(--gold);
+      color: white;
+      border-color: var(--gold);
+    }
+
+    .nav-card h3 {
+      font-size: 1.3em;
+      margin-bottom: 8px;
+      font-weight: bold;
+    }
+
+    .nav-card .volume {
+      font-size: 0.9em;
+      opacity: 0.7;
+      margin-bottom: 5px;
+    }
+
+    .nav-card .chinese {
+      font-size: 1.2em;
+      margin-top: 8px;
+      font-weight: 600;
+    }
+
+    .content-area {
+      background: white;
+      border: 2px solid var(--border);
+      border-radius: 12px;
+      padding: 30px;
+      display: none;
+    }
+
+    .content-area.active {
+      display: block;
+      animation: slideIn 0.3s ease;
+    }
+
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .hallmark-title {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      margin-bottom: 25px;
+      padding-bottom: 15px;
+      border-bottom: 3px solid var(--gold);
+    }
+
+    .hallmark-title h2 {
+      font-size: 2em;
+      color: var(--navy);
+      flex: 1;
+    }
+
+    .hallmark-title .volume-badge {
+      background: var(--teal);
+      color: white;
+      padding: 8px 15px;
+      border-radius: 20px;
+      font-size: 0.9em;
+      font-weight: bold;
+    }
+
+    .hallmark-title .tts-btn {
+      background: var(--gold);
+      color: white;
+      border: none;
+      padding: 10px 15px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.9em;
+      font-weight: bold;
+      transition: all 0.3s;
+    }
+
+    .hallmark-title .tts-btn:hover {
+      background: #B8860B;
+    }
+
+    .hallmark-title .tts-btn.speaking {
+      background: var(--teal);
+    }
+
+    .section {
+      margin-bottom: 25px;
+    }
+
+    .section-title {
+      background: var(--light-gray);
+      padding: 12px 20px;
+      border-left: 4px solid var(--gold);
+      font-size: 1.2em;
+      font-weight: bold;
+      margin-bottom: 15px;
+      cursor: pointer;
+      user-select: none;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-radius: 4px;
+      transition: all 0.3s;
+    }
+
+    .section-title:hover {
+      background: var(--border);
+    }
+
+    .section-title .arrow {
+      display: inline-block;
+      transition: transform 0.3s;
+      font-size: 1.2em;
+    }
+
+    .section-title.collapsed .arrow {
+      transform: rotate(-90deg);
+    }
+
+    .section-content {
+      padding: 15px 20px;
+      background: var(--cream);
+      border-radius: 4px;
+      margin-bottom: 15px;
+      display: none;
+    }
+
+    .section-content.active {
+      display: block;
+    }
+
+    .bilingual {
+      display: flex;
+      gap: 20px;
+      margin-bottom: 15px;
+      flex-wrap: wrap;
+    }
+
+    .bilingual > div {
+      flex: 1;
+      min-width: 250px;
+    }
+
+    .lang-label {
+      font-weight: bold;
+      color: var(--teal);
+      font-size: 0.9em;
+      margin-bottom: 5px;
+    }
+
+    .protein-flow {
+      background: white;
+      border: 1px solid var(--border);
+      padding: 15px;
+      border-radius: 6px;
+      font-family: 'Courier New', monospace;
+      font-size: 0.95em;
+      margin: 15px 0;
+      overflow-x: auto;
+      line-height: 2;
+    }
+
+    .nutrient-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 20px;
+      margin: 20px 0;
+    }
+
+    .nutrient-card {
+      background: white;
+      border: 2px solid var(--border);
+      border-radius: 8px;
+      padding: 18px;
+      transition: all 0.3s;
+    }
+
+    .nutrient-card:hover {
+      border-color: var(--gold);
+      box-shadow: 0 4px 12px rgba(201, 150, 12, 0.15);
+    }
+
+    .nutrient-card.special {
+      border-color: var(--teal);
+      background: linear-gradient(135deg, rgba(10, 122, 114, 0.05) 0%, rgba(201, 150, 12, 0.05) 100%);
+    }
+
+    .nutrient-card h4 {
+      font-size: 1.1em;
+      color: var(--navy);
+      margin-bottom: 10px;
+      font-weight: bold;
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .nutrient-card.special h4 {
+      color: var(--teal);
+    }
+
+    .special-badge {
+      background: var(--teal);
+      color: white;
+      padding: 3px 8px;
+      border-radius: 4px;
+      font-size: 0.75em;
+      font-weight: bold;
+    }
+
+    .nutrient-detail {
+      font-size: 0.95em;
+      margin-bottom: 10px;
+    }
+
+    .nutrient-detail strong {
+      color: var(--navy);
+      display: block;
+      margin-top: 8px;
+      margin-bottom: 3px;
+    }
+
+    .key-mechanism {
+      background: var(--cream);
+      padding: 15px;
+      border-radius: 6px;
+      margin: 15px 0;
+      border-left: 4px solid var(--teal);
+    }
+
+    .key-mechanism strong {
+      color: var(--teal);
+      display: block;
+      margin-bottom: 8px;
+    }
+
+    .control-bar {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 30px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      padding: 12px 20px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: bold;
+      font-size: 0.95em;
+      transition: all 0.3s;
+    }
+
+    .btn-primary {
+      background: var(--navy);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background: var(--teal);
+    }
+
+    .btn-secondary {
+      background: var(--gold);
+      color: white;
+    }
+
+    .btn-secondary:hover {
+      background: #B8860B;
+    }
+
+    .search-box {
+      padding: 12px 15px;
+      border: 2px solid var(--border);
+      border-radius: 6px;
+      font-size: 0.95em;
+      width: 100%;
+      max-width: 300px;
+      transition: border-color 0.3s;
+    }
+
+    .search-box:focus {
+      outline: none;
+      border-color: var(--gold);
+    }
+
+    .footer {
+      text-align: center;
+      padding: 30px 20px;
+      color: #666;
+      border-top: 2px solid var(--border);
+      margin-top: 40px;
+      font-size: 0.9em;
+    }
+
+    .footer strong {
+      color: var(--navy);
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 15px;
+      margin-bottom: 30px;
+    }
+
+    .stat-box {
+      background: var(--light-gray);
+      padding: 20px;
+      border-radius: 8px;
+      text-align: center;
+      border-left: 4px solid var(--gold);
+    }
+
+    .stat-box .number {
+      font-size: 2em;
+      color: var(--teal);
+      font-weight: bold;
+    }
+
+    .stat-box .label {
+      font-size: 0.9em;
+      color: var(--navy);
+      margin-top: 5px;
+    }
+
+    @media (max-width: 768px) {
+      header h1 {
+        font-size: 1.6em;
+      }
+
+      .nav-section {
+        grid-template-columns: 1fr;
+      }
+
+      .bilingual {
+        flex-direction: column;
+      }
+
+      .nutrient-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .content-area {
+        padding: 20px;
+      }
+    }
+
+    .disclaimer {
+      background: #FFF9E6;
+      border-left: 4px solid var(--gold);
+      padding: 15px;
+      border-radius: 4px;
+      margin: 20px 0;
+      font-size: 0.9em;
+      color: #333;
+    }
+
+    .toc {
+      background: var(--cream);
+      padding: 20px;
+      border-radius: 8px;
+      margin-bottom: 30px;
+    }
+
+    .toc h3 {
+      margin-bottom: 15px;
+      color: var(--navy);
+      font-weight: bold;
+    }
+
+    .toc ul {
+      list-style: none;
+      columns: 2;
+      column-gap: 30px;
+    }
+
+    .toc li {
+      padding: 8px 0;
+      cursor: pointer;
+      color: var(--teal);
+      transition: all 0.3s;
+      user-select: none;
+    }
+
+    .toc li:hover {
+      color: var(--gold);
+      padding-left: 5px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Cancer Control OS × Precision Nutrition OS</h1>
+      <p>Part 1: Cancer Hallmarks × 精準營養完整導航系統</p>
+    </header>
+
+    <div class="control-bar">
+      <input type="text" class="search-box" id="searchBox" placeholder="搜尋 Hallmark、營養素... Search...">
+      <button class="btn btn-primary" onclick="expandAll()">展開全部 | Expand All</button>
+      <button class="btn btn-secondary" onclick="collapseAll()">收起全部 | Collapse All</button>
+    </div>
+
+    <div class="stats">
+      <div class="stat-box">
+        <div class="number">12</div>
+        <div class="label">癌症特徵 | Hallmarks</div>
+      </div>
+      <div class="stat-box">
+        <div class="number">9+</div>
+        <div class="label">營養素 | Nutrients</div>
+      </div>
+      <div class="stat-box">
+        <div class="number">憂遁草</div>
+        <div class="label">Sauropus androgynus</div>
+      </div>
+    </div>
+
+    <div class="toc">
+      <h3>目錄 | Table of Contents</h3>
+      <ul id="tableOfContents"></ul>
+    </div>
+
+    <div id="contentContainer"></div>
+
+    <div class="footer">
+      <p><strong>Cancer Control OS × Precision Nutrition OS</strong></p>
+      <p>內容編製 | Content by: 王欣蓉</p>
+      <p style="margin-top: 15px; font-size: 0.85em; color: #888;">
+        本應用內容僅供教育用途。任何營養素皆無法取代癌症標準治療。</p>
+      <p style="font-size: 0.85em; color: #888;">
+        This app is for educational purposes only. No nutrient can replace standard cancer treatment.</p>
+    </div>
+  </div>
+
+  <script>
+    const hallmarksData = [
+      {
+        volume: 1,
+        title: "Sustained Proliferation OS",
+        chinese: "持續增殖",
+        english: "Sustained Proliferation",
+        definitions: {
+          chinese: "持續增殖能力",
+          english: "Continuous cell division ability"
+        },
+        simpleExplain: "正常細胞很守規矩。需要長大的時候才會生長。傷口好了，就停止生長。癌細胞不一樣。它每天都收到假的生長命令。所以一直分裂，一直長大。永遠不知道停止。就像汽車油門卡住。一路狂衝。 | Normal cells follow rules - they grow only when needed and stop after healing. Cancer cells are different - they receive fake growth signals constantly, dividing endlessly like a car with a stuck accelerator.",
+        pathways: [
+          "EGFR → RAS → RAF → MEK → ERK",
+          "EGFR → PI3K → AKT → mTOR",
+          "MYC",
+          "Cyclin → CDK"
+        ],
+        nutrients: [
+          {
+            name: "美寶（EGCG）| Green Tea Extract (EGCG)",
+            components: "EGCG | 植物多酚 Plant polyphenols",
+            proteins: "Nrf2, Keap1, AMPK",
+            mechanism: "支持抗氧化系統 | Support antioxidant system",
+            support: "支持正常免疫、支持健康老化 | Support normal immunity, healthy aging"
+          },
+          {
+            name: "粒線寶 | Mitochondrial Complex",
+            components: "植物多酚 | Plant polyphenols",
+            proteins: "PGC-1α, AMPK, SIRT1",
+            mechanism: "支持粒線體功能 | Support mitochondrial function",
+            support: "支持精神、支持耐力 | Support energy, endurance"
+          },
+          {
+            name: "EPA + DHA | Omega-3 Fatty Acids",
+            components: "EPA, DHA",
+            proteins: "PPARα, PPARγ, Resolvin, Protectin",
+            mechanism: "支持正常發炎調節 | Support normal inflammation regulation",
+            support: "支持心血管、支持腦部、支持免疫 | Support cardiovascular, brain, immunity"
+          },
+          {
+            name: "NAC | N-Acetylcysteine",
+            components: "穀胱甘肽 | Glutathione",
+            proteins: "GPx, GST, Nrf2",
+            mechanism: "支持抗氧化能力 | Support antioxidant capacity",
+            support: "支持肝臟、支持呼吸道 | Support liver, respiratory"
+          },
+          {
+            name: "維生素C + 鋅 | Vitamin C + Zinc",
+            components: "Vitamin C, Zinc",
+            proteins: "Collagen Enzymes, DNA Repair Enzymes, Zinc Finger Proteins",
+            mechanism: "支持膠原蛋白生成、支持DNA修復 | Support collagen, DNA repair",
+            support: "支持傷口修復、支持免疫 | Support wound healing, immunity"
+          },
+          {
+            name: "氫氧水 | Hydrogen-Rich Water",
+            components: "Hydrogen",
+            proteins: "Redox Balance Support",
+            mechanism: "支持氧化還原平衡 | Support redox balance",
+            support: "支持恢復、支持代謝 | Support recovery, metabolism"
+          },
+          {
+            name: "高濃度負離子 | High-concentration Negative Ions",
+            components: "Negative Ions | 負離子",
+            proteins: "Autonomic Nervous System",
+            mechanism: "支持副交感神經平衡 | Support parasympathetic balance",
+            support: "支持睡眠、支持恢復 | Support sleep, recovery"
+          },
+          {
+            name: "憂遁草 | Sauropus androgynus",
+            components: "葉綠素、多酚、葉酸 | Chlorophyll, Polyphenols, Folate",
+            proteins: "Nutrient cofactors, Antioxidant support, Energy metabolism",
+            mechanism: "支持營養完整性，支持細胞功能代謝 | Support nutritional completeness, cellular metabolism",
+            support: "支持粒線體功能、支持造血功能、支持正常細胞代謝 | Support mitochondrial function, hematopoiesis, normal cell metabolism",
+            special: true
+          }
+        ]
+      },
+      {
+        volume: 2,
+        title: "Evading Growth Suppressors OS",
+        chinese: "逃避生長抑制",
+        english: "Evading Growth Suppressors",
+        simpleExplain: "細胞其實有煞車器。會限制它們的生長。RB和TP53就像警察。如果細胞要分裂。警察會檢查DNA是否完好。如果有問題。警察就會下命令停止。癌細胞卻把警察賄賂或解雇了。所以就算DNA受傷。細胞也一直分裂。 | Cells have brakes (RB, TP53) that normally limit growth. Cancer cells disable these checkpoints by inactivating or mutating them, allowing damaged cells to keep dividing.",
+        pathways: [
+          "RB → E2F → Cell Cycle",
+          "TP53 → p21 → Cell Cycle Arrest",
+          "TGF-β → SMAD → Growth Inhibition"
+        ],
+        nutrients: [
+          {
+            name: "美寶（EGCG）",
+            components: "EGCG",
+            proteins: "Nrf2, AMPK",
+            mechanism: "支持正常抗氧化",
+            support: "支持健康老化、支持正常免疫"
+          },
+          {
+            name: "粒線寶",
+            components: "植物多酚",
+            proteins: "PGC-1α, SIRT1",
+            mechanism: "支持粒線體功能",
+            support: "支持精神、支持耐力"
+          },
+          {
+            name: "維生素C + 鋅",
+            components: "Vitamin C, Zinc",
+            proteins: "DNA Repair Enzymes",
+            mechanism: "支持DNA修復",
+            support: "支持免疫、支持傷口修復"
+          },
+          {
+            name: "NAC",
+            components: "Glutathione",
+            proteins: "GPx, GST",
+            mechanism: "支持穀胱甘肽生成",
+            support: "支持肝臟、支持抗氧化"
+          },
+          {
+            name: "EPA + DHA",
+            components: "EPA, DHA",
+            proteins: "PPARα, PPARγ",
+            mechanism: "支持細胞膜健康",
+            support: "支持心血管、支持腦部"
+          },
+          {
+            name: "憂遁草 | Sauropus androgynus",
+            components: "葉綠素、多酚、維生素B群 | Chlorophyll, Polyphenols, B vitamins",
+            proteins: "DNA repair enzyme cofactors, Cell cycle regulators",
+            mechanism: "支持正常細胞周期調控 | Support normal cell cycle regulation",
+            support: "支持DNA修復相關功能、支持正常細胞分化 | Support DNA repair function, normal differentiation",
+            special: true
+          }
+        ]
+      },
+      {
+        volume: 3,
+        title: "Resisting Cell Death OS",
+        chinese: "抵抗細胞凋亡",
+        english: "Resisting Cell Death",
+        simpleExplain: "身體每天都會淘汰老舊細胞。如果細胞受傷、DNA壞掉、被病毒感染、甚至癌變。身體就會啟動自毀程式。讓細胞自己死亡。這叫細胞凋亡。癌細胞最大的本事之一。就是把這套自毀程式關掉。所以即使已經受傷。仍然一直活著。一直分裂。一直累積突變。 | Your body daily eliminates damaged cells through apoptosis (programmed cell death). Cancer cells disable this death mechanism - they keep BCL-2 high and BAX low, becoming immortal even when damaged.",
+        pathways: [
+          "TP53 → BAX → Apoptosis",
+          "TP53 → PUMA → Apoptosis",
+          "BCL-2 → Mitochondria → Cell Survival",
+          "Caspase-9 → Caspase-3 → Apoptosis"
+        ],
+        nutrients: [
+          {
+            name: "粒線寶",
+            components: "植物多酚",
+            proteins: "PGC-1α, AMPK, SIRT1",
+            mechanism: "支持粒線體健康",
+            support: "支持精神、支持恢復、支持耐力"
+          },
+          {
+            name: "美寶（EGCG）",
+            components: "EGCG",
+            proteins: "Nrf2, AMPK",
+            mechanism: "支持正常抗氧化能力",
+            support: "支持正常免疫、支持健康老化"
+          },
+          {
+            name: "NAC",
+            components: "Glutathione",
+            proteins: "GPx, GST",
+            mechanism: "支持穀胱甘肽生成",
+            support: "支持肝臟、支持抗氧化"
+          },
+          {
+            name: "維生素C + 鋅",
+            components: "Vitamin C, Zinc",
+            proteins: "DNA Repair Enzymes, Collagen Enzymes",
+            mechanism: "支持正常細胞修復",
+            support: "支持免疫、支持傷口修復"
+          },
+          {
+            name: "EPA + DHA",
+            components: "EPA, DHA",
+            proteins: "PPARα, PPARγ, Resolvin",
+            mechanism: "支持正常發炎調節",
+            support: "支持心血管、支持腦部、支持正常免疫"
+          },
+          {
+            name: "憂遁草 | Sauropus androgynus",
+            components: "葉綠素、多酚、礦物質 | Chlorophyll, Polyphenols, Minerals",
+            proteins: "Mitochondrial function support, Antioxidant system",
+            mechanism: "支持粒線體功能 | Support mitochondrial health",
+            support: "支持細胞呼吸、支持正常細胞更新週期 | Support cellular respiration, normal cell turnover",
+            special: true
+          }
+        ]
+      },
+      {
+        volume: 4,
+        title: "Replicative Immortality OS",
+        chinese: "無限複製能力",
+        english: "Replicative Immortality",
+        simpleExplain: "正常細胞不是永遠可以分裂。每分裂一次。細胞染色體末端的端粒就會變短一點。最後端粒太短。細胞就退休。停止分裂。癌細胞找到破解方法。重新打開端粒酶。不停修補端粒。所以癌細胞可以一直分裂。一直活下去。 | Each cell has a telomere 'clock' that shortens with division. Normal cells eventually stop when telomeres are too short (the Hayflick limit). Cancer cells reactivate telomerase to continuously repair telomeres, becoming immortal.",
+        pathways: [
+          "TERT → Telomerase → Telomere Maintenance",
+          "MYC → TERT",
+          "AKT → TERT Activation",
+          "Wnt → β-catenin → TERT"
+        ],
+        nutrients: [
+          {
+            name: "粒線寶",
+            components: "植物多酚",
+            proteins: "PGC-1α, AMPK, SIRT1, Nrf2",
+            mechanism: "支持粒線體健康",
+            support: "支持精神、支持恢復、支持耐力"
+          },
+          {
+            name: "美寶（EGCG）",
+            components: "EGCG",
+            proteins: "AMPK, Nrf2, Keap1",
+            mechanism: "支持抗氧化能力",
+            support: "支持正常免疫、支持健康老化"
+          },
+          {
+            name: "維生素C + 鋅",
+            components: "Vitamin C, Zinc",
+            proteins: "DNA Repair Enzymes, Zinc Finger Proteins",
+            mechanism: "支持DNA修復",
+            support: "支持免疫、支持傷口修復、支持牙齦健康"
+          },
+          {
+            name: "NAC",
+            components: "Glutathione",
+            proteins: "GPx, GST",
+            mechanism: "支持穀胱甘肽生成",
+            support: "支持肝臟、支持抗氧化"
+          },
+          {
+            name: "EPA + DHA",
+            components: "EPA, DHA",
+            proteins: "PPARα, PPARγ, Resolvin",
+            mechanism: "支持正常發炎調節",
+            support: "支持心血管、支持腦部、支持正常免疫"
+          },
+          {
+            name: "憂遁草 | Sauropus androgynus",
+            components: "多種維生素、礦物質、葉酸 | Vitamins, Minerals, Folate",
+            proteins: "DNA synthesis cofactors, Cell cycle enzymes",
+            mechanism: "支持正常DNA合成 | Support normal DNA synthesis",
+            support: "支持細胞正常分裂次數限制、支持DNA複製保真度 | Support normal replication limits, DNA fidelity",
+            special: true
+          }
+        ]
+      },
+      {
+        volume: 5,
+        title: "Angiogenesis OS",
+        chinese: "血管新生",
+        english: "Angiogenesis",
+        simpleExplain: "癌細胞需要吃飯。需要氧氣。需要葡萄糖。所以癌細胞會命令身體。替它蓋新的高速公路。讓更多血液天天送食物。腫瘤才能越長越大。 | Tumors need blood supply to grow. Cancer cells secrete VEGF and other signals to force the body to build new blood vessels that feed the tumor.",
+        pathways: [
+          "Hypoxia → HIF-1α → VEGF → VEGFR → Endothelial Cell → New Vessel",
+          "FGF → FGFR → 血管增生",
+          "PDGF → PDGFR → Pericyte",
+          "ANGPT → Tie2 → 血管穩定"
+        ],
+        nutrients: [
+          {
+            name: "美寶（EGCG）",
+            components: "EGCG",
+            proteins: "Nrf2, AMPK, Keap1",
+            mechanism: "支持正常抗氧化能力",
+            support: "支持健康老化、支持正常免疫"
+          },
+          {
+            name: "EPA + DHA",
+            components: "EPA, DHA",
+            proteins: "PPARα, PPARγ, Resolvin, Protectin",
+            mechanism: "支持正常發炎調節",
+            support: "支持心血管、支持腦部、支持免疫"
+          },
+          {
+            name: "粒線寶",
+            components: "植物多酚",
+            proteins: "PGC-1α, AMPK, SIRT1",
+            mechanism: "支持粒線體功能",
+            support: "支持精神、支持耐力、支持恢復"
+          },
+          {
+            name: "維生素C + 鋅",
+            components: "Vitamin C, Zinc",
+            proteins: "Collagen Enzyme, DNA Repair Enzyme",
+            mechanism: "支持膠原蛋白生成",
+            support: "支持血管健康、支持免疫"
+          },
+          {
+            name: "NAC",
+            components: "Glutathione",
+            proteins: "GPx, GST",
+            mechanism: "支持穀胱甘肽生成",
+            support: "支持肝臟、支持抗氧化"
+          },
+          {
+            name: "憂遁草 | Sauropus androgynus",
+            components: "β-胡蘿蔔素、多酚、維生素K | Beta-carotene, Polyphenols, Vitamin K",
+            proteins: "Vascular endothelial support, Antioxidant system",
+            mechanism: "支持血管健康 | Support vascular health",
+            support: "支持正常血管完整性、支持血管內皮健康 | Support vascular integrity, endothelial health",
+            special: true
+          }
+        ]
+      },
+      {
+        volume: 6,
+        title: "Invasion & Metastasis OS",
+        chinese: "侵襲與轉移",
+        english: "Invasion & Metastasis",
+        simpleExplain: "癌細胞先拆掉自己的圍牆。再鑽進血管。再搭乘血液高速公路。最後在其他器官重新建立新的據點。這就是癌症轉移。也是癌症最危險的地方。 | Cancer cells undergo EMT (epithelial-mesenchymal transition), degrade the basement membrane with MMPs, intravasate into blood vessels, survive transit, extravasate, and colonize distant organs.",
+        pathways: [
+          "TGF-β → SMAD → EMT",
+          "EMT → E-cadherin↓ → 細胞鬆開",
+          "MMP → Extracellular Matrix → 基質分解",
+          "CXCR4 → CXCL12 → 細胞趨化",
+          "Integrin → FAK → Cell Migration"
+        ],
+        nutrients: [
+          {
+            name: "美寶（EGCG）",
+            components: "EGCG",
+            proteins: "Nrf2, AMPK, Keap1",
+            mechanism: "支持正常抗氧化能力",
+            support: "支持正常免疫、支持健康老化"
+          },
+          {
+            name: "EPA + DHA",
+            components: "EPA, DHA",
+            proteins: "PPARα, PPARγ, Resolvin, Protectin",
+            mechanism: "支持正常發炎調節",
+            support: "支持心血管、支持腦部、支持免疫"
+          },
+          {
+            name: "粒線寶",
+            components: "植物多酚",
+            proteins: "PGC-1α, AMPK, SIRT1",
+            mechanism: "支持粒線體功能",
+            support: "支持精神、支持恢復、支持耐力"
+          },
+          {
+            name: "維生素C + 鋅",
+            components: "Vitamin C, Zinc",
+            proteins: "Collagen Enzyme, DNA Repair Enzyme",
+            mechanism: "支持膠原蛋白生成",
+            support: "支持免疫、支持牙齦、支持組織修復"
+          },
+          {
+            name: "NAC",
+            components: "Glutathione",
+            proteins: "GPx, GST",
+            mechanism: "支持穀胱甘肽生成",
+            support: "支持肝臟、支持抗氧化"
+          },
+          {
+            name: "憂遁草 | Sauropus androgynus",
+            components: "蛋白質、葉綠素、多酚 | Protein, Chlorophyll, Polyphenols",
+            proteins: "Cell adhesion molecules, Matrix integrity support",
+            mechanism: "支持細胞黏著功能 | Support cell adhesion",
+            support: "支持組織完整性、支持上皮屏障、支持正常細胞間的黏著 | Support tissue integrity, epithelial barrier, cell-cell adhesion",
+            special: true
+          }
+        ]
+      },
+      {
+        volume: 7,
+        title: "Immune Escape OS",
+        chinese: "免疫逃脫",
+        english: "Immune Escape",
+        simpleExplain: "癌細胞最厲害的地方。不是打贏免疫細胞。而是騙過免疫細胞。讓免疫細胞以為它是自己人。於是警察經過。卻沒有抓它。癌細胞因此慢慢長大。 | Cancer cells hide from immunity by expressing PD-L1 (which engages PD-1 on immune cells), recruiting Tregs and MDSCs, and secreting immunosuppressive factors like TGF-β and IL-10.",
+        pathways: [
+          "PD-L1 → PD-1 → T Cell Exhaustion",
+          "CTLA-4 → T Cell Inhibition",
+          "Treg → Immune Suppression",
+          "MDSC → Immune Suppression",
+          "TAM → Tumor Support",
+          "IDO → Tryptophan Depletion → T Cell Suppression"
+        ],
+        nutrients: [
+          {
+            name: "丁酸鈉（腸寶）| Butyrate",
+            components: "Butyrate",
+            proteins: "HDAC, GPR41, GPR43, Foxp3",
+            mechanism: "支持腸道屏障",
+            support: "支持腸道、支持免疫、支持修復"
+          },
+          {
+            name: "孢子益生菌 | Spore Probiotics",
+            components: "Bacillus Species",
+            proteins: "Gut Microbiome, SCFA",
+            mechanism: "支持菌相平衡",
+            support: "支持消化、支持免疫、支持腸道健康"
+          },
+          {
+            name: "美寶（EGCG）",
+            components: "EGCG",
+            proteins: "Nrf2, AMPK, Keap1",
+            mechanism: "支持正常抗氧化能力",
+            support: "支持健康老化、支持免疫"
+          },
+          {
+            name: "EPA + DHA",
+            components: "EPA, DHA",
+            proteins: "PPARα, PPARγ, Resolvin, Protectin",
+            mechanism: "支持正常發炎調節",
+            support: "支持心血管、支持腦部、支持免疫"
+          },
+          {
+            name: "維生素C + 鋅",
+            components: "Vitamin C, Zinc",
+            proteins: "Collagen Enzyme, DNA Repair Enzyme, Zinc Finger Protein",
+            mechanism: "支持正常免疫功能",
+            support: "支持免疫、支持傷口修復"
+          },
+          {
+            name: "NAC",
+            components: "Glutathione",
+            proteins: "GPx, GST",
+            mechanism: "支持穀胱甘肽生成",
+            support: "支持肝臟、支持抗氧化"
+          },
+          {
+            name: "粒線寶",
+            components: "植物多酚",
+            proteins: "AMPK, PGC-1α, SIRT1",
+            mechanism: "支持粒線體功能",
+            support: "支持精神、支持恢復、支持耐力"
+          },
+          {
+            name: "憂遁草 | Sauropus androgynus",
+            components: "葉綠素、維生素A、B、C、K、礦物質 | Chlorophyll, Vitamins A, B, C, K, Minerals",
+            proteins: "T cell cofactors, Antioxidant enzymes, Immune cell support",
+            mechanism: "支持正常免疫功能 | Support normal immune function",
+            support: "支持Th1細胞功能、支持CD8+ T細胞活化、支持NK細胞功能 | Support Th1 function, CD8+ T cell activation, NK cell function",
+            special: true
+          }
+        ]
+      },
+      {
+        volume: 8,
+        title: "Metabolic Reprogramming OS",
+        chinese: "代謝重編程",
+        english: "Metabolic Reprogramming",
+        simpleExplain: "正常細胞就像油電混合車。有氧氣時。主要使用粒線體發電。效率很高。癌細胞卻改變策略。即使氧氣充足。仍然大量使用葡萄糖快速發酵。這就是Warburg Effect。癌細胞犧牲效率。換取更快的生長速度。 | The Warburg effect: cancer cells preferentially use glycolysis even with oxygen present, producing lactate instead of maximizing ATP. This is less efficient but faster for rapid growth.",
+        pathways: [
+          "PI3K → AKT → mTOR",
+          "HIF-1α → GLUT1 → Glucose Uptake",
+          "MYC → Glycolysis",
+          "AMPK → Energy Sensor",
+          "LDHA → Lactate",
+          "PKM2 → Glycolysis"
+        ],
+        nutrients: [
+          {
+            name: "粒線寶",
+            components: "植物多酚",
+            proteins: "PGC-1α, AMPK, SIRT1, Nrf2",
+            mechanism: "支持粒線體功能",
+            support: "支持精神、支持耐力、支持恢復能力"
+          },
+          {
+            name: "能量方 | Energy Formula",
+            components: "冬蟲夏草、五味子 | Cordyceps, Schisandra",
+            proteins: "AMPK, PGC-1α, TFAM",
+            mechanism: "支持粒線體新生",
+            support: "支持疲勞恢復、支持活力、支持體力"
+          },
+          {
+            name: "B群 | B Complex",
+            components: "B1, B2, B3, B5, B6, B9, B12",
+            proteins: "Pyruvate Dehydrogenase, TCA Cycle, Electron Transport Chain",
+            mechanism: "支持醣類代謝",
+            support: "支持神經、支持代謝、支持精神"
+          },
+          {
+            name: "甘胺酸鎂 | Magnesium Glycinate",
+            components: "Magnesium | 鎂",
+            proteins: "ATP Synthase, Mg-ATP Complex",
+            mechanism: "支持ATP活化",
+            support: "支持睡眠、支持神經、支持肌肉"
+          },
+          {
+            name: "美寶（EGCG）",
+            components: "EGCG",
+            proteins: "AMPK, Nrf2, Keap1",
+            mechanism: "支持正常抗氧化能力",
+            support: "支持健康老化、支持免疫"
+          },
+          {
+            name: "EPA + DHA",
+            components: "EPA, DHA",
+            proteins: "PPARα, PPARγ, Resolvin, Protectin",
+            mechanism: "支持正常發炎調節",
+            support: "支持心血管、支持腦部、支持免疫"
+          },
+          {
+            name: "NAC",
+            components: "Glutathione",
+            proteins: "GPx, GST",
+            mechanism: "支持穀胱甘肽生成",
+            support: "支持肝臟、支持抗氧化"
+          },
+          {
+            name: "憂遁草 | Sauropus androgynus",
+            components: "多種維生素B、礦物質、葉綠素 | B vitamins, Minerals, Chlorophyll",
+            proteins: "Metabolic cofactors, Energy enzyme support",
+            mechanism: "支持正常能量代謝 | Support normal energy metabolism",
+            support: "支持粒線體氧化磷酸化、支持正常代謝速率、支持血糖穩定 | Support mitochondrial oxidative phosphorylation, metabolic efficiency, glucose stability",
+            special: true
+          }
+        ]
+      },
+      {
+        volume: 9,
+        title: "Genome Instability OS",
+        chinese: "基因體不穩定與突變",
+        english: "Genome Instability & Mutation",
+        simpleExplain: "人體每天都有DNA受傷。曬太陽、抽菸、自由基、發炎、病毒都可能讓DNA受傷。正常細胞有一整套修理工。每天修復DNA。如果修不好。細胞就停止分裂。甚至自己死亡。癌細胞最大的能力之一。就是DNA一直出錯。修不好。卻還能一直活著。 | Cancer cells accumulate mutations by losing DNA repair capacity (BRCA, ATM, ATR, TP53 mutations). They can't fix damage properly but still survive and divide, acquiring more mutations.",
+        pathways: [
+          "DNA Damage → ATM → CHK2 → TP53 → Cell Cycle Arrest",
+          "DNA Damage → ATR → CHK1 → DNA Repair",
+          "BRCA1 → Homologous Recombination",
+          "BRCA2 → Double Strand Break Repair",
+          "PARP → Single Strand Break Repair"
+        ],
+        nutrients: [
+          {
+            name: "維生素C + 鋅",
+            components: "Vitamin C, Zinc",
+            proteins: "Collagen Enzyme, DNA Repair Enzyme, Zinc Finger Protein",
+            mechanism: "支持DNA修復相關正常生理功能",
+            support: "支持免疫、支持傷口修復、支持牙齦健康"
+          },
+          {
+            name: "美寶（EGCG）",
+            components: "EGCG",
+            proteins: "Nrf2, AMPK, Keap1",
+            mechanism: "支持正常抗氧化能力",
+            support: "支持健康老化、支持正常免疫"
+          },
+          {
+            name: "NAC",
+            components: "Glutathione",
+            proteins: "GPx, GST",
+            mechanism: "支持穀胱甘肽生成",
+            support: "支持肝臟、支持抗氧化"
+          },
+          {
+            name: "粒線寶",
+            components: "植物多酚",
+            proteins: "AMPK, PGC-1α, SIRT1",
+            mechanism: "支持粒線體功能",
+            support: "支持精神、支持耐力、支持恢復"
+          },
+          {
+            name: "EPA + DHA",
+            components: "EPA, DHA",
+            proteins: "PPARα, PPARγ, Resolvin, Protectin",
+            mechanism: "支持正常發炎調節",
+            support: "支持心血管、支持腦部、支持正常免疫"
+          },
+          {
+            name: "B群",
+            components: "B1, B2, B3, B5, B6, B9, B12",
+            proteins: "One-carbon Metabolism, Methionine Cycle, DNA Synthesis",
+            mechanism: "支持核酸正常合成",
+            support: "支持神經、支持代謝、支持造血"
+          },
+          {
+            name: "憂遁草 | Sauropus androgynus",
+            components: "葉酸、維生素C、B群、礦物質 | Folate, Vitamin C, B vitamins, Minerals",
+            proteins: "DNA synthesis enzymes, One-carbon metabolism, Repair enzyme cofactors",
+            mechanism: "支持正常DNA修復相關生理功能 | Support normal DNA repair function",
+            support: "支持細胞防禦基因穩定性、支持核苷酸合成、支持葉酸循環 | Support genetic stability, nucleotide synthesis, folate cycle",
+            special: true
+          }
+        ]
+      },
+      {
+        volume: 10,
+        title: "Tumor-promoting Inflammation OS",
+        chinese: "促癌性慢性發炎",
+        english: "Tumor-promoting Inflammation",
+        simpleExplain: "發炎本來是好事。受傷時。免疫細胞會來修復。傷口好了。發炎就結束。癌細胞卻讓發炎永遠無法停止。它每天製造很多發炎訊號。吸引免疫細胞。卻不是修復身體。而是在幫助癌細胞生長。 | Cancer-promoting inflammation: NF-κB and STAT3 drive continuous cytokine production (IL-6, TNF-α, IL-1β), creating a microenvironment that supports tumor growth, blood vessel formation, and immune suppression.",
+        pathways: [
+          "NF-κB → IL-6 → STAT3",
+          "NF-κB → TNF-α",
+          "COX-2 → PGE2",
+          "IL-1β → Inflammation",
+          "ROS → DNA Damage",
+          "TAM → Tumor Support",
+          "MDSC → Immune Suppression"
+        ],
+        nutrients: [
+          {
+            name: "EPA + DHA",
+            components: "EPA, DHA",
+            proteins: "PPARα, PPARγ, Resolvin, Protectin, Maresin",
+            mechanism: "支持正常發炎反應調節",
+            support: "支持心血管、支持腦部、支持免疫"
+          },
+          {
+            name: "美寶（EGCG）",
+            components: "EGCG",
+            proteins: "Nrf2, AMPK, Keap1",
+            mechanism: "支持正常抗氧化能力",
+            support: "支持健康老化、支持正常免疫"
+          },
+          {
+            name: "NAC",
+            components: "Glutathione",
+            proteins: "GPx, GST",
+            mechanism: "支持穀胱甘肽生成",
+            support: "支持肝臟、支持抗氧化"
+          },
+          {
+            name: "丁酸鈉（腸寶）",
+            components: "Butyrate",
+            proteins: "HDAC, GPR41, GPR43",
+            mechanism: "支持腸道屏障",
+            support: "支持腸道、支持免疫、支持修復"
+          },
+          {
+            name: "孢子益生菌",
+            components: "Bacillus Species",
+            proteins: "Gut Microbiome, SCFA",
+            mechanism: "支持菌相平衡",
+            support: "支持消化、支持免疫"
+          },
+          {
+            name: "粒線寶",
+            components: "植物多酚",
+            proteins: "AMPK, PGC-1α, SIRT1",
+            mechanism: "支持粒線體功能",
+            support: "支持精神、支持耐力、支持恢復"
+          },
+          {
+            name: "維生素C + 鋅",
+            components: "Vitamin C, Zinc",
+            proteins: "DNA Repair Enzyme, Collagen Enzyme",
+            mechanism: "支持正常免疫功能",
+            support: "支持傷口修復、支持免疫"
+          },
+          {
+            name: "憂遁草 | Sauropus androgynus",
+            components: "葉綠素、多酚、多種維生素、礦物質 | Chlorophyll, Polyphenols, Vitamins, Minerals",
+            proteins: "Anti-inflammatory enzyme support, NF-κB pathway modulators",
+            mechanism: "支持正常發炎反應終止 | Support normal inflammation resolution",
+            support: "支持急性發炎正常終止機制、支持慢性發炎管理、支持氧化還原平衡 | Support acute inflammation resolution, chronic inflammation management, redox balance",
+            special: true
+          }
+        ]
+      },
+      {
+        volume: 11,
+        title: "Phenotypic Plasticity OS",
+        chinese: "細胞表型可塑性",
+        english: "Phenotypic Plasticity",
+        simpleExplain: "正常細胞出生後。身份幾乎固定。肝細胞就是肝細胞。肺細胞就是肺細胞。癌細胞卻不同。它可以一直改變身份。今天像上皮細胞。明天像間質細胞。後天又變回來。甚至變成癌幹細胞。因此越來越難治療。 | Cancer cells have high plasticity - they can switch between epithelial and mesenchymal states, adopt cancer stem cell phenotypes, and change identity to evade treatment.",
+        pathways: [
+          "TGF-β → EMT",
+          "Wnt → β-catenin → Stemness",
+          "Notch → Stem Cell Maintenance",
+          "Hedgehog → Stem Cell Renewal",
+          "Hippo → YAP → Cell Plasticity",
+          "SOX2, OCT4, NANOG → Cancer Stem Cell"
+        ],
+        nutrients: [
+          {
+            name: "粒線寶",
+            components: "植物多酚",
+            proteins: "AMPK, PGC-1α, SIRT1",
+            mechanism: "支持粒線體功能",
+            support: "支持精神、支持恢復、支持耐力"
+          },
+          {
+            name: "美寶（EGCG）",
+            components: "EGCG",
+            proteins: "AMPK, Nrf2, Keap1",
+            mechanism: "支持正常抗氧化能力",
+            support: "支持正常免疫、支持健康老化"
+          },
+          {
+            name: "EPA + DHA",
+            components: "EPA, DHA",
+            proteins: "PPARα, PPARγ, Resolvin",
+            mechanism: "支持正常發炎調節",
+            support: "支持心血管、支持腦部、支持免疫"
+          },
+          {
+            name: "NAC",
+            components: "Glutathione",
+            proteins: "GPx, GST",
+            mechanism: "支持穀胱甘肽生成",
+            support: "支持肝臟、支持抗氧化"
+          },
+          {
+            name: "維生素C + 鋅",
+            components: "Vitamin C, Zinc",
+            proteins: "DNA Repair Enzyme, Collagen Enzyme",
+            mechanism: "支持正常DNA修復",
+            support: "支持傷口修復、支持免疫"
+          },
+          {
+            name: "丁酸鈉（腸寶）",
+            components: "Butyrate",
+            proteins: "HDAC, GPR43",
+            mechanism: "支持腸道屏障",
+            support: "支持腸道、支持免疫、支持修復"
+          },
+          {
+            name: "憂遁草 | Sauropus androgynus",
+            components: "葉綠素、多種維生素、礦物質 | Chlorophyll, Vitamins, Minerals",
+            proteins: "Differentiation enzyme cofactors, Cell identity stabilizers",
+            mechanism: "支持正常細胞分化 | Support normal cell differentiation",
+            support: "支持細胞分化穩定、支持正常的細胞身份、支持幹細胞正常分化 | Support differentiation stability, normal cell identity, stem cell differentiation",
+            special: true
+          }
+        ]
+      },
+      {
+        volume: 12,
+        title: "Microbiome Interaction OS",
+        chinese: "腸道菌相與宿主交互作用",
+        english: "Microbiome Interaction",
+        simpleExplain: "人體不是只有人類細胞。身體裡還住著數十兆微生物。它們每天幫助消化。製造維生素。訓練免疫。保護腸道。癌細胞卻會改變菌相。讓壞菌增加。讓腸漏增加。讓慢性發炎增加。 | Your gut contains trillions of microbes. Cancer cells exploit dysbiosis (microbial imbalance), increasing Gram-negative bacteria that produce LPS, promoting inflammation and weakening the immune response.",
+        pathways: [
+          "Gut Microbiome → SCFA → Immune Homeostasis",
+          "Butyrate → HDAC → Gene Regulation",
+          "Gut Barrier → Tight Junction → Intestinal Integrity",
+          "LPS → TLR4 → NF-κB",
+          "Microbiome → Bile Acid → Metabolism"
+        ],
+        nutrients: [
+          {
+            name: "丁酸鈉（腸寶）",
+            components: "Butyrate",
+            proteins: "HDAC, GPR41, GPR43, Foxp3",
+            mechanism: "支持腸道屏障",
+            support: "支持腸道、支持免疫、支持修復"
+          },
+          {
+            name: "孢子益生菌",
+            components: "Bacillus Species",
+            proteins: "Gut Microbiome, SCFA",
+            mechanism: "支持菌相平衡",
+            support: "支持消化、支持免疫、支持腸道健康"
+          },
+          {
+            name: "5R腸胃配方 | Gut Healing Formula",
+            components: "麩醯胺酸等腸道營養素 | Glutamine, gut nutrients",
+            proteins: "Tight Junction, Intestinal Epithelium",
+            mechanism: "支持腸黏膜健康",
+            support: "支持消化、支持腸道、支持修復"
+          },
+          {
+            name: "美寶（EGCG）",
+            components: "EGCG",
+            proteins: "Nrf2, AMPK, Keap1",
+            mechanism: "支持正常抗氧化能力",
+            support: "支持正常免疫、支持健康老化"
+          },
+          {
+            name: "EPA + DHA",
+            components: "EPA, DHA",
+            proteins: "PPARα, PPARγ, Resolvin, Protectin",
+            mechanism: "支持正常發炎調節",
+            support: "支持心血管、支持腦部、支持免疫"
+          },
+          {
+            name: "NAC",
+            components: "Glutathione",
+            proteins: "GPx, GST",
+            mechanism: "支持穀胱甘肽生成",
+            support: "支持肝臟、支持抗氧化"
+          },
+          {
+            name: "粒線寶",
+            components: "植物多酚",
+            proteins: "AMPK, PGC-1α, SIRT1",
+            mechanism: "支持粒線體功能",
+            support: "支持精神、支持耐力、支持恢復"
+          },
+          {
+            name: "憂遁草 | Sauropus androgynus",
+            components: "葉綠素、多種維生素、礦物質、纖維 | Chlorophyll, Vitamins, Minerals, Fiber",
+            proteins: "Gut microbiome modulators, Intestinal barrier support, Nutrient absorption",
+            mechanism: "支持正常菌相生態 | Support normal microbiome ecology",
+            support: "支持腸道通透性正常、支持好菌生長環境、支持腸-免疫軸健康 | Support barrier function, beneficial bacteria growth, gut-immune axis health",
+            special: true
+          }
+        ]
+      }
+    ];
+
+    function initializeApp() {
+      renderTableOfContents();
+      renderContent();
+      setupEventListeners();
+    }
+
+    function renderTableOfContents() {
+      const toc = document.getElementById('tableOfContents');
+      toc.innerHTML = hallmarksData.map((h, idx) => 
+        `<li onclick="scrollToHallmark(${idx})">${h.volume}. ${h.chinese} | ${h.english}</li>`
+      ).join('');
+    }
+
+    function renderContent() {
+      const container = document.getElementById('contentContainer');
+      container.innerHTML = hallmarksData.map((hallmark, idx) => `
+        <div class="content-area" data-hallmark="${idx}">
+          <div class="hallmark-title">
+            <div>
+              <h2>${hallmark.chinese}</h2>
+              <p style="color: #666; font-size: 0.95em; margin-top: 5px;">${hallmark.english}</p>
+            </div>
+            <div class="volume-badge">Volume ${hallmark.volume}</div>
+            <button class="hallmark-title tts-btn" onclick="speakHallmark(${idx})" title="Read aloud (English)">🔊 Speak</button>
+          </div>
+
+          <div class="section">
+            <div class="section-title" onclick="toggleSection(this)">
+              國中白話說明 | Simple Explanation
+              <span class="arrow">▼</span>
+            </div>
+            <div class="section-content">
+              <p style="line-height: 2; font-size: 1em;">${hallmark.simpleExplain}</p>
+            </div>
+          </div>
+
+          <div class="section">
+            <div class="section-title" onclick="toggleSection(this)">
+              主要控制路徑 | Master Network Pathways
+              <span class="arrow">▼</span>
+            </div>
+            <div class="section-content">
+              <div class="protein-flow">
+                ${hallmark.pathways.join('<br>↓<br>')}
+              </div>
+            </div>
+          </div>
+
+          <div class="section">
+            <div class="section-title" onclick="toggleSection(this)">
+              精準營養對應 | Precision Nutrition (${hallmark.nutrients.length} items)
+              <span class="arrow">▼</span>
+            </div>
+            <div class="section-content">
+              <div class="nutrient-grid">
+                ${hallmark.nutrients.map((nutrient, nIdx) => `
+                  <div class="nutrient-card ${nutrient.special ? 'special' : ''}">
+                    <h4>
+                      ${nutrient.special ? '<span class="special-badge">✨ NEW</span>' : ''}
+                      ${nutrient.name}
+                    </h4>
+                    <div class="nutrient-detail">
+                      <strong>主要成分 | Components:</strong>
+                      ${nutrient.components}
+                    </div>
+                    <div class="nutrient-detail">
+                      <strong>作用蛋白 | Target Proteins:</strong>
+                      ${nutrient.proteins}
+                    </div>
+                    <div class="nutrient-detail">
+                      <strong>支持機制 | Mechanism:</strong>
+                      ${nutrient.mechanism}
+                    </div>
+                    <div class="nutrient-detail">
+                      <strong>人體支持 | Body Support:</strong>
+                      ${nutrient.support}
+                    </div>
+                  </div>
+                `).join('')}
+              </div>
+            </div>
+          </div>
+
+          ${hallmark.volume === 7 || hallmark.volume === 10 || hallmark.volume === 12 ? `
+            <div class="disclaimer">
+              <strong>⚠️ 重要聲明 | Important Disclaimer:</strong><br>
+              本應用內容僅供教育參考。任何營養素皆無法取代癌症標準醫學治療。憂遁草（Sauropus androgynus）是營養補充食物，基於傳統食用歷史和初步研究，但尚需更多臨床驗證。建議所有癌症患者與醫療團隊密切合作。<br><br>
+              This content is for educational purposes only. No nutrient can replace standard cancer medical treatment. Sauropus androgynus is a nutritional food based on traditional use and preliminary research, but requires further clinical validation. All cancer patients should work closely with their medical team.
+            </div>
+          ` : ''}
+        </div>
+      `).join('');
+    }
+
+    function toggleSection(element) {
+      const content = element.nextElementSibling;
+      element.classList.toggle('collapsed');
+      content.classList.toggle('active');
+    }
+
+    function scrollToHallmark(idx) {
+      const element = document.querySelector(`[data-hallmark="${idx}"]`);
+      element.classList.add('active');
+      element.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      document.querySelectorAll('.content-area').forEach((e, i) => {
+        if (i !== idx) e.classList.remove('active');
+      });
+    }
+
+    function speakHallmark(idx) {
+      const hallmark = hallmarksData[idx];
+      const text = `Volume ${hallmark.volume}. ${hallmark.english}. ${hallmark.definitions.english}. ${hallmark.simpleExplain.split('|')[1]}`;
+      if ('speechSynthesis' in window) {
+        window.speechSynthesis.cancel();
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.lang = 'en-US';
+        utterance.rate = 0.9;
+        window.speechSynthesis.speak(utterance);
+      }
+    }
+
+    function expandAll() {
+      document.querySelectorAll('.section-content').forEach(e => {
+        e.classList.add('active');
+        e.previousElementSibling.classList.remove('collapsed');
+      });
+    }
+
+    function collapseAll() {
+      document.querySelectorAll('.section-content').forEach(e => {
+        e.classList.remove('active');
+        e.previousElementSibling.classList.add('collapsed');
+      });
+    }
+
+    function setupEventListeners() {
+      document.getElementById('searchBox').addEventListener('input', function(e) {
+        const query = e.target.value.toLowerCase();
+        document.querySelectorAll('[data-hallmark]').forEach(hallmark => {
+          const text = hallmark.textContent.toLowerCase();
+          hallmark.style.display = text.includes(query) ? 'block' : 'none';
+        });
+      });
+
+      // Auto-open first hallmark
+      document.querySelector('[data-hallmark="0"]').classList.add('active');
+    }
+
+    document.addEventListener('DOMContentLoaded', initializeApp);
+  </script>
+</body>
+</html>
