@@ -1,0 +1,1291 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Health Life OS | 健康生活作業系統</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        :root {
+            --navy: #1A2B5F;
+            --gold: #C9960C;
+            --teal: #0A7A72;
+            --cream: #FAF6EE;
+            --light-bg: #F5F1E8;
+        }
+        
+        body {
+            font-family: 'Microsoft JhengHei', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background-color: white;
+            color: var(--navy);
+            line-height: 1.8;
+            font-size: 18px;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            background: linear-gradient(135deg, var(--navy) 0%, var(--teal) 100%);
+            color: white;
+            padding: 40px 20px;
+            margin: -20px -20px 40px -20px;
+            text-align: center;
+            border-bottom: 4px solid var(--gold);
+        }
+        
+        header h1 {
+            font-size: 48px;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+        
+        header .subtitle {
+            font-size: 22px;
+            opacity: 0.95;
+            margin-bottom: 20px;
+        }
+        
+        .purchase-banner {
+            background-color: var(--gold);
+            color: white;
+            padding: 20px;
+            margin-bottom: 30px;
+            border-radius: 8px;
+            text-align: center;
+            font-weight: 600;
+        }
+        
+        .purchase-banner a {
+            color: white;
+            text-decoration: underline;
+            font-weight: 700;
+        }
+        
+        .nav-tabs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 30px;
+            border-bottom: 2px solid var(--teal);
+            padding-bottom: 20px;
+        }
+        
+        .nav-tabs button {
+            background-color: white;
+            border: 2px solid var(--teal);
+            color: var(--teal);
+            padding: 12px 20px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-tabs button.active {
+            background-color: var(--teal);
+            color: white;
+        }
+        
+        .nav-tabs button:hover {
+            background-color: var(--teal);
+            color: white;
+        }
+        
+        .model-section {
+            display: none;
+        }
+        
+        .model-section.active {
+            display: block;
+        }
+        
+        .model-card {
+            background-color: var(--light-bg);
+            border-left: 5px solid var(--gold);
+            padding: 25px;
+            margin-bottom: 25px;
+            border-radius: 8px;
+        }
+        
+        .model-number {
+            color: var(--gold);
+            font-weight: 700;
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+        
+        .model-title {
+            font-size: 32px;
+            color: var(--navy);
+            margin-bottom: 15px;
+            font-weight: 700;
+        }
+        
+        .definition-box {
+            background-color: white;
+            border: 2px solid var(--teal);
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 6px;
+            font-size: 18px;
+            line-height: 1.9;
+        }
+        
+        .definition-box .label {
+            color: var(--teal);
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+        
+        .expandable {
+            margin-bottom: 20px;
+        }
+        
+        .expand-header {
+            background-color: white;
+            border: 2px solid var(--navy);
+            padding: 18px;
+            cursor: pointer;
+            user-select: none;
+            border-radius: 6px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: 600;
+            font-size: 18px;
+            transition: all 0.3s ease;
+        }
+        
+        .expand-header:hover {
+            background-color: var(--light-bg);
+            border-color: var(--gold);
+        }
+        
+        .expand-header.open {
+            background-color: var(--navy);
+            color: white;
+            border-color: var(--navy);
+        }
+        
+        .expand-icon {
+            font-size: 20px;
+            font-weight: 700;
+        }
+        
+        .expand-content {
+            display: none;
+            background-color: white;
+            padding: 25px;
+            border: 2px solid var(--navy);
+            border-top: none;
+            border-radius: 0 0 6px 6px;
+            margin-bottom: 5px;
+        }
+        
+        .expand-content.open {
+            display: block;
+        }
+        
+        .wisdom-list, .node-list, .strategy-list {
+            list-style: none;
+        }
+        
+        .wisdom-list li, .node-list li, .strategy-list li {
+            padding: 12px 0;
+            border-bottom: 1px solid #e0e0e0;
+            display: flex;
+            gap: 15px;
+        }
+        
+        .wisdom-list li:last-child, .node-list li:last-child, .strategy-list li:last-child {
+            border-bottom: none;
+        }
+        
+        .wisdom-list li::before {
+            content: attr(data-num);
+            color: var(--gold);
+            font-weight: 700;
+            min-width: 40px;
+            flex-shrink: 0;
+        }
+        
+        .node-list li::before {
+            content: attr(data-num);
+            color: var(--teal);
+            font-weight: 700;
+            min-width: 40px;
+            flex-shrink: 0;
+        }
+        
+        .strategy-list li::before {
+            content: attr(data-num);
+            color: var(--navy);
+            font-weight: 700;
+            min-width: 40px;
+            flex-shrink: 0;
+        }
+        
+        .supplement-section {
+            background-color: var(--light-bg);
+            border: 2px solid var(--gold);
+            padding: 25px;
+            margin-top: 30px;
+            border-radius: 8px;
+        }
+        
+        .supplement-section h3 {
+            color: var(--gold);
+            margin-bottom: 15px;
+            font-size: 22px;
+        }
+        
+        .supplement-item {
+            background-color: white;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-left: 4px solid var(--teal);
+            border-radius: 4px;
+        }
+        
+        .supplement-item strong {
+            color: var(--navy);
+        }
+        
+        .stars {
+            color: var(--gold);
+            font-size: 14px;
+        }
+        
+        .speaker-btn {
+            background-color: var(--teal);
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            margin-left: 10px;
+            transition: all 0.3s ease;
+        }
+        
+        .speaker-btn:hover {
+            background-color: var(--navy);
+        }
+        
+        .bilingual {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .zh, .en {
+            flex: 1;
+            min-width: 200px;
+        }
+        
+        .en {
+            font-size: 16px;
+            color: #666;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 30px 20px;
+            color: #999;
+            border-top: 2px solid var(--teal);
+            margin-top: 50px;
+            font-size: 16px;
+        }
+        
+        .divider {
+            border: none;
+            border-top: 2px solid var(--gold);
+            margin: 30px 0;
+        }
+        
+        @media (max-width: 768px) {
+            .model-title {
+                font-size: 24px;
+            }
+            
+            header h1 {
+                font-size: 32px;
+            }
+            
+            .nav-tabs {
+                flex-direction: column;
+            }
+            
+            .nav-tabs button {
+                width: 100%;
+            }
+            
+            body {
+                font-size: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🌿 Health Life OS</h1>
+            <div class="subtitle">健康生活作業系統｜Your Complete Health Operating System</div>
+        </header>
+        
+        <div class="purchase-banner">
+            📌 限時團購｜團購營養素方案完整對應：
+            <a href="https://myship.7-11.com.tw/general/detail/GM2407210007294" target="_blank">
+                👉 前往 7-ELEVEN myship 團購
+            </a>
+        </div>
+        
+        <div class="nav-tabs" id="navTabs"></div>
+        
+        <!-- Volume 1 Models 001-003 -->
+        <div id="vol1" class="model-section active">
+            <!-- Model 001 -->
+            <div class="model-card">
+                <div class="model-number">VOLUME 1｜卷1</div>
+                <div class="model-title">001 身體預算模型</div>
+                <div class="model-title" style="font-size: 20px; color: var(--teal);">Body Budget Model</div>
+                
+                <div class="definition-box">
+                    <div class="label">【一句話定義 | One-Line Definition】</div>
+                    <div>健康不是沒有疾病。健康是身體每天都有足夠預算維持穩態。</div>
+                    <div class="en" style="margin-top: 10px;">Health is not the absence of disease. Health is when your body has enough resources to maintain stability every day.</div>
+                </div>
+                
+                <div class="expandable">
+                    <div class="expand-header" onclick="toggleExpand(this)">
+                        <span>【核心智慧30 | 30 Core Wisdoms】</span>
+                        <span class="expand-icon">+</span>
+                    </div>
+                    <div class="expand-content">
+                        <ul class="wisdom-list" id="m001-wisdom"></ul>
+                    </div>
+                </div>
+                
+                <div class="expandable">
+                    <div class="expand-header" onclick="toggleExpand(this)">
+                        <span>【核心節點30 | 30 Core Nodes】</span>
+                        <span class="expand-icon">+</span>
+                    </div>
+                    <div class="expand-content">
+                        <ul class="node-list" id="m001-nodes"></ul>
+                    </div>
+                </div>
+                
+                <div class="expandable">
+                    <div class="expand-header" onclick="toggleExpand(this)">
+                        <span>【優化策略30 | 30 Optimization Strategies】</span>
+                        <span class="expand-icon">+</span>
+                    </div>
+                    <div class="expand-content">
+                        <ul class="strategy-list" id="m001-strategies"></ul>
+                    </div>
+                </div>
+                
+                <div class="supplement-section">
+                    <h3>📋 對應營養素方案 | Supplement Plan</h3>
+                    <div style="margin-bottom: 10px;"><strong>核心問題 | Core Issue:</strong> 身體每天收入小於支出</div>
+                    <div id="supp001"></div>
+                </div>
+            </div>
+            
+            <hr class="divider">
+            
+            <!-- Model 002 -->
+            <div class="model-card">
+                <div class="model-number">VOLUME 1｜卷1</div>
+                <div class="model-title">002 穩態模型</div>
+                <div class="model-title" style="font-size: 20px; color: var(--teal);">Homeostasis Model</div>
+                
+                <div class="definition-box">
+                    <div class="label">【一句話定義 | One-Line Definition】</div>
+                    <div>健康不是固定不變。健康是身體持續回到平衡。</div>
+                    <div class="en" style="margin-top: 10px;">Health is not static. Health is your body continuously returning to balance.</div>
+                </div>
+                
+                <div class="expandable">
+                    <div class="expand-header" onclick="toggleExpand(this)">
+                        <span>【核心智慧30 | 30 Core Wisdoms】</span>
+                        <span class="expand-icon">+</span>
+                    </div>
+                    <div class="expand-content">
+                        <ul class="wisdom-list" id="m002-wisdom"></ul>
+                    </div>
+                </div>
+                
+                <div class="expandable">
+                    <div class="expand-header" onclick="toggleExpand(this)">
+                        <span>【核心節點30 | 30 Core Nodes】</span>
+                        <span class="expand-icon">+</span>
+                    </div>
+                    <div class="expand-content">
+                        <ul class="node-list" id="m002-nodes"></ul>
+                    </div>
+                </div>
+                
+                <div class="expandable">
+                    <div class="expand-header" onclick="toggleExpand(this)">
+                        <span>【優化策略30 | 30 Optimization Strategies】</span>
+                        <span class="expand-icon">+</span>
+                    </div>
+                    <div class="expand-content">
+                        <ul class="strategy-list" id="m002-strategies"></ul>
+                    </div>
+                </div>
+                
+                <div class="supplement-section">
+                    <h3>📋 對應營養素方案 | Supplement Plan</h3>
+                    <div style="margin-bottom: 10px;"><strong>核心問題 | Core Issue:</strong> 身體無法維持平衡</div>
+                    <div id="supp002"></div>
+                </div>
+            </div>
+            
+            <hr class="divider">
+            
+            <!-- Model 003 -->
+            <div class="model-card">
+                <div class="model-number">VOLUME 1｜卷1</div>
+                <div class="model-title">003 異態平衡模型</div>
+                <div class="model-title" style="font-size: 20px; color: var(--teal);">Allostasis Model</div>
+                
+                <div class="definition-box">
+                    <div class="label">【一句話定義 | One-Line Definition】</div>
+                    <div>健康不是永遠維持固定。健康是根據環境持續調整，最後再回到穩定。</div>
+                    <div class="en" style="margin-top: 10px;">Health is not staying fixed. Health is continuously adapting to your environment, then returning to stability.</div>
+                </div>
+                
+                <div class="expandable">
+                    <div class="expand-header" onclick="toggleExpand(this)">
+                        <span>【核心智慧30 | 30 Core Wisdoms】</span>
+                        <span class="expand-icon">+</span>
+                    </div>
+                    <div class="expand-content">
+                        <ul class="wisdom-list" id="m003-wisdom"></ul>
+                    </div>
+                </div>
+                
+                <div class="expandable">
+                    <div class="expand-header" onclick="toggleExpand(this)">
+                        <span>【核心節點30 | 30 Core Nodes】</span>
+                        <span class="expand-icon">+</span>
+                    </div>
+                    <div class="expand-content">
+                        <ul class="node-list" id="m003-nodes"></ul>
+                    </div>
+                </div>
+                
+                <div class="expandable">
+                    <div class="expand-header" onclick="toggleExpand(this)">
+                        <span>【優化策略30 | 30 Optimization Strategies】</span>
+                        <span class="expand-icon">+</span>
+                    </div>
+                    <div class="expand-content">
+                        <ul class="strategy-list" id="m003-strategies"></ul>
+                    </div>
+                </div>
+                
+                <div class="supplement-section">
+                    <h3>📋 對應營養素方案 | Supplement Plan</h3>
+                    <div style="margin-bottom: 10px;"><strong>核心問題 | Core Issue:</strong> 適應能力下降</div>
+                    <div id="supp003"></div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Volume 2 Models 004-006 -->
+        <div id="vol2" class="model-section">
+            <!-- Model 004 -->
+            <div class="model-card">
+                <div class="model-number">VOLUME 2｜卷2</div>
+                <div class="model-title">004 修復模型</div>
+                <div class="model-title" style="font-size: 20px; color: var(--teal);">Repair Model</div>
+                
+                <div class="definition-box">
+                    <div class="label">【一句話定義 | One-Line Definition】</div>
+                    <div>真正的健康不是沒有受傷。而是每天都有能力修復。</div>
+                    <div class="en" style="margin-top: 10px;">True health is not being unharmed. It's having the ability to repair every day.</div>
+                </div>
+                
+                <div class="expandable">
+                    <div class="expand-header" onclick="toggleExpand(this)">
+                        <span>【核心智慧30 | 30 Core Wisdoms】</span>
+                        <span class="expand-icon">+</span>
+                    </div>
+                    <div class="expand-content">
+                        <ul class="wisdom-list" id="m004-wisdom"></ul>
+                    </div>
+                </div>
+                
+                <div class="expandable">
+                    <div class="expand-header" onclick="toggleExpand(this)">
+                        <span>【核心節點30 | 30 Core Nodes】</span>
+                        <span class="expand-icon">+</span>
+                    </div>
+                    <div class="expand-content">
+                        <ul class="node-list" id="m004-nodes"></ul>
+                    </div>
+                </div>
+                
+                <div class="expandable">
+                    <div class="expand-header" onclick="toggleExpand(this)">
+                        <span>【優化策略30 | 30 Optimization Strategies】</span>
+                        <span class="expand-icon">+</span>
+                    </div>
+                    <div class="expand-content">
+                        <ul class="strategy-list" id="m004-strategies"></ul>
+                    </div>
+                </div>
+                
+                <div class="supplement-section">
+                    <h3>📋 對應營養素方案 | Supplement Plan</h3>
+                    <div style="margin-bottom: 10px;"><strong>核心問題 | Core Issue:</strong> 修復速度小於受傷速度</div>
+                    <div id="supp004"></div>
+                </div>
+            </div>
+            
+            <hr class="divider">
+            
+            <!-- Model 005 -->
+            <div class="model-card">
+                <div class="model-number">VOLUME 2｜卷2</div>
+                <div class="model-title">005 恢復模型</div>
+                <div class="model-title" style="font-size: 20px; color: var(--teal);">Recovery Model</div>
+                
+                <div class="definition-box">
+                    <div class="label">【一句話定義 | One-Line Definition】</div>
+                    <div>恢復不是休息。恢復是讓身體重新獲得能量與功能。</div>
+                    <div class="en" style="margin-top: 10px;">Recovery is not rest. Recovery is regaining energy and function.</div>
+                </div>
+                
+                <div class="expandable">
+                    <div class="expand-header" onclick="toggleExpand(this)">
+                        <span>【核心智慧30 | 30 Core Wisdoms】</span>
+                        <span class="expand-icon">+</span>
+                    </div>
+                    <div class="expand-content">
+                        <ul class="wisdom-list" id="m005-wisdom"></ul>
+                    </div>
+                </div>
+                
+                <div class="expandable">
+                    <div class="expand-header" onclick="toggleExpand(this)">
+                        <span>【核心節點30 | 30 Core Nodes】</span>
+                        <span class="expand-icon">+</span>
+                    </div>
+                    <div class="expand-content">
+                        <ul class="node-list" id="m005-nodes"></ul>
+                    </div>
+                </div>
+                
+                <div class="expandable">
+                    <div class="expand-header" onclick="toggleExpand(this)">
+                        <span>【優化策略30 | 30 Optimization Strategies】</span>
+                        <span class="expand-icon">+</span>
+                    </div>
+                    <div class="expand-content">
+                        <ul class="strategy-list" id="m005-strategies"></ul>
+                    </div>
+                </div>
+                
+                <div class="supplement-section">
+                    <h3>📋 對應營養素方案 | Supplement Plan</h3>
+                    <div style="margin-bottom: 10px;"><strong>核心問題 | Core Issue:</strong> 恢復速度不足</div>
+                    <div id="supp005"></div>
+                </div>
+            </div>
+            
+            <hr class="divider">
+            
+            <!-- Model 006 -->
+            <div class="model-card">
+                <div class="model-number">VOLUME 2｜卷2</div>
+                <div class="model-title">006 神經調節模型</div>
+                <div class="model-title" style="font-size: 20px; color: var(--teal);">Neural Regulation Model</div>
+                
+                <div class="definition-box">
+                    <div class="label">【一句話定義 | One-Line Definition】</div>
+                    <div>真正的健康，不是器官先恢復。而是神經系統先恢復。</div>
+                    <div class="en" style="margin-top: 10px;">True health is not about organs recovering first. It's about the nervous system recovering first.</div>
+                </div>
+                
+                <div class="expandable">
+                    <div class="expand-header" onclick="toggleExpand(this)">
+                        <span>【核心智慧30 | 30 Core Wisdoms】</span>
+                        <span class="expand-icon">+</span>
+                    </div>
+                    <div class="expand-content">
+                        <ul class="wisdom-list" id="m006-wisdom"></ul>
+                    </div>
+                </div>
+                
+                <div class="expandable">
+                    <div class="expand-header" onclick="toggleExpand(this)">
+                        <span>【核心節點30 | 30 Core Nodes】</span>
+                        <span class="expand-icon">+</span>
+                    </div>
+                    <div class="expand-content">
+                        <ul class="node-list" id="m006-nodes"></ul>
+                    </div>
+                </div>
+                
+                <div class="expandable">
+                    <div class="expand-header" onclick="toggleExpand(this)">
+                        <span>【優化策略30 | 30 Optimization Strategies】</span>
+                        <span class="expand-icon">+</span>
+                    </div>
+                    <div class="expand-content">
+                        <ul class="strategy-list" id="m006-strategies"></ul>
+                    </div>
+                </div>
+                
+                <div class="supplement-section">
+                    <h3>📋 對應營養素方案 | Supplement Plan</h3>
+                    <div style="margin-bottom: 10px;"><strong>核心問題 | Core Issue:</strong> 神經系統長期警戒</div>
+                    <div id="supp006"></div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Volume 3 Models 007-010 -->
+        <div id="vol3" class="model-section">
+            <!-- Model 007 -->
+            <div class="model-card">
+                <div class="model-number">VOLUME 3｜卷3</div>
+                <div class="model-title">007 自主神經模型</div>
+                <div class="model-title" style="font-size: 20px; color: var(--teal);">Autonomic Nervous System Model</div>
+                
+                <div class="definition-box">
+                    <div class="label">【一句話定義 | One-Line Definition】</div>
+                    <div>自主神經是身體的自動駕駛系統。</div>
+                    <div class="en" style="margin-top: 10px;">Your autonomic nervous system is your body's autopilot.</div>
+                </div>
+                
+                <div class="expandable">
+                    <div class="expand-header" onclick="toggleExpand(this)">
+                        <span>【核心智慧30 | 30 Core Wisdoms】</span>
+                        <span class="expand-icon">+</span>
+                    </div>
+                    <div class="expand-content">
+                        <ul class="wisdom-list" id="m007-wisdom"></ul>
+                    </div>
+                </div>
+                
+                <div class="expandable">
+                    <div class="expand-header" onclick="toggleExpand(this)">
+                        <span>【核心節點30 | 30 Core Nodes】</span>
+                        <span class="expand-icon">+</span>
+                    </div>
+                    <div class="expand-content">
+                        <ul class="node-list" id="m007-nodes"></ul>
+                    </div>
+                </div>
+                
+                <div class="expandable">
+                    <div class="expand-header" onclick="toggleExpand(this)">
+                        <span>【優化策略30 | 30 Optimization Strategies】</span>
+                        <span class="expand-icon">+</span>
+                    </div>
+                    <div class="expand-content">
+                        <ul class="strategy-list" id="m007-strategies"></ul>
+                    </div>
+                </div>
+                
+                <div class="supplement-section">
+                    <h3>📋 對應營養素方案 | Supplement Plan</h3>
+                    <div style="margin-bottom: 10px;"><strong>核心問題 | Core Issue:</strong> 交感、副交感失衡</div>
+                    <div id="supp007"></div>
+                </div>
+            </div>
+            
+            <hr class="divider">
+            
+            <!-- Model 008 -->
+            <div class="model-card">
+                <div class="model-number">VOLUME 3｜卷3</div>
+                <div class="model-title">008 副交感神經模型</div>
+                <div class="model-title" style="font-size: 20px; color: var(--teal);">Parasympathetic Model</div>
+                
+                <div class="definition-box">
+                    <div class="label">【一句話定義 | One-Line Definition】</div>
+                    <div>副交感神經是身體的修復模式。</div>
+                    <div class="en" style="margin-top: 10px;">Your parasympathetic nervous system is your body's repair mode.</div>
+                </div>
+                
+                <div class="expandable">
+                    <div class="expand-header" onclick="toggleExpand(this)">
+                        <span>【核心智慧30 | 30 Core Wisdoms】</span>
+                        <span class="expand-icon">+</span>
+                    </div>
+                    <div class="expand-content">
+                        <ul class="wisdom-list" id="m008-wisdom"></ul>
+                    </div>
+                </div>
+                
+                <div class="expandable">
+                    <div class="expand-header" onclick="toggleExpand(this)">
+                        <span>【核心節點30 | 30 Core Nodes】</span>
+                        <span class="expand-icon">+</span>
+                    </div>
+                    <div class="expand-content">
+                        <ul class="node-list" id="m008-nodes"></ul>
+                    </div>
+                </div>
+                
+                <div class="expandable">
+                    <div class="expand-header" onclick="toggleExpand(this)">
+                        <span>【優化策略30 | 30 Optimization Strategies】</span>
+                        <span class="expand-icon">+</span>
+                    </div>
+                    <div class="expand-content">
+                        <ul class="strategy-list" id="m008-strategies"></ul>
+                    </div>
+                </div>
+                
+                <div class="supplement-section">
+                    <h3>📋 對應營養素方案 | Supplement Plan</h3>
+                    <div style="margin-bottom: 10px;"><strong>核心問題 | Core Issue:</strong> 修復模式無法啟動</div>
+                    <div id="supp008"></div>
+                </div>
+            </div>
+            
+            <hr class="divider">
+            
+            <!-- Model 009 -->
+            <div class="model-card">
+                <div class="model-number">VOLUME 3｜卷3</div>
+                <div class="model-title">009 交感神經模型</div>
+                <div class="model-title" style="font-size: 20px; color: var(--teal);">Sympathetic Nervous System Model</div>
+                
+                <div class="definition-box">
+                    <div class="label">【一句話定義 | One-Line Definition】</div>
+                    <div>交感神經不是敵人。交感神經是身體面對挑戰的戰鬥模式。</div>
+                    <div class="en" style="margin-top: 10px;">Your sympathetic nervous system is not the enemy. It's your body's fight response to challenges.</div>
+                </div>
+                
+                <div class="expandable">
+                    <div class="expand-header" onclick="toggleExpand(this)">
+                        <span>【核心智慧30 | 30 Core Wisdoms】</span>
+                        <span class="expand-icon">+</span>
+                    </div>
+                    <div class="expand-content">
+                        <ul class="wisdom-list" id="m009-wisdom"></ul>
+                    </div>
+                </div>
+                
+                <div class="expandable">
+                    <div class="expand-header" onclick="toggleExpand(this)">
+                        <span>【核心節點30 | 30 Core Nodes】</span>
+                        <span class="expand-icon">+</span>
+                    </div>
+                    <div class="expand-content">
+                        <ul class="node-list" id="m009-nodes"></ul>
+                    </div>
+                </div>
+                
+                <div class="expandable">
+                    <div class="expand-header" onclick="toggleExpand(this)">
+                        <span>【優化策略30 | 30 Optimization Strategies】</span>
+                        <span class="expand-icon">+</span>
+                    </div>
+                    <div class="expand-content">
+                        <ul class="strategy-list" id="m009-strategies"></ul>
+                    </div>
+                </div>
+                
+                <div class="supplement-section">
+                    <h3>📋 對應營養素方案 | Supplement Plan</h3>
+                    <div style="margin-bottom: 10px;"><strong>核心問題 | Core Issue:</strong> 長期戰鬥模式</div>
+                    <div id="supp009"></div>
+                </div>
+            </div>
+            
+            <hr class="divider">
+            
+            <!-- Model 010 -->
+            <div class="model-card">
+                <div class="model-number">VOLUME 3｜卷3</div>
+                <div class="model-title">010 神經可塑性模型</div>
+                <div class="model-title" style="font-size: 20px; color: var(--teal);">Neuroplasticity Model</div>
+                
+                <div class="definition-box">
+                    <div class="label">【一句話定義 | One-Line Definition】</div>
+                    <div>大腦不是固定的。大腦每天都在重新連線。</div>
+                    <div class="en" style="margin-top: 10px;">Your brain is not fixed. It rewires itself every day.</div>
+                </div>
+                
+                <div class="expandable">
+                    <div class="expand-header" onclick="toggleExpand(this)">
+                        <span>【核心智慧30 | 30 Core Wisdoms】</span>
+                        <span class="expand-icon">+</span>
+                    </div>
+                    <div class="expand-content">
+                        <ul class="wisdom-list" id="m010-wisdom"></ul>
+                    </div>
+                </div>
+                
+                <div class="expandable">
+                    <div class="expand-header" onclick="toggleExpand(this)">
+                        <span>【核心節點30 | 30 Core Nodes】</span>
+                        <span class="expand-icon">+</span>
+                    </div>
+                    <div class="expand-content">
+                        <ul class="node-list" id="m010-nodes"></ul>
+                    </div>
+                </div>
+                
+                <div class="expandable">
+                    <div class="expand-header" onclick="toggleExpand(this)">
+                        <span>【優化策略30 | 30 Optimization Strategies】</span>
+                        <span class="expand-icon">+</span>
+                    </div>
+                    <div class="expand-content">
+                        <ul class="strategy-list" id="m010-strategies"></ul>
+                    </div>
+                </div>
+                
+                <div class="supplement-section">
+                    <h3>📋 對應營養素方案 | Supplement Plan</h3>
+                    <div style="margin-bottom: 10px;"><strong>核心問題 | Core Issue:</strong> 大腦更新速度下降</div>
+                    <div id="supp010"></div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Volume 4 Models 011-013 -->
+        <div id="vol4" class="model-section">
+            <!-- Model 011 -->
+            <div class="model-card">
+                <div class="model-number">VOLUME 4｜卷4</div>
+                <div class="model-title">011 睡眠模型</div>
+                <div class="model-title" style="font-size: 20px; color: var(--teal);">Sleep Model</div>
+                
+                <div class="definition-box">
+                    <div class="label">【一句話定義 | One-Line Definition】</div>
+                    <div>睡眠不是停止活動。睡眠是人體最大的修復工程。</div>
+                    <div class="en" style="margin-top: 10px;">Sleep is not stopping activity. Sleep is your body's biggest repair project.</div>
+                </div>
+                
+                <div class="expandable">
+                    <div class="expand-header" onclick="toggleExpand(this)">
+                        <span>【核心智慧30 | 30 Core Wisdoms】</span>
+                        <span class="expand-icon">+</span>
+                    </div>
+                    <div class="expand-content">
+                        <ul class="wisdom-list" id="m011-wisdom"></ul>
+                    </div>
+                </div>
+                
+                <div class="expandable">
+                    <div class="expand-header" onclick="toggleExpand(this)">
+                        <span>【核心節點30 | 30 Core Nodes】</span>
+                        <span class="expand-icon">+</span>
+                    </div>
+                    <div class="expand-content">
+                        <ul class="node-list" id="m011-nodes"></ul>
+                    </div>
+                </div>
+                
+                <div class="expandable">
+                    <div class="expand-header" onclick="toggleExpand(this)">
+                        <span>【優化策略30 | 30 Optimization Strategies】</span>
+                        <span class="expand-icon">+</span>
+                    </div>
+                    <div class="expand-content">
+                        <ul class="strategy-list" id="m011-strategies"></ul>
+                    </div>
+                </div>
+                
+                <div class="supplement-section">
+                    <h3>📋 對應營養素方案 | Supplement Plan</h3>
+                    <div style="margin-bottom: 10px;"><strong>核心問題 | Core Issue:</strong> 睡眠品質不足</div>
+                    <div id="supp011"></div>
+                </div>
+            </div>
+            
+            <hr class="divider">
+            
+            <!-- Model 012 -->
+            <div class="model-card">
+                <div class="model-number">VOLUME 4｜卷4</div>
+                <div class="model-title">012 深睡模型</div>
+                <div class="model-title" style="font-size: 20px; color: var(--teal);">Deep Sleep Model</div>
+                
+                <div class="definition-box">
+                    <div class="label">【一句話定義 | One-Line Definition】</div>
+                    <div>深睡不是睡得久。深睡是身體真正開始修復的時間。</div>
+                    <div class="en" style="margin-top: 10px;">Deep sleep is not sleeping long. It's when your body truly starts repairing.</div>
+                </div>
+                
+                <div class="expandable">
+                    <div class="expand-header" onclick="toggleExpand(this)">
+                        <span>【核心智慧30 | 30 Core Wisdoms】</span>
+                        <span class="expand-icon">+</span>
+                    </div>
+                    <div class="expand-content">
+                        <ul class="wisdom-list" id="m012-wisdom"></ul>
+                    </div>
+                </div>
+                
+                <div class="expandable">
+                    <div class="expand-header" onclick="toggleExpand(this)">
+                        <span>【核心節點30 | 30 Core Nodes】</span>
+                        <span class="expand-icon">+</span>
+                    </div>
+                    <div class="expand-content">
+                        <ul class="node-list" id="m012-nodes"></ul>
+                    </div>
+                </div>
+                
+                <div class="expandable">
+                    <div class="expand-header" onclick="toggleExpand(this)">
+                        <span>【優化策略30 | 30 Optimization Strategies】</span>
+                        <span class="expand-icon">+</span>
+                    </div>
+                    <div class="expand-content">
+                        <ul class="strategy-list" id="m012-strategies"></ul>
+                    </div>
+                </div>
+                
+                <div class="supplement-section">
+                    <h3>📋 對應營養素方案 | Supplement Plan</h3>
+                    <div style="margin-bottom: 10px;"><strong>核心問題 | Core Issue:</strong> 修復性睡眠不足</div>
+                    <div id="supp012"></div>
+                </div>
+            </div>
+            
+            <hr class="divider">
+            
+            <!-- Model 013 -->
+            <div class="model-card">
+                <div class="model-number">VOLUME 4｜卷4</div>
+                <div class="model-title">013 晝夜節律模型</div>
+                <div class="model-title" style="font-size: 20px; color: var(--teal);">Circadian Rhythm Model</div>
+                
+                <div class="definition-box">
+                    <div class="label">【一句話定義 | One-Line Definition】</div>
+                    <div>健康不是只有睡多久。而是身體時鐘是否準時。</div>
+                    <div class="en" style="margin-top: 10px;">Health is not just about sleep duration. It's about whether your body clock is on time.</div>
+                </div>
+                
+                <div class="expandable">
+                    <div class="expand-header" onclick="toggleExpand(this)">
+                        <span>【核心智慧30 | 30 Core Wisdoms】</span>
+                        <span class="expand-icon">+</span>
+                    </div>
+                    <div class="expand-content">
+                        <ul class="wisdom-list" id="m013-wisdom"></ul>
+                    </div>
+                </div>
+                
+                <div class="expandable">
+                    <div class="expand-header" onclick="toggleExpand(this)">
+                        <span>【核心節點30 | 30 Core Nodes】</span>
+                        <span class="expand-icon">+</span>
+                    </div>
+                    <div class="expand-content">
+                        <ul class="node-list" id="m013-nodes"></ul>
+                    </div>
+                </div>
+                
+                <div class="expandable">
+                    <div class="expand-header" onclick="toggleExpand(this)">
+                        <span>【優化策略30 | 30 Optimization Strategies】</span>
+                        <span class="expand-icon">+</span>
+                    </div>
+                    <div class="expand-content">
+                        <ul class="strategy-list" id="m013-strategies"></ul>
+                    </div>
+                </div>
+                
+                <div class="supplement-section">
+                    <h3>📋 對應營養素方案 | Supplement Plan</h3>
+                    <div style="margin-bottom: 10px;"><strong>核心問題 | Core Issue:</strong> 生理時鐘混亂</div>
+                    <div id="supp013"></div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Volume 5 Mechanism Reference -->
+        <div id="vol5" class="model-section">
+            <div class="model-card">
+                <div class="model-number">VOLUME 5｜卷5</div>
+                <div class="model-title">核心機制總對照</div>
+                <div class="model-title" style="font-size: 20px; color: var(--teal);">Mechanism Reference Guide</div>
+                
+                <div style="background-color: white; padding: 25px; margin-top: 20px; border-radius: 6px; border-left: 5px solid var(--teal);">
+                    <div id="mechanism-content"></div>
+                </div>
+            </div>
+            
+            <div class="purchase-banner" style="margin-top: 40px;">
+                ✨ 完整對應團購營養素方案｜Complete Supplement Solutions
+                <a href="https://myship.7-11.com.tw/general/detail/GM2407210007294" target="_blank">
+                    👉 前往 7-ELEVEN myship 團購｜Order Now
+                </a>
+            </div>
+        </div>
+        
+        <footer>
+            <p>Health Life OS | 健康生活作業系統</p>
+            <p>科學 × 系統 × 實踐｜Science × System × Practice</p>
+            <p style="margin-top: 15px; color: #999;">© 2026 All Rights Reserved</p>
+        </footer>
+    </div>
+    
+    <script>
+        const data = {
+            models: {
+                "001": {
+                    wisdoms: ["身體每天都在花預算。", "睡眠是最大的補充收入。", "壓力是最大的支出。", "發炎持續消耗預算。", "焦慮持續消耗預算。", "熬夜快速透支預算。", "營養是修復原料。", "運動是提高預算效率。", "呼吸降低支出。", "安全感降低耗能。", "慢性疾病常是長期赤字。", "疲勞代表預算不足。", "腦霧代表能源不足。", "情緒失控代表預算不足。", "免疫下降代表預算不足。", "修復需要預算。", "學習需要預算。", "思考需要預算。", "記憶需要預算。", "愛人需要預算。", "工作需要預算。", "人生品質取決於預算管理。", "預算高，恢復快。", "預算低，疾病多。", "健康先於夢想。", "能量先於效率。", "恢復先於表現。", "穩態先於成就。", "身體永遠先於意志力。", "身體預算是一切健康的母體。"],
+                    nodes: ["睡眠", "深睡", "呼吸", "光照", "運動", "營養", "水分", "電解質", "腸道", "肝臟", "腎臟", "血糖", "血脂", "血壓", "粒線體", "ATP", "自主神經", "副交感神經", "HRV", "發炎", "氧化壓力", "荷爾蒙", "免疫", "微循環", "細胞修復", "自噬", "情緒", "壓力", "恢復", "穩態"],
+                    strategies: ["每天固定睡眠。", "每天曬太陽。", "每天深呼吸。", "每天步行。", "每天阻力訓練。", "每天補充蛋白質。", "每天補充Omega-3。", "每天補充礦物質。", "每天喝足夠水。", "每天降低精製糖。", "每天增加蔬菜。", "每天增加膳食纖維。", "每天維持腸道健康。", "每天降低慢性壓力。", "每天冥想十分鐘。", "每天保持規律。", "每天增加深睡。", "每天降低熬夜。", "每天保持好心情。", "每天增加恢復時間。", "每天減少發炎來源。", "每天降低毒素暴露。", "每天增加身體活動。", "每天維持理想體重。", "每天建立健康習慣。", "每週檢查健康指標。", "每月更新健康策略。", "每季健康檢查。", "每年重新評估生活方式。", "每天累積健康預算。"],
+                    supplements: [
+                        "青春方（夜間修復）",
+                        "能量方（提升ATP）",
+                        "粒線寶（粒線體能量）",
+                        "EPA+DHA複方粉（降低發炎）",
+                        "亞麻仁油（細胞膜）",
+                        "甘胺酸鎂複方（神經恢復）",
+                        "GABA（放鬆神經）",
+                        "NMN（NAD⁺能量代謝）",
+                        "B3（NAD⁺前驅物）",
+                        "5R腸胃修復粉",
+                        "腸寶（丁酸+B3）",
+                        "BCB孢子益生菌",
+                        "王牌（槲皮素複方）",
+                        "EGCG（綠茶兒茶素）",
+                        "苦瓜萃取（血糖穩定）",
+                        "憂遁草粉（抗氧化、抗發炎）",
+                        "銀杏複方（腦循環）",
+                        "血循環草本（微循環）",
+                        "地龍蛋白複方（循環）",
+                        "氫氧水（降低氧化壓力）",
+                        "高濃度負電位負離子（降低交感神經）"
+                    ]
+                },
+                "002": {
+                    wisdoms: ["人體一直追求穩態", "穩態勝過治療", "穩態勝過壓症狀", "修復來自穩態", "免疫來自穩態", "睡眠來自穩態", "情緒來自穩態", "血糖需要穩態", "體溫需要穩態", "酸鹼需要穩態", "水分需要穩態", "電解質需要穩態", "神經需要穩態", "荷爾蒙需要穩態", "發炎需要平衡", "壓力需要恢復", "人體每天都在校正", "疾病是穩態失衡", "健康是穩態恢復", "穩態降低耗能", "穩態提升效率", "穩態提高免疫", "穩態提高修復", "穩態提高壽命", "穩態提高生命力", "穩態是一切能力的基礎", "身體比我們更想活下去", "幫助身體，不要對抗身體", "健康管理就是穩態管理", "穩態是健康最大的槓桿"],
+                    nodes: ["血糖", "血壓", "體溫", "酸鹼值", "水分", "電解質", "血氧", "呼吸", "心跳", "HRV", "睡眠", "神經", "荷爾蒙", "發炎", "氧化壓力", "腸道", "肝臟", "腎臟", "免疫", "粒線體", "ATP", "微循環", "細胞修復", "自噬", "情緒", "壓力", "恢復", "適應", "平衡", "穩態"],
+                    strategies: ["固定作息", "規律運動", "規律吃飯", "增加深睡", "增加日照", "增加呼吸訓練", "增加肌力", "補充水分", "補充蛋白質", "補充Omega-3", "補充維生素", "補充礦物質", "維持腸道菌相", "降低慢性發炎", "降低壓力", "控制血糖波動", "維持體重", "維持血壓", "維持血脂", "維持情緒穩定", "每天恢復", "每天修復", "每天放鬆", "每天散步", "每天感恩", "每週檢查健康", "每月調整生活", "每季健康評估", "每年全面健檢", "每天讓身體回到穩態"],
+                    supplements: ["EPA+DHA複方粉（免疫穩態）", "王牌（慢性發炎調節）", "EGCG（抗氧化）", "苦瓜萃取（血糖穩態）", "甘胺酸鎂複方（神經穩態）", "GABA（神經穩態）", "NMN（能量穩態）", "B3（能量代謝）", "腸寶（腸道穩態）", "BCB孢子益生菌（菌相穩態）", "粒線寶（能量穩態）", "亞麻仁油（膜穩態）", "血循環草本（循環穩態）", "銀杏複方（腦循環）", "憂遁草粉（抗發炎）", "氫氧水（氧化還原平衡）", "高濃度負電位負離子（自主神經平衡）"]
+                },
+                "003": {
+                    wisdoms: ["人體不是固定系統", "人體是適應系統", "適應比對抗重要", "身體一直在預測未來", "身體一直在提前調整", "壓力不是敵人", "長期壓力才是敵人", "適度壓力讓人變強", "恢復不足讓人變弱", "人體最怕沒有恢復", "運動是好的壓力", "學習是好的壓力", "冷熱刺激是好的壓力", "熬夜不是好的壓力", "慢性焦慮不是好的壓力", "人體需要恢復週期", "適應提高韌性", "韌性提高健康", "韌性提高壽命", "韌性提高幸福", "適應能力比體力重要", "恢復能力比耐力重要", "人體每天都在重新校準", "每一次恢復都是升級", "健康就是適應力", "年輕代表恢復快", "老化代表恢復慢", "長壽代表適應能力高", "異態平衡是一種動態智慧", "人體最大的能力就是適應"],
+                    nodes: ["壓力刺激", "神經系統", "自主神經", "副交感神經", "荷爾蒙", "腎上腺", "皮質醇", "發炎", "修復", "睡眠", "粒線體", "ATP", "血糖", "血壓", "HRV", "呼吸", "腸道", "肝臟", "腎臟", "免疫", "能量", "韌性", "恢復", "適應", "平衡", "預測", "回饋", "更新", "穩態", "長壽"],
+                    strategies: ["建立規律作息", "保持固定睡眠", "每週阻力訓練", "每天步行", "每天曬太陽", "每天深呼吸", "每天降低慢性壓力", "每天安排恢復時間", "每週冷熱刺激", "控制咖啡因", "控制熬夜", "控制情緒耗能", "提高HRV", "增加深睡", "增加恢復日", "增加休息品質", "維持營養充足", "維持蛋白質攝取", "維持水分", "維持電解質", "維持Omega-3", "維持肌肉量", "每天觀察疲勞", "每天觀察恢復", "每週調整運動量", "每月重新檢查健康", "每季調整生活模式", "每年建立新健康策略", "建立恢復優先文化", "提高身體適應能力"],
+                    supplements: ["能量方", "粒線寶", "NMN", "B3", "EPA+DHA複方粉", "甘胺酸鎂複方", "GABA", "青春方", "亞麻仁油", "BCB孢子益生菌", "銀杏複方", "血循環草本", "地龍蛋白複方", "憂遁草粉", "氫氧水", "高濃度負電位負離子"]
+                },
+                "004": {
+                    wisdoms: ["人體每天都在修復", "修復比治療重要", "修復需要睡眠", "修復需要營養", "修復需要能量", "修復需要穩態", "修復需要副交感神經", "修復需要蛋白質", "修復需要維生素", "修復需要礦物質", "修復需要Omega-3", "修復需要腸道健康", "修復需要正常循環", "修復需要氧氣", "修復需要粒線體", "修復降低老化", "修復降低發炎", "修復降低疼痛", "修復提升免疫", "修復提升生命力", "修復提升專注", "修復提升情緒", "修復提升記憶", "修復提升學習", "修復提升壽命", "人體比想像中更會修復", "不要阻礙身體修復", "修復能力就是健康能力", "修復速度決定恢復速度", "修復是一生最大的投資"],
+                    nodes: ["DNA修復", "細胞修復", "粒線體修復", "細胞膜修復", "腸道修復", "肝臟修復", "腎臟修復", "神經修復", "肌肉修復", "骨骼修復", "關節修復", "血管修復", "心臟修復", "大腦修復", "荷爾蒙修復", "自噬", "幹細胞", "蛋白質", "ATP", "睡眠", "發炎控制", "抗氧化", "微循環", "氧氣供應", "免疫", "營養", "恢復", "穩態", "韌性", "長壽"],
+                    strategies: ["每晚固定睡眠", "增加深睡", "補充蛋白質", "補充Omega-3", "補充維生素", "補充礦物質", "維持腸道健康", "控制慢性發炎", "控制血糖", "控制壓力", "增加運動恢復", "增加呼吸訓練", "增加血液循環", "增加日照", "增加肌肉量", "增加HRV", "每天散步", "每天喝足夠水", "每天伸展", "每天放鬆", "每週恢復日", "每月健康檢查", "每季調整生活", "每年健檢", "減少加工食品", "減少熬夜", "減少菸酒", "減少毒素暴露", "建立修復型生活", "每天提高修復能力"],
+                    supplements: ["青春方★★★★★", "粒線寶★★★★★", "EPA+DHA複方★★★★★", "5R腸胃修復★★★★★", "腸寶★★★★★", "BCB孢子益生菌★★★★★", "甘胺酸鎂複方★★★★★", "王牌★★★★★", "EGCG★★★★★", "NMN★★★★☆", "B3★★★★☆", "憂遁草粉★★★★☆", "血循環草本★★★★☆", "銀杏複方★★★★☆", "地龍蛋白複方★★★★☆", "氫氧水★★★★☆", "高濃度負電位負離子★★★★☆"]
+                },
+                "005": {
+                    wisdoms: ["恢復比努力重要", "沒有恢復就沒有進步", "睡眠是最強恢復工具", "深睡決定恢復品質", "恢復降低發炎", "恢復增加免疫", "恢復增加能量", "恢復增加專注", "恢復增加記憶", "恢復增加情緒穩定", "運動需要恢復", "工作需要恢復", "學習需要恢復", "神經需要恢復", "荷爾蒙需要恢復", "粒線體需要恢復", "人體每天需要恢復", "長壽的人恢復快", "韌性的人恢復快", "恢復能力比爆發力重要", "慢性疲勞就是恢復不足", "慢性疾病常是恢復不足", "健康就是恢復速度", "幸福來自恢復能力", "能量來自恢復能力", "恢復創造生命力", "恢復創造健康", "恢復創造未來", "恢復能力可以訓練", "恢復能力是一生最大的競爭力"],
+                    nodes: ["睡眠", "深睡", "HRV", "副交感神經", "呼吸", "粒線體", "ATP", "修復", "自噬", "免疫", "發炎", "腸道", "微循環", "氧氣", "水分", "電解質", "蛋白質", "Omega-3", "維生素", "礦物質", "荷爾蒙", "情緒", "壓力", "能量", "韌性", "適應", "穩態", "身體預算", "長壽", "健康壽命"],
+                    strategies: ["每天睡滿七至九小時", "每天增加深睡", "每天固定起床", "每天固定睡覺", "每天早晨曬太陽", "每天步行", "每週阻力訓練", "每天深呼吸", "每天冥想", "每天補充優質蛋白", "每天補充Omega-3", "每天補充蔬果", "每天補充足夠水分", "每天維持腸道健康", "每天降低慢性壓力", "每天降低熬夜", "每天降低糖分攝取", "每天降低酒精攝取", "每天降低加工食品", "每天增加恢復時間", "每天安排休息", "每週安排恢復日", "每月評估疲勞", "每季重新規畫健康", "每年健康檢查", "建立恢復優先生活", "建立高品質睡眠", "建立高品質飲食", "建立高品質運動", "每天累積恢復能力"],
+                    supplements: ["青春方★★★★★", "甘胺酸鎂複方★★★★★", "GABA★★★★★", "EPA+DHA複方★★★★☆", "腸寶★★★★☆", "BCB孢子益生菌★★★★☆", "高濃度負電位負離子★★★★★", "氫氧水★★★★☆"]
+                },
+                "006": {
+                    wisdoms: ["神經系統決定健康", "神經系統決定恢復", "神經系統決定免疫", "神經系統決定睡眠", "神經系統決定發炎", "神經系統決定消化", "神經系統決定荷爾蒙", "神經系統決定情緒", "神經系統決定專注", "神經系統決定學習", "神經穩定才能修復", "神經失衡容易發炎", "神經安全才能深睡", "神經安全才能消化", "神經安全才能繁殖", "神經安全才能創造", "神經安全才能愛", "安全先於修復", "修復先於成長", "成長先於成功", "呼吸影響神經", "睡眠影響神經", "光照影響神經", "運動影響神經", "關係影響神經", "神經健康就是生命力", "人體先求安全", "安全才會恢復", "恢復才有健康", "神經調節是健康的總開關"],
+                    nodes: ["大腦", "神經元", "突觸", "神經可塑性", "自主神經", "副交感神經", "交感神經", "HRV", "呼吸", "心跳", "睡眠", "光照", "情緒", "壓力", "血清素", "多巴胺", "GABA", "褪黑激素", "腸腦軸", "粒線體", "ATP", "發炎", "免疫", "修復", "穩態", "韌性", "恢復", "安全感", "預測", "身體預算"],
+                    strategies: ["每天固定睡眠", "每天早晨曬太陽", "每天腹式呼吸", "每天冥想", "每天散步", "每週阻力訓練", "每天降低手機刺激", "每天降低噪音", "每天接觸自然", "每天增加安全感", "每天增加陪伴", "每天增加感恩", "每天增加微笑", "每天增加音樂", "每天增加規律", "每天增加深睡", "每天降低焦慮", "每天降低熬夜", "每天降低發炎", "每天降低糖分", "每天維持腸道健康", "每天補充Omega-3", "每天補充鎂", "每天增加HRV", "每天放鬆肩頸", "每週健康回顧", "每月調整生活", "每季重新評估", "每年健康檢查", "每天提高神經恢復能力"],
+                    supplements: ["甘胺酸鎂複方★★★★★", "GABA★★★★★", "EPA+DHA複方★★★★★", "青春方★★★★★", "粒線寶★★★★★", "NMN★★★★☆", "B3★★★★☆", "亞麻仁油★★★★★", "銀杏複方★★★★★", "憂遁草粉★★★★☆", "氫氧水★★★★★", "高濃度負電位負離子★★★★★"]
+                },
+                "007": {
+                    wisdoms: ["自主神經不用意識控制", "自主神經控制心跳", "自主神經控制呼吸", "自主神經控制血壓", "自主神經控制消化", "自主神經控制免疫", "自主神經控制睡眠", "自主神經控制荷爾蒙", "自主神經決定恢復", "自主神經決定壽命", "平衡比強化重要", "穩定比刺激重要", "規律比爆發重要", "副交感負責修復", "交感負責生存", "兩者都重要", "失衡才是問題", "HRV反映自主神經", "呼吸改善自主神經", "睡眠改善自主神經", "光照改善自主神經", "運動改善自主神經", "冥想改善自主神經", "關係改善自主神經", "安全感改善自主神經", "發炎影響自主神經", "腸道影響自主神經", "身體預算影響自主神經", "自主神經是健康中樞", "平衡創造健康"],
+                    nodes: ["交感神經", "副交感神經", "HRV", "呼吸", "心跳", "血壓", "睡眠", "光照", "腸道", "發炎", "壓力", "情緒", "血糖", "粒線體", "ATP", "修復", "穩態", "韌性", "安全感", "迷走神經", "心肺", "腎上腺", "荷爾蒙", "血清素", "GABA", "褪黑激素", "微循環", "免疫", "身體預算", "長壽"],
+                    strategies: ["每天練腹式呼吸", "每天增加HRV", "每天固定睡眠", "每天曬太陽", "每天散步", "每天運動", "每天放鬆", "每天伸展", "每天冥想", "每天笑一笑", "每天陪伴家人", "每天降低焦慮", "每天降低慢性壓力", "每天控制血糖", "每天補充Omega-3", "每天補充鎂", "每天增加深睡", "每天減少熬夜", "每天增加安全感", "每天維持規律", "每週按摩", "每週登山", "每月健康追蹤", "每季重新調整", "每年健康檢查", "建立恢復文化", "建立慢生活", "建立規律生活", "建立高品質恢復", "建立自主神經平衡"],
+                    supplements: ["甘胺酸鎂複方★★★★★", "GABA★★★★★", "EPA+DHA複方★★★★★", "青春方★★★★★", "粒線寶★★★★☆", "NMN★★★★☆", "銀杏複方★★★★☆", "高濃度負電位負離子★★★★★", "氫氧水★★★★★"]
+                },
+                "008": {
+                    wisdoms: ["副交感就是修復", "副交感就是休息", "副交感就是恢復", "副交感就是消化", "副交感就是生長", "副交感就是繁殖", "副交感就是免疫", "副交感就是深睡", "修復發生在副交感", "長壽需要副交感", "副交感提高HRV", "副交感降低發炎", "副交感降低血壓", "副交感降低焦慮", "副交感提升幸福", "安全感啟動副交感", "呼吸啟動副交感", "冥想啟動副交感", "音樂啟動副交感", "擁抱啟動副交感", "感恩啟動副交感", "禱告啟動副交感", "自然啟動副交感", "深睡啟動修復", "修復提升免疫", "修復提升生命力", "修復提升專注", "修復提升學習", "修復提升健康", "副交感是人體最好的醫生"],
+                    nodes: ["迷走神經", "HRV", "呼吸", "深睡", "修復", "消化", "腸道", "免疫", "荷爾蒙", "GABA", "血清素", "褪黑激素", "安全感", "愛", "關係", "音樂", "光照", "冥想", "感恩", "禱告", "自然", "微循環", "ATP", "粒線體", "發炎", "壓力", "穩態", "韌性", "身體預算", "長壽"],
+                    strategies: ["每天腹式呼吸", "每天冥想", "每天禱告", "每天感恩", "每天曬太陽", "每天散步", "每天擁抱", "每天聽輕音樂", "每天泡熱水", "每天早睡", "每天規律生活", "每天閱讀", "每天陪伴家人", "每天減少手機刺激", "每天減少焦慮", "每天減少咖啡因", "每天增加Omega-3", "每天增加鎂", "每天增加深睡", "每天增加HRV", "每週親近自然", "每週按摩", "每月檢查睡眠", "每季調整生活", "每年健康檢查", "建立慢生活", "建立恢復文化", "建立平靜生活", "建立安全生活", "每天啟動副交感神經"],
+                    supplements: ["甘胺酸鎂複方★★★★★", "GABA★★★★★", "青春方★★★★★", "EPA+DHA複方★★★★★", "氫氧水★★★★★", "高濃度負電位負離子★★★★★", "腸寶★★★★☆", "BCB孢子益生菌★★★★☆"]
+                },
+                "009": {
+                    wisdoms: ["交感神經負責生存", "交感神經提高警覺", "交感神經提高反應速度", "交感神經增加心跳", "交感神經提高血壓", "交感神經增加血糖", "交感神經提高注意力", "交感神經提高力量", "適度交感提高表現", "長期交感消耗健康", "人體不是一直戰鬥", "人體需要恢復", "壓力不是問題", "無法恢復才是問題", "急性壓力可以成長", "慢性壓力容易生病", "交感與副交感需要平衡", "睡眠降低交感", "呼吸降低交感", "冥想降低交感", "運動後需要恢復", "工作後需要恢復", "學習後需要恢復", "情緒後需要恢復", "長期警戒耗盡身體預算", "恢復決定健康", "平衡決定壽命", "韌性決定恢復速度", "身體永遠在尋找平衡", "交感神經是生存系統，不是生活系統"],
+                    nodes: ["壓力", "腎上腺素", "去甲腎上腺素", "皮質醇", "心跳", "血壓", "血糖", "呼吸", "瞳孔", "血流分配", "肌肉", "大腦", "專注", "注意力", "HRV下降", "發炎", "粒線體", "ATP消耗", "氧氣需求", "血液循環", "免疫抑制", "睡眠下降", "消化下降", "生殖下降", "修復下降", "自主神經", "身體預算", "恢復", "穩態", "韌性"],
+                    strategies: ["每天降低慢性壓力", "每天腹式呼吸", "每天增加深睡", "每天固定睡眠", "每天曬太陽", "每天規律運動", "每天運動後恢復", "每天控制咖啡因", "每天減少熬夜", "每天控制血糖", "每天增加Omega-3", "每天補充鎂", "每天散步", "每天冥想", "每天感恩", "每天禱告", "每天放鬆肩頸", "每天安排休息", "每週恢復日", "每週親近自然", "每月檢查壓力", "每季重新調整生活", "每年健康檢查", "建立安全環境", "建立規律生活", "建立恢復文化", "建立高HRV生活", "建立低發炎生活", "建立高韌性生活", "建立交感與副交感平衡"],
+                    supplements: ["甘胺酸鎂複方★★★★★", "GABA★★★★★", "EPA+DHA複方★★★★★", "王牌★★★★★", "EGCG★★★★☆", "氫氧水★★★★★", "高濃度負電位負離子★★★★★", "銀杏複方★★★★☆"]
+                },
+                "010": {
+                    wisdoms: ["大腦每天都在改變", "神經會依使用而改變", "重複建立神經迴路", "練習建立能力", "注意力決定神經重塑", "情緒影響記憶", "睡眠強化學習", "運動促進神經生成", "BDNF促進神經可塑性", "壓力降低神經可塑性", "慢性發炎降低學習", "深睡強化記憶", "閱讀改變大腦", "教學改變大腦", "AI協作改變大腦", "每天更新模型", "每天建立新連結", "每天修正錯誤模型", "習慣就是神經迴路", "人生就是神經重塑", "重複決定人格", "重複決定能力", "重複決定命運", "大腦喜歡預測", "大腦害怕不確定", "更新模型降低焦慮", "持續學習延緩老化", "好奇促進學習", "神經可塑性是一生存在", "每一天都能重新開始"],
+                    nodes: ["神經元", "突觸", "BDNF", "海馬迴", "前額葉", "杏仁核", "基底核", "小腦", "長期記憶", "工作記憶", "注意力", "學習", "睡眠", "深睡", "REM睡眠", "運動", "呼吸", "光照", "Omega-3", "血糖", "粒線體", "ATP", "血清素", "多巴胺", "GABA", "壓力", "發炎", "預測模型", "習慣", "神經網路"],
+                    strategies: ["每天閱讀三十分鐘", "每天背新知識", "每天學新技能", "每天教別人", "每天寫筆記", "每天反思", "每天運動", "每天深睡", "每天曬太陽", "每天練英文", "每天練AI", "每天練邏輯", "每天解題", "每天冥想", "每天深呼吸", "每天保持好奇", "每天提出五個問題", "每天更新一個模型", "每天修正一個錯誤", "每天建立新習慣", "每週挑戰新事物", "每月學一本書", "每季學一門技能", "每年突破舒適圈", "維持Omega-3充足", "維持低發炎", "維持高品質睡眠", "維持高身體預算", "建立終身學習系統", "每天讓大腦比昨天更強"],
+                    supplements: ["EPA+DHA複方★★★★★", "亞麻仁油★★★★★", "粒線寶★★★★★", "NMN★★★★★", "B3★★★★★", "銀杏複方★★★★★", "EGCG★★★★☆", "青春方★★★★☆", "氫氧水★★★★☆", "高濃度負電位負離子★★★★☆"]
+                },
+                "011": {
+                    wisdoms: ["睡眠是最好的醫生", "睡眠決定修復", "睡眠決定免疫", "睡眠決定記憶", "睡眠決定情緒", "睡眠決定專注", "睡眠決定學習", "睡眠決定荷爾蒙", "睡眠決定代謝", "睡眠決定長壽", "睡不好增加發炎", "睡不好增加肥胖", "睡不好增加糖尿病風險", "睡不好增加失智風險", "睡不好降低免疫", "睡眠比保健品重要", "睡眠比運動重要", "睡眠比飲食更優先", "修復主要發生在睡眠", "大腦每天都需要清理", "睡眠降低自由基", "睡眠提高粒線體效率", "睡眠增加ATP生成", "睡眠增加BDNF", "睡眠提高HRV", "睡眠恢復身體預算", "深睡決定恢復品質", "規律睡眠勝過補眠", "睡眠品質比睡眠時間更重要", "睡眠是一切健康能力的起點"],
+                    nodes: ["晝夜節律", "褪黑激素", "深睡", "REM睡眠", "HRV", "副交感神經", "粒線體", "ATP", "BDNF", "生長激素", "皮質醇", "血清素", "GABA", "腸道菌相", "腸腦軸", "呼吸", "血氧", "光照", "體溫", "發炎", "氧化壓力", "自噬", "免疫", "記憶整合", "情緒穩定", "神經修復", "身體修復", "能量恢復", "身體預算", "長壽"],
+                    strategies: ["固定起床時間", "固定睡覺時間", "早晨曬太陽", "睡前避免藍光", "睡前停止工作", "睡前停止滑手機", "睡前深呼吸", "睡前冥想", "睡前閱讀", "睡前泡熱水澡", "下午避免咖啡因", "晚上避免酒精", "晚餐不要太晚", "保持臥室黑暗", "保持安靜", "保持適當溫度", "每天運動", "白天增加活動量", "補充鎂", "補充Omega-3", "增加GABA生成", "建立睡前儀式", "每週檢查睡眠品質", "每月檢查HRV", "每季調整生活節奏", "建立規律生活", "建立深睡文化", "建立恢復優先生活", "提高睡眠效率", "每天讓睡眠成為健康投資"],
+                    supplements: ["青春方★★★★★", "甘胺酸鎂複方★★★★★", "GABA★★★★★", "EPA+DHA複方★★★★☆", "腸寶★★★★☆", "BCB孢子益生菌★★★★☆", "高濃度負電位負離子★★★★★", "氫氧水★★★★☆"]
+                },
+                "012": {
+                    wisdoms: ["深睡是修復黃金期", "深睡提高免疫", "深睡提高記憶", "深睡提高專注", "深睡提高情緒穩定", "深睡提高生長激素", "深睡降低發炎", "深睡降低皮質醇", "深睡提高ATP", "深睡提高粒線體效率", "深睡增加HRV", "深睡增加恢復能力", "深睡增加生命力", "深睡增加壽命", "深睡降低失智風險", "深睡降低肥胖風險", "深睡降低糖尿病風險", "深睡改善腸道", "深睡改善神經", "深睡改善荷爾蒙", "深睡改善血糖", "深睡改善情緒", "深睡改善學習", "深睡改善創造力", "深睡改善決策", "深睡改善恢復速度", "深睡改善健康壽命", "深睡改善身體預算", "深睡就是修復能力", "深睡就是長壽能力"],
+                    nodes: ["生長激素", "褪黑激素", "GABA", "HRV", "副交感神經", "粒線體", "ATP", "自噬", "DNA修復", "神經修復", "細胞修復", "肌肉修復", "骨骼修復", "免疫", "發炎", "自由基", "BDNF", "記憶", "海馬迴", "腸腦軸", "微循環", "呼吸", "血氧", "體溫", "光照", "情緒", "身體預算", "恢復", "穩態", "韌性", "長壽"],
+                    strategies: ["晚上十點前準備睡眠", "固定睡眠時間", "睡前一小時不用手機", "睡前降低燈光", "睡前深呼吸", "睡前冥想", "睡前閱讀紙本書", "睡前泡澡", "睡前伸展", "晚餐提早", "控制血糖", "控制酒精", "控制咖啡因", "保持房間黑暗", "保持房間安靜", "保持房間涼爽", "每天曬太陽", "每天運動", "補充鎂", "補充Omega-3", "增加副交感活性", "提高HRV", "降低慢性壓力", "降低焦慮", "增加安全感", "建立固定睡前流程", "每週追蹤深睡比例", "每月改善睡眠習慣", "建立恢復型生活", "每天增加深睡品質"],
+                    supplements: ["青春方★★★★★", "甘胺酸鎂複方★★★★★", "GABA★★★★★", "EPA+DHA複方★★★★☆", "高濃度負電位負離子★★★★★", "氫氧水★★★★☆"]
+                },
+                "013": {
+                    wisdoms: ["人體有生物時鐘", "光照校正時鐘", "固定起床校正時鐘", "固定睡眠校正時鐘", "規律生活校正時鐘", "熬夜打亂時鐘", "夜班增加疾病風險", "生物時鐘控制荷爾蒙", "生物時鐘控制睡眠", "生物時鐘控制代謝", "生物時鐘控制免疫", "生物時鐘控制修復", "生物時鐘控制體溫", "生物時鐘控制血糖", "生物時鐘控制情緒", "規律提高恢復", "規律提高專注", "規律提高記憶", "規律提高生命力", "規律提高健康壽命", "光是最重要的時間訊號", "早餐也是時間訊號", "運動也是時間訊號", "人體喜歡規律", "人體討厭混亂", "時間管理也是健康管理", "節律就是效率", "節律就是恢復", "節律就是健康", "節律就是長壽"],
+                    nodes: ["視交叉上核", "光照", "褪黑激素", "皮質醇", "體溫", "睡眠", "深睡", "REM睡眠", "血糖", "胰島素", "肝臟", "腸道", "微生物群", "HRV", "呼吸", "心跳", "免疫", "發炎", "ATP", "粒線體", "情緒", "專注", "記憶", "荷爾蒙", "身體預算", "穩態", "恢復", "韌性", "生物年齡", "長壽"],
+                    strategies: ["每天固定起床", "每天固定睡覺", "起床十分鐘內曬太陽", "晚上降低光線", "早餐固定時間", "晚餐固定時間", "每天固定運動", "白天增加日照", "晚上避免藍光", "避免熬夜", "避免輪班", "控制午睡時間", "控制咖啡因時間", "控制酒精", "控制宵夜", "每天散步", "每天規律呼吸", "每天規律工作", "每天規律休息", "每天規律閱讀", "每週檢查作息", "每月調整節律", "每季重新校正生活", "每年健康評估", "建立固定晨間儀式", "建立固定晚間儀式", "建立恢復節律", "建立健康節律", "建立長壽節律", "每天校正身體時鐘"],
+                    supplements: ["青春方★★★★★", "甘胺酸鎂複方★★★★☆", "EPA+DHA複方★★★★☆", "粒線寶★★★★☆", "能量方★★★★☆", "NMN★★★★☆", "B3★★★★☆", "氫氧水★★★★☆"]
+                }
+            }
+        };
+        
+        const mechanismData = [
+            { title: "EPA+DHA複方", desc: "抗發炎 + 神經保護 + 細胞膜 + 免疫穩態 + 腦部健康" },
+            { title: "甘胺酸鎂複方", desc: "副交感神經 + HRV + 放鬆 + 深睡 + 抗壓" },
+            { title: "GABA", desc: "降低神經興奮 + 改善睡眠 + 促進恢復" },
+            { title: "青春方", desc: "夜間修復 + 深睡 + 恢復能力 + 健康壽命" },
+            { title: "粒線寶", desc: "粒線體 + ATP + 抗氧化 + 能量生成" },
+            { title: "NMN + B3", desc: "NAD⁺代謝 + 能量生成 + 細胞修復" },
+            { title: "王牌（槲皮素複方）", desc: "慢性發炎 + 免疫調節 + 抗氧化" },
+            { title: "EGCG", desc: "AMPK活化 + 抗氧化 + 抗發炎 + 代謝調節" },
+            { title: "苦瓜萃取", desc: "血糖控制 + 代謝彈性 + 胰島素敏感性" },
+            { title: "憂遁草粉", desc: "植物多酚 + 抗氧化 + 抗發炎 + 免疫支持" },
+            { title: "銀杏複方", desc: "腦部循環 + 微循環 + 認知功能 + 專注力" },
+            { title: "血循環草本", desc: "末梢循環 + 微循環 + 氧氣輸送" },
+            { title: "地龍蛋白複方", desc: "循環支持 + 血流改善 + 組織供氧" },
+            { title: "腸寶 + BCB", desc: "腸道菌相 + 腸腦軸 + 免疫穩態 + 神經調節" },
+            { title: "氫氧水", desc: "降低氧化壓力 + 減少自由基負擔 + 支持粒線體功能" },
+            { title: "高濃度負電位負離子", desc: "促進副交感神經活性 + 提升HRV + 改善睡眠 + 加速恢復" }
+        ];
+        
+        function initializeApp() {
+            // Create nav tabs
+            const navContainer = document.getElementById('navTabs');
+            const tabs = [
+                { id: 'vol1', label: 'Volume 1｜卷1' },
+                { id: 'vol2', label: 'Volume 2｜卷2' },
+                { id: 'vol3', label: 'Volume 3｜卷3' },
+                { id: 'vol4', label: 'Volume 4｜卷4' },
+                { id: 'vol5', label: 'Volume 5｜卷5' }
+            ];
+            
+            tabs.forEach((tab, index) => {
+                const btn = document.createElement('button');
+                btn.textContent = tab.label;
+                btn.className = index === 0 ? 'active' : '';
+                btn.onclick = () => switchVolume(tab.id);
+                navContainer.appendChild(btn);
+            });
+            
+            // Populate model data
+            Object.keys(data.models).forEach(modelId => {
+                const modelData = data.models[modelId];
+                populateWisdoms(`m${modelId}-wisdom`, modelData.wisdoms);
+                populateNodes(`m${modelId}-nodes`, modelData.nodes);
+                populateStrategies(`m${modelId}-strategies`, modelData.strategies);
+                populateSupplements(`supp${modelId}`, modelData.supplements);
+            });
+            
+            // Populate mechanism reference
+            populateMechanism();
+        }
+        
+        function populateWisdoms(elementId, wisdoms) {
+            const container = document.getElementById(elementId);
+            wisdoms.forEach((wisdom, idx) => {
+                const li = document.createElement('li');
+                li.setAttribute('data-num', String(idx + 1).padStart(3, '0'));
+                li.textContent = wisdom;
+                container.appendChild(li);
+            });
+        }
+        
+        function populateNodes(elementId, nodes) {
+            const container = document.getElementById(elementId);
+            nodes.forEach((node, idx) => {
+                const li = document.createElement('li');
+                li.setAttribute('data-num', String(idx + 1).padStart(3, '0'));
+                li.textContent = node;
+                container.appendChild(li);
+            });
+        }
+        
+        function populateStrategies(elementId, strategies) {
+            const container = document.getElementById(elementId);
+            strategies.forEach((strategy, idx) => {
+                const li = document.createElement('li');
+                li.setAttribute('data-num', String(idx + 1).padStart(3, '0'));
+                li.textContent = strategy;
+                container.appendChild(li);
+            });
+        }
+        
+        function populateSupplements(elementId, supplements) {
+            const container = document.getElementById(elementId);
+            supplements.forEach(supplement => {
+                const div = document.createElement('div');
+                div.className = 'supplement-item';
+                div.innerHTML = `<strong>✓ ${supplement}</strong>`;
+                container.appendChild(div);
+            });
+        }
+        
+        function populateMechanism() {
+            const container = document.getElementById('mechanism-content');
+            mechanismData.forEach(item => {
+                const div = document.createElement('div');
+                div.className = 'supplement-item';
+                div.innerHTML = `<strong>${item.title}</strong><div style="color: #666; font-size: 16px; margin-top: 8px;">= ${item.desc}</div>`;
+                container.appendChild(div);
+            });
+        }
+        
+        function toggleExpand(header) {
+            const content = header.nextElementSibling;
+            header.classList.toggle('open');
+            content.classList.toggle('open');
+            
+            // Update icon
+            const icon = header.querySelector('.expand-icon');
+            icon.textContent = header.classList.contains('open') ? '−' : '+';
+        }
+        
+        function switchVolume(volumeId) {
+            // Hide all sections
+            document.querySelectorAll('.model-section').forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            // Show selected section
+            document.getElementById(volumeId).classList.add('active');
+            
+            // Update nav buttons
+            document.querySelectorAll('.nav-tabs button').forEach((btn, idx) => {
+                btn.classList.remove('active');
+            });
+            
+            event.target.classList.add('active');
+            
+            // Scroll to top
+            window.scrollTo(0, 0);
+        }
+        
+        // Initialize on load
+        document.addEventListener('DOMContentLoaded', initializeApp);
+    </script>
+</body>
+</html>
