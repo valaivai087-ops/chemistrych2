@@ -1,0 +1,899 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>複利槓桿模型 × AI作業系統</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            background: #ffffff;
+            font-family: 'Microsoft JhengHei', '微軟正黑體', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            color: #1A2B5F;
+            line-height: 1.8;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        header {
+            background: linear-gradient(135deg, #1A2B5F 0%, #0A7A72 100%);
+            color: white;
+            padding: 40px 20px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        
+        header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+        
+        header p {
+            font-size: 1.1em;
+            opacity: 0.95;
+        }
+        
+        .nav-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+        
+        .nav-tabs button {
+            flex: 1;
+            min-width: 150px;
+            padding: 15px 20px;
+            font-size: 1.1em;
+            font-weight: 600;
+            border: 2px solid #1A2B5F;
+            background: white;
+            color: #1A2B5F;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-tabs button.active {
+            background: #1A2B5F;
+            color: white;
+        }
+        
+        .nav-tabs button:hover {
+            background: #C9960C;
+            color: white;
+            border-color: #C9960C;
+        }
+        
+        .content-section {
+            display: none;
+        }
+        
+        .content-section.active {
+            display: block;
+        }
+        
+        .section-title {
+            font-size: 2em;
+            color: #1A2B5F;
+            margin-bottom: 30px;
+            border-bottom: 3px solid #C9960C;
+            padding-bottom: 15px;
+        }
+        
+        .item {
+            background: #f8f9fa;
+            border-left: 4px solid #C9960C;
+            margin-bottom: 15px;
+            border-radius: 4px;
+            overflow: hidden;
+            transition: all 0.2s ease;
+        }
+        
+        .item:hover {
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        
+        .item-header {
+            padding: 15px 20px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: 600;
+            background: white;
+        }
+        
+        .item-header:hover {
+            background: #f0f0f0;
+        }
+        
+        .item-number {
+            display: inline-block;
+            width: 50px;
+            height: 50px;
+            background: #1A2B5F;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.9em;
+            margin-right: 15px;
+            flex-shrink: 0;
+        }
+        
+        .item-text {
+            flex: 1;
+            font-size: 1.1em;
+            color: #1A2B5F;
+        }
+        
+        .item-toggle {
+            color: #C9960C;
+            font-size: 1.5em;
+            transition: transform 0.3s ease;
+            flex-shrink: 0;
+            margin-left: 15px;
+        }
+        
+        .item.expanded .item-toggle {
+            transform: rotate(180deg);
+        }
+        
+        .item-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+            background: white;
+        }
+        
+        .item.expanded .item-content {
+            max-height: 500px;
+        }
+        
+        .item-body {
+            padding: 20px;
+            border-top: 1px solid #e0e0e0;
+        }
+        
+        .chinese-text {
+            font-size: 1.15em;
+            color: #1A2B5F;
+            margin-bottom: 12px;
+            font-weight: 500;
+            line-height: 1.8;
+        }
+        
+        .english-text {
+            font-size: 1em;
+            color: #0A7A72;
+            margin-bottom: 12px;
+            line-height: 1.8;
+            font-style: italic;
+        }
+        
+        .separator {
+            color: #C9960C;
+            font-weight: 700;
+            margin: 0 8px;
+        }
+        
+        .tts-button {
+            background: #0A7A72;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.9em;
+            margin-left: 10px;
+            transition: background 0.3s ease;
+        }
+        
+        .tts-button:hover {
+            background: #1A2B5F;
+        }
+        
+        .tts-button.speaking {
+            background: #C9960C;
+        }
+        
+        footer {
+            margin-top: 50px;
+            text-align: center;
+            color: #666;
+            font-size: 0.95em;
+            padding-top: 20px;
+            border-top: 1px solid #ddd;
+        }
+        
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 1.8em;
+            }
+            
+            .nav-tabs {
+                flex-direction: column;
+            }
+            
+            .nav-tabs button {
+                min-width: unset;
+            }
+            
+            .item-header {
+                flex-wrap: wrap;
+                gap: 10px;
+            }
+            
+            .item-text {
+                flex-basis: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>複利槓桿模型 × AI作業系統</h1>
+            <p>從複利到AI，完整的人生成長系統｜From Compound Growth to AI Operating System</p>
+        </header>
+        
+        <div class="nav-tabs">
+            <button class="tab-btn active" data-tab="compound">複利模型</button>
+            <button class="tab-btn" data-tab="leverage">槓桿模型</button>
+            <button class="tab-btn" data-tab="time">時間槓桿</button>
+            <button class="tab-btn" data-tab="ai">AI槓桿</button>
+            <button class="tab-btn" data-tab="automation">自動化模型</button>
+        </div>
+        
+        <!-- 複利模型 Section -->
+        <section id="compound" class="content-section active">
+            <h2 class="section-title">複利模型｜Compound Growth Model</h2>
+            <p style="margin-bottom: 30px; font-size: 1.1em; color: #0A7A72;">
+                複利不是奇蹟，是重複正確行動。每天進步1%，遠勝偶爾衝刺100%。小優勢，長時間，就是巨大差距。
+            </p>
+            <div id="compound-items"></div>
+        </section>
+        
+        <!-- 槓桿模型 Section -->
+        <section id="leverage" class="content-section">
+            <h2 class="section-title">槓桿模型｜Leverage Model</h2>
+            <p style="margin-bottom: 30px; font-size: 1.1em; color: #0A7A72;">
+                日常100項行動，建立你的複利系統。閱讀、學習、健康、工作、關係、商業，全面進步。
+            </p>
+            <div id="leverage-items"></div>
+        </section>
+        
+        <!-- 時間槓桿 Section -->
+        <section id="time" class="content-section">
+            <h2 class="section-title">時間槓桿｜Time Leverage</h2>
+            <p style="margin-bottom: 30px; font-size: 1.1em; color: #0A7A72;">
+                時間是最大的放大器。長期主義是複利最好的朋友。把時間投資在最值得累積的事情上。
+            </p>
+            <div id="time-items"></div>
+        </section>
+        
+        <!-- AI槓桿 Section -->
+        <section id="ai" class="content-section">
+            <h2 class="section-title">AI槓桿｜AI Leverage</h2>
+            <p style="margin-bottom: 30px; font-size: 1.1em; color: #0A7A72;">
+                AI不是取代人，而是放大人的能力。建立AI作業系統，讓AI持續創造價值。
+            </p>
+            <div id="ai-items"></div>
+        </section>
+        
+        <!-- 自動化模型 Section -->
+        <section id="automation" class="content-section">
+            <h2 class="section-title">自動化模型｜Automation Model</h2>
+            <p style="margin-bottom: 30px; font-size: 1.1em; color: #0A7A72;">
+                把AI當系統，可以建立事業。把AI當平台，可以放大影響力。建立持續創造價值的自動化流程。
+            </p>
+            <div id="automation-items"></div>
+        </section>
+        
+        <footer>
+            <p>編制：王欣蓉｜Author: Anne Wang | 複利 × 槓桿 × 時間 × AI × 自動化 = 人生作業系統</p>
+        </footer>
+    </div>
+    
+    <script>
+        const modelData = {
+            compound: [
+                { chi: "複利不是奇蹟，是重複正確行動。", eng: "Compound growth is not a miracle, but repeated correct actions." },
+                { chi: "每天進步1%，遠勝偶爾衝刺100%。", eng: "Daily 1% progress far exceeds occasional 100% sprints." },
+                { chi: "小優勢，長時間，就是巨大差距。", eng: "Small advantages over long periods create massive gaps." },
+                { chi: "每一次閱讀，都在累積未來理解力。", eng: "Every reading session accumulates future comprehension." },
+                { chi: "每一次運動，都在累積健康資本。", eng: "Every workout builds health capital." },
+                { chi: "每一次睡好，都在累積修復能力。", eng: "Every good night's sleep accumulates recovery capacity." },
+                { chi: "每一次存錢，都在累積財務自由。", eng: "Every saving builds financial freedom." },
+                { chi: "每一次分享，都在累積信任資本。", eng: "Every share accumulates trust capital." },
+                { chi: "每一次教學，都在累積品牌價值。", eng: "Every teaching builds brand value." },
+                { chi: "每一次利他，都在累積合作機會。", eng: "Every act of altruism creates collaboration opportunities." },
+                { chi: "習慣比意志力更容易產生複利。", eng: "Habits generate compound effects easier than willpower." },
+                { chi: "環境比習慣更容易產生複利。", eng: "Environment generates compound effects easier than habits." },
+                { chi: "身份認同比環境更容易產生複利。", eng: "Identity generates compound effects easier than environment." },
+                { chi: "今天的你，是昨天複利的結果。", eng: "Today's you is the result of yesterday's compounding." },
+                { chi: "明天的你，是今天選擇的複利。", eng: "Tomorrow's you is the compounding of today's choices." },
+                { chi: "時間是最大的放大器。", eng: "Time is the greatest amplifier." },
+                { chi: "長期主義是複利最好的朋友。", eng: "Long-termism is compound interest's best friend." },
+                { chi: "急功近利是複利最大的敵人。", eng: "Impatience is compound interest's biggest enemy." },
+                { chi: "放棄太早，看不到複利曲線。", eng: "Giving up too soon means never seeing the compound curve." },
+                { chi: "堅持夠久，成果開始加速度成長。", eng: "Persistence long enough leads to accelerating results." },
+                { chi: "知識每天增加一點，智慧自然累積。", eng: "Small daily knowledge increments naturally accumulate wisdom." },
+                { chi: "英文每天二十分鐘，幾年後就是巨大差距。", eng: "Twenty minutes of English daily creates massive gaps in years." },
+                { chi: "AI每天使用一次，能力會快速放大。", eng: "Daily AI usage rapidly amplifies capabilities." },
+                { chi: "每天寫作，思考會越來越清楚。", eng: "Daily writing makes thinking increasingly clear." },
+                { chi: "每天反思，決策會越來越準確。", eng: "Daily reflection makes decisions increasingly accurate." },
+                { chi: "每天更新模型，人生成本越來越低。", eng: "Daily model updates lower life costs over time." },
+                { chi: "每天改善流程，效率持續提升。", eng: "Daily process improvements continuously raise efficiency." },
+                { chi: "每天降低浪費，就是增加資本。", eng: "Daily waste reduction is capital accumulation." },
+                { chi: "每天減少內耗，就是增加能量。", eng: "Daily reduction of internal friction increases energy." },
+                { chi: "每天改善睡眠，就是增加生命預算。", eng: "Daily sleep improvement increases life budget." },
+                { chi: "情緒管理也會複利。", eng: "Emotional management compounds." },
+                { chi: "信任也會複利。", eng: "Trust compounds." },
+                { chi: "品牌也會複利。", eng: "Brand compounds." },
+                { chi: "健康也會複利。", eng: "Health compounds." },
+                { chi: "財富也會複利。", eng: "Wealth compounds." },
+                { chi: "關係也會複利。", eng: "Relationships compound." },
+                { chi: "能力也會複利。", eng: "Abilities compound." },
+                { chi: "信仰也會複利。", eng: "Faith compounds." },
+                { chi: "紀律也會複利。", eng: "Discipline compounds." },
+                { chi: "誠信也會複利。", eng: "Integrity compounds." },
+                { chi: "每一次守承諾，都在增加信任。", eng: "Every promise kept increases trust." },
+                { chi: "每一次失信，都在累積負複利。", eng: "Every broken promise accumulates negative compounding." },
+                { chi: "每一次拖延，都在累積成本。", eng: "Every delay accumulates cost." },
+                { chi: "每一次抱怨，都在累積內耗。", eng: "Every complaint accumulates internal friction." },
+                { chi: "每一次感恩，都在累積幸福感。", eng: "Every gratitude accumulates happiness." },
+                { chi: "每一次微笑，都在累積關係。", eng: "Every smile accumulates relationships." },
+                { chi: "每一次服務，都在累積口碑。", eng: "Every service accumulates reputation." },
+                { chi: "每一次成交，都在累積品牌。", eng: "Every sale accumulates brand." },
+                { chi: "每一次續購，都在累積現金流。", eng: "Every repeat purchase accumulates cash flow." },
+                { chi: "每一次轉介紹，都在累積影響力。", eng: "Every referral accumulates influence." },
+                { chi: "健康不是一天變差。", eng: "Health doesn't deteriorate in a day." },
+                { chi: "健康是每天負複利。", eng: "Health is daily negative compounding." },
+                { chi: "成功不是一天完成。", eng: "Success isn't completed in a day." },
+                { chi: "成功是每天正複利。", eng: "Success is daily positive compounding." },
+                { chi: "失敗通常不是大錯。", eng: "Failure usually isn't from one big mistake." },
+                { chi: "而是小錯長期累積。", eng: "But from accumulated small mistakes." },
+                { chi: "卓越不是天賦。", eng: "Excellence isn't talent." },
+                { chi: "卓越是長期複利。", eng: "Excellence is long-term compounding." },
+                { chi: "人生最大的資產是時間。", eng: "Life's greatest asset is time." },
+                { chi: "時間只獎勵持續累積的人。", eng: "Time only rewards those who continuously accumulate." },
+                { chi: "能力越高，複利速度越快。", eng: "Higher ability compounds faster." },
+                { chi: "AI越熟，能力槓桿越大。", eng: "Greater AI mastery creates greater leverage." },
+                { chi: "信任越深，成交越容易。", eng: "Deeper trust makes sales easier." },
+                { chi: "成交越多，案例越多。", eng: "More sales create more case studies." },
+                { chi: "案例越多，信任越高。", eng: "More case studies build deeper trust." },
+                { chi: "教得越多，理解越深。", eng: "Teaching more deepens understanding." },
+                { chi: "學得越深，教得越好。", eng: "Deeper learning enables better teaching." },
+                { chi: "分享越多，品牌越大。", eng: "More sharing builds bigger brand." },
+                { chi: "品牌越大，機會越多。", eng: "Bigger brand creates more opportunities." },
+                { chi: "機會越多，價值越高。", eng: "More opportunities increase value." },
+                { chi: "每一本書都是未來收入的種子。", eng: "Every book is a seed of future income." },
+                { chi: "每一項技能都是未來自由的種子。", eng: "Every skill is a seed of future freedom." },
+                { chi: "每一個朋友都是未來合作的種子。", eng: "Every friend is a seed of future collaboration." },
+                { chi: "每一個善意都是未來信任的種子。", eng: "Every kindness is a seed of future trust." },
+                { chi: "每一次更新都是未來競爭力。", eng: "Every update is future competitiveness." },
+                { chi: "複利先慢後快。", eng: "Compounding is slow then fast." },
+                { chi: "指數成長一開始最難看見。", eng: "Exponential growth is hardest to see at the start." },
+                { chi: "大部分人放棄在起飛前。", eng: "Most people quit before takeoff." },
+                { chi: "耐心是一種複利能力。", eng: "Patience is a compounding ability." },
+                { chi: "延遲滿足是一種複利能力。", eng: "Delayed gratification is a compounding ability." },
+                { chi: "自律是一種複利能力。", eng: "Self-discipline is a compounding ability." },
+                { chi: "專注是一種複利能力。", eng: "Focus is a compounding ability." },
+                { chi: "更新是一種複利能力。", eng: "Updating is a compounding ability." },
+                { chi: "學習是一種複利能力。", eng: "Learning is a compounding ability." },
+                { chi: "系統是一種複利能力。", eng: "Systems are a compounding ability." },
+                { chi: "模型是一種複利能力。", eng: "Models are a compounding ability." },
+                { chi: "信念也會複利。", eng: "Beliefs compound." },
+                { chi: "世界觀也會複利。", eng: "Worldviews compound." },
+                { chi: "好問題也會複利。", eng: "Good questions compound." },
+                { chi: "好決策也會複利。", eng: "Good decisions compound." },
+                { chi: "每天投資自己，是報酬率最高的投資。", eng: "Daily self-investment has the highest ROI." },
+                { chi: "每天優化身體，是所有複利的起點。", eng: "Daily body optimization is the foundation of all compounding." },
+                { chi: "每天優化大腦，是所有決策的起點。", eng: "Daily brain optimization is the foundation of all decisions." },
+                { chi: "每天優化神經系統，是所有恢復的起點。", eng: "Daily nervous system optimization is the foundation of all recovery." },
+                { chi: "每天建立信任，是所有商業的起點。", eng: "Daily trust-building is the foundation of all business." },
+                { chi: "每天創造價值，是所有收入的起點。", eng: "Daily value creation is the foundation of all income." },
+                { chi: "每天更新模型，是所有智慧的起點。", eng: "Daily model updating is the foundation of all wisdom." },
+                { chi: "每天保持行動，是所有成果的起點。", eng: "Daily action is the foundation of all results." },
+                { chi: "複利的本質，是讓今天成為明天的槓桿。", eng: "Compounding's essence is making today tomorrow's leverage." },
+                { chi: "人生最大的奇蹟，不是幸運，而是每天都比昨天更好一點。", eng: "Life's greatest miracle isn't luck, but being slightly better each day." }
+            ],
+            leverage: [
+                { chi: "每天閱讀至少20分鐘。", eng: "Read for at least 20 minutes daily." },
+                { chi: "每天學習一個新概念。", eng: "Learn one new concept daily." },
+                { chi: "每天使用AI完成一項工作。", eng: "Complete one task daily with AI." },
+                { chi: "每天整理一則學習筆記。", eng: "Organize one learning note daily." },
+                { chi: "每天輸出一篇短文。", eng: "Write one short piece daily." },
+                { chi: "每天反思一個錯誤。", eng: "Reflect on one mistake daily." },
+                { chi: "每天修正一個舊模型。", eng: "Correct one old model daily." },
+                { chi: "每天建立一個新模型。", eng: "Build one new model daily." },
+                { chi: "每天背10個英文單字。", eng: "Memorize 10 English words daily." },
+                { chi: "每天練習英文口說10分鐘。", eng: "Practice English speaking for 10 minutes daily." },
+                { chi: "每天運動30分鐘。", eng: "Exercise for 30 minutes daily." },
+                { chi: "每天步行8000步以上。", eng: "Walk 8000+ steps daily." },
+                { chi: "每天睡滿7至8小時。", eng: "Sleep 7-8 hours daily." },
+                { chi: "每天固定時間起床。", eng: "Wake up at a fixed time daily." },
+                { chi: "每天固定時間睡覺。", eng: "Sleep at a fixed time daily." },
+                { chi: "每天喝足夠的水。", eng: "Drink enough water daily." },
+                { chi: "每天補充足夠蛋白質。", eng: "Consume adequate protein daily." },
+                { chi: "每天攝取足夠蔬菜。", eng: "Eat enough vegetables daily." },
+                { chi: "每天降低一項加工食品。", eng: "Reduce one processed food item daily." },
+                { chi: "每天做5分鐘深呼吸。", eng: "Practice deep breathing for 5 minutes daily." },
+                { chi: "每天靜坐10分鐘。", eng: "Meditate for 10 minutes daily." },
+                { chi: "每天記錄感恩三件事。", eng: "Record three things you're grateful for daily." },
+                { chi: "每天減少10分鐘滑手機。", eng: "Reduce phone scrolling by 10 minutes daily." },
+                { chi: "每天關閉不必要通知。", eng: "Turn off unnecessary notifications daily." },
+                { chi: "每天完成最重要的一件事。", eng: "Complete the most important task daily." },
+                { chi: "每天先做困難工作。", eng: "Do difficult work first daily." },
+                { chi: "每天規劃明天行程。", eng: "Plan tomorrow's schedule daily." },
+                { chi: "每天整理工作環境。", eng: "Organize your workspace daily." },
+                { chi: "每天整理電腦檔案。", eng: "Organize computer files daily." },
+                { chi: "每天清空待辦事項一項。", eng: "Clear one to-do item daily." },
+                { chi: "每天存下一筆錢。", eng: "Save money daily." },
+                { chi: "每天記錄支出。", eng: "Record expenses daily." },
+                { chi: "每天增加一項資產。", eng: "Add one asset daily." },
+                { chi: "每天降低一項浪費。", eng: "Reduce one waste item daily." },
+                { chi: "每天閱讀財務知識。", eng: "Read financial knowledge daily." },
+                { chi: "每天研究一家公司。", eng: "Research one company daily." },
+                { chi: "每天增加一位高品質人脈。", eng: "Add one quality connection daily." },
+                { chi: "每天主動幫助一個人。", eng: "Actively help one person daily." },
+                { chi: "每天稱讚一個人。", eng: "Praise one person daily." },
+                { chi: "每天傾聽一個人5分鐘。", eng: "Listen to one person for 5 minutes daily." },
+                { chi: "每天改善一個家庭互動。", eng: "Improve one family interaction daily." },
+                { chi: "每天陪伴家人30分鐘。", eng: "Spend 30 minutes with family daily." },
+                { chi: "每天建立一項信任。", eng: "Build one trust item daily." },
+                { chi: "每天完成一項承諾。", eng: "Keep one commitment daily." },
+                { chi: "每天分享一則有價值內容。", eng: "Share one valuable piece of content daily." },
+                { chi: "每天發布一篇社群內容。", eng: "Post one social media piece daily." },
+                { chi: "每天回答一位客戶問題。", eng: "Answer one customer question daily." },
+                { chi: "每天增加一則成功案例。", eng: "Add one success story daily." },
+                { chi: "每天追蹤一位會員成果。", eng: "Track one member's progress daily." },
+                { chi: "每天提供一項免費價值。", eng: "Provide one free value item daily." },
+                { chi: "每天閱讀一本書的一小節。", eng: "Read one book section daily." },
+                { chi: "每天建立一張知識卡。", eng: "Create one knowledge card daily." },
+                { chi: "每天畫一張心智圖。", eng: "Draw one mind map daily." },
+                { chi: "每天整理一個知識架構。", eng: "Organize one knowledge structure daily." },
+                { chi: "每天完成一次刻意練習。", eng: "Do one deliberate practice daily." },
+                { chi: "每天挑戰一件不舒服的事。", eng: "Challenge one uncomfortable thing daily." },
+                { chi: "每天學一個AI提示詞。", eng: "Learn one AI prompt daily." },
+                { chi: "每天優化一個工作流程。", eng: "Optimize one workflow daily." },
+                { chi: "每天建立一個SOP。", eng: "Create one SOP daily." },
+                { chi: "每天減少一個重複工作。", eng: "Eliminate one repetitive task daily." },
+                { chi: "每天優化睡眠環境。", eng: "Optimize sleep environment daily." },
+                { chi: "每天曬太陽15分鐘。", eng: "Get sunlight for 15 minutes daily." },
+                { chi: "每天接觸大自然。", eng: "Connect with nature daily." },
+                { chi: "每天做伸展運動。", eng: "Stretch daily." },
+                { chi: "每天放鬆肩頸5分鐘。", eng: "Relax neck and shoulders for 5 minutes daily." },
+                { chi: "每天降低一次壓力來源。", eng: "Reduce one stress source daily." },
+                { chi: "每天離開資訊噪音30分鐘。", eng: "Disconnect from information noise for 30 minutes daily." },
+                { chi: "每天安排無手機時段。", eng: "Schedule phone-free time daily." },
+                { chi: "每天保持專注工作90分鐘。", eng: "Maintain focused work for 90 minutes daily." },
+                { chi: "每天休息10分鐘恢復。", eng: "Rest for 10 minutes to recover daily." },
+                { chi: "每天更新一項健康知識。", eng: "Update one health knowledge daily." },
+                { chi: "每天更新一項商業知識。", eng: "Update one business knowledge daily." },
+                { chi: "每天更新一項教育知識。", eng: "Update one education knowledge daily." },
+                { chi: "每天更新一項心理知識。", eng: "Update one psychology knowledge daily." },
+                { chi: "每天更新一項醫學知識。", eng: "Update one medical knowledge daily." },
+                { chi: "每天更新一項科技知識。", eng: "Update one tech knowledge daily." },
+                { chi: "每天更新一項人生智慧。", eng: "Update one life wisdom daily." },
+                { chi: "每天檢查自己的目標。", eng: "Check your goals daily." },
+                { chi: "每天確認今天最重要的槓桿。", eng: "Confirm today's most important leverage daily." },
+                { chi: "每天完成一項高價值任務。", eng: "Complete one high-value task daily." },
+                { chi: "每週完成一項長期專案。", eng: "Complete one long-term project weekly." },
+                { chi: "每週回顧一次成果。", eng: "Review results weekly." },
+                { chi: "每週修正一次策略。", eng: "Adjust strategy weekly." },
+                { chi: "每週淘汰一項低價值工作。", eng: "Eliminate one low-value work weekly." },
+                { chi: "每週新增一項高價值習慣。", eng: "Add one high-value habit weekly." },
+                { chi: "每月閱讀一本完整的書。", eng: "Read one complete book monthly." },
+                { chi: "每月建立一套新能力。", eng: "Build one new ability monthly." },
+                { chi: "每月完成一個作品。", eng: "Complete one work monthly." },
+                { chi: "每月建立一個可複製系統。", eng: "Create one replicable system monthly." },
+                { chi: "每月優化一次人生系統。", eng: "Optimize life system monthly." },
+                { chi: "每次犯錯立即記錄原因。", eng: "Record mistake reasons immediately." },
+                { chi: "每次成功整理成功因素。", eng: "Organize success factors when successful." },
+                { chi: "每次決策記錄推理過程。", eng: "Record decision reasoning." },
+                { chi: "每次學習建立可重複模型。", eng: "Build replicable models when learning." },
+                { chi: "每次教學整理成教材。", eng: "Organize teaching into materials." },
+                { chi: "每次經驗轉化成SOP。", eng: "Convert experience into SOPs." },
+                { chi: "每次突破分享給更多人。", eng: "Share breakthroughs with others." },
+                { chi: "每天讓今天比昨天進步1%。", eng: "Make today 1% better than yesterday." },
+                { chi: "每天投資未來的自己。", eng: "Invest in your future self daily." },
+                { chi: "每天累積一個能讓五年後感謝今天自己的行動。", eng: "Accumulate one daily action your future self will thank you for." }
+            ],
+            time: [
+                { chi: "時間不是管理出來的，而是投資出來的。", eng: "Time isn't managed; it's invested." },
+                { chi: "每一分鐘都應該創造未來價值。", eng: "Every minute should create future value." },
+                { chi: "時間只會流逝，不會累積。", eng: "Time flows away, it doesn't accumulate." },
+                { chi: "能累積的是成果。", eng: "What accumulates is results." },
+                { chi: "能累積的是能力。", eng: "What accumulates is ability." },
+                { chi: "能累積的是資產。", eng: "What accumulates is assets." },
+                { chi: "能累積的是信任。", eng: "What accumulates is trust." },
+                { chi: "今天的時間，決定未來的人生。", eng: "Today's time determines your future life." },
+                { chi: "時間花在哪裡，人生就長成什麼樣子。", eng: "Where you spend time shapes who you become." },
+                { chi: "每天先做最重要的事。", eng: "Do the most important thing first daily." },
+                { chi: "高價值工作永遠排第一。", eng: "High-value work always comes first." },
+                { chi: "不要先完成容易的事。", eng: "Don't do easy things first." },
+                { chi: "要先完成重要的事。", eng: "Do important things first." },
+                { chi: "每天安排深度工作時間。", eng: "Schedule deep work time daily." },
+                { chi: "專注比忙碌重要。", eng: "Focus matters more than busyness." },
+                { chi: "效率比工時重要。", eng: "Efficiency matters more than hours." },
+                { chi: "成果比努力重要。", eng: "Results matter more than effort." },
+                { chi: "系統比加班重要。", eng: "Systems matter more than overtime." },
+                { chi: "今天建立系統，明天節省時間。", eng: "Build systems today, save time tomorrow." },
+                { chi: "今天建立流程，未來減少重工。", eng: "Establish processes today, reduce rework tomorrow." },
+                { chi: "今天學AI，未來省更多時間。", eng: "Learn AI today, save more time tomorrow." },
+                { chi: "今天寫SOP，未來不用重教。", eng: "Write SOPs today, stop re-teaching tomorrow." },
+                { chi: "今天錄影片，未來重複使用。", eng: "Record videos today, reuse tomorrow." },
+                { chi: "今天寫教材，未來持續教學。", eng: "Write materials today, teach forever." },
+                { chi: "今天建立APP，未來持續服務。", eng: "Build apps today, serve forever." },
+                { chi: "今天建立會員系統，未來持續創造價值。", eng: "Build membership systems today, create value forever." },
+                { chi: "今天建立品牌，未來降低成交成本。", eng: "Build brand today, reduce sales cost tomorrow." },
+                { chi: "今天建立信任，未來節省解釋時間。", eng: "Build trust today, save explanation time tomorrow." },
+                { chi: "今天建立能力，未來提高效率。", eng: "Build capability today, improve efficiency tomorrow." },
+                { chi: "今天改善健康，未來增加可用時間。", eng: "Improve health today, increase available time tomorrow." },
+                { chi: "睡眠是在創造未來時間。", eng: "Sleep creates future time." },
+                { chi: "運動是在增加生命時間。", eng: "Exercise increases life time." },
+                { chi: "健康是時間最大的槓桿。", eng: "Health is time's greatest leverage." },
+                { chi: "身體不好，再多時間也無法利用。", eng: "Poor health prevents using available time." },
+                { chi: "能量決定時間品質。", eng: "Energy determines time quality." },
+                { chi: "注意力決定時間價值。", eng: "Attention determines time value." },
+                { chi: "情緒決定時間效率。", eng: "Emotion determines time efficiency." },
+                { chi: "每天減少一次分心。", eng: "Reduce one distraction daily." },
+                { chi: "每天減少一次拖延。", eng: "Reduce one delay daily." },
+                { chi: "每天減少一次重工。", eng: "Reduce one rework daily." },
+                { chi: "每天減少一次抱怨。", eng: "Reduce one complaint daily." },
+                { chi: "每天減少一次猶豫。", eng: "Reduce one hesitation daily." },
+                { chi: "每天減少一次錯誤決策。", eng: "Reduce one bad decision daily." },
+                { chi: "每天減少一次無效會議。", eng: "Reduce one unproductive meeting daily." },
+                { chi: "每天減少一次無意義滑手機。", eng: "Reduce one meaningless phone scroll daily." },
+                { chi: "每天減少一次資訊過載。", eng: "Reduce one information overload daily." },
+                { chi: "每天減少一次無效社交。", eng: "Reduce one unproductive social time daily." },
+                { chi: "每天減少一次低價值工作。", eng: "Reduce one low-value work daily." },
+                { chi: "每天增加一次閱讀。", eng: "Add one reading session daily." },
+                { chi: "每天增加一次思考。", eng: "Add one thinking session daily." },
+                { chi: "每天增加一次輸出。", eng: "Add one output daily." },
+                { chi: "每天增加一次反思。", eng: "Add one reflection daily." },
+                { chi: "每天增加一次運動。", eng: "Add one exercise session daily." },
+                { chi: "每天增加一次陪伴家人。", eng: "Add one family time session daily." },
+                { chi: "每天增加一次感恩。", eng: "Add one gratitude practice daily." },
+                { chi: "每天增加一次AI協作。", eng: "Add one AI collaboration daily." },
+                { chi: "每天增加一次流程優化。", eng: "Add one process optimization daily." },
+                { chi: "每天增加一次知識整理。", eng: "Add one knowledge organization daily." },
+                { chi: "每天增加一次模型更新。", eng: "Add one model update daily." },
+                { chi: "每天增加一次能力累積。", eng: "Add one capability building daily." },
+                { chi: "把重複工作交給系統。", eng: "Give repetitive work to systems." },
+                { chi: "把標準工作交給AI。", eng: "Give standard work to AI." },
+                { chi: "把例行工作交給自動化。", eng: "Give routine work to automation." },
+                { chi: "把時間留給創造。", eng: "Reserve time for creation." },
+                { chi: "把時間留給思考。", eng: "Reserve time for thinking." },
+                { chi: "把時間留給學習。", eng: "Reserve time for learning." },
+                { chi: "把時間留給健康。", eng: "Reserve time for health." },
+                { chi: "把時間留給家人。", eng: "Reserve time for family." },
+                { chi: "把時間留給真正重要的人。", eng: "Reserve time for truly important people." },
+                { chi: "把時間留給高價值任務。", eng: "Reserve time for high-value tasks." },
+                { chi: "每一項技能都是時間槓桿。", eng: "Every skill is time leverage." },
+                { chi: "每一項模型都是時間槓桿。", eng: "Every model is time leverage." },
+                { chi: "每一項工具都是時間槓桿。", eng: "Every tool is time leverage." },
+                { chi: "每一項作品都是時間槓桿。", eng: "Every work is time leverage." },
+                { chi: "每一項內容都是時間槓桿。", eng: "Every content is time leverage." },
+                { chi: "每一位合作夥伴都是時間槓桿。", eng: "Every partner is time leverage." },
+                { chi: "每一位AI Agent都是時間槓桿。", eng: "Every AI Agent is time leverage." },
+                { chi: "每一套流程都是時間槓桿。", eng: "Every process is time leverage." },
+                { chi: "每一套系統都是時間槓桿。", eng: "Every system is time leverage." },
+                { chi: "每一個決策都是時間槓桿。", eng: "Every decision is time leverage." },
+                { chi: "好決策節省未來大量時間。", eng: "Good decisions save future time." },
+                { chi: "好習慣節省每天的決策成本。", eng: "Good habits save daily decision costs." },
+                { chi: "好環境降低意志力消耗。", eng: "Good environments reduce willpower depletion." },
+                { chi: "好模型降低犯錯成本。", eng: "Good models reduce error costs." },
+                { chi: "好知識降低試錯成本。", eng: "Good knowledge reduces trial-and-error costs." },
+                { chi: "好老師降低學習成本。", eng: "Good teachers reduce learning costs." },
+                { chi: "好團隊放大時間價值。", eng: "Good teams amplify time value." },
+                { chi: "好品牌降低行銷時間。", eng: "Good brands reduce marketing time." },
+                { chi: "好信任降低成交時間。", eng: "Good trust reduces sales time." },
+                { chi: "好健康延長有效工作時間。", eng: "Good health extends productive work time." },
+                { chi: "真正的富有不是有很多錢。", eng: "True wealth isn't having lots of money." },
+                { chi: "真正的富有是擁有可自由支配的時間。", eng: "True wealth is owning your time." },
+                { chi: "真正的高手不是做得快。", eng: "True masters aren't fast." },
+                { chi: "而是建立讓事情自動完成的系統。", eng: "They build systems that work automatically." },
+                { chi: "普通人出售時間。", eng: "Ordinary people sell time." },
+                { chi: "高手購買時間。", eng: "Masters buy time." },
+                { chi: "普通人填滿行程。", eng: "Ordinary people fill schedules." },
+                { chi: "高手放大每一分鐘的價值。", eng: "Masters amplify every minute's value." },
+                { chi: "時間槓桿的本質，是讓今天的一小時，在未來持續創造價值。", eng: "Time leverage's essence is today's hour creating future value." },
+                { chi: "人生最大的時間槓桿，是把有限生命投入最值得累積的事情。", eng: "Life's greatest time leverage is investing in what compounds most." }
+            ],
+            ai: [
+                { chi: "AI不是取代人，而是放大人的能力。", eng: "AI doesn't replace people; it amplifies human ability." },
+                { chi: "AI最大的價值不是回答問題，而是降低思考成本。", eng: "AI's greatest value isn't answers; it's reducing thinking costs." },
+                { chi: "AI最大的槓桿是放大知識工作。", eng: "AI's greatest leverage is amplifying knowledge work." },
+                { chi: "AI讓一個人擁有團隊級能力。", eng: "AI gives one person team-level capabilities." },
+                { chi: "AI讓專家能力更容易被複製。", eng: "AI makes expert abilities easier to replicate." },
+                { chi: "AI讓知識變成可隨時使用的工具。", eng: "AI turns knowledge into always-available tools." },
+                { chi: "AI不是搜尋引擎，而是推理夥伴。", eng: "AI isn't search; it's a reasoning partner." },
+                { chi: "AI不是答案機器，而是思考加速器。", eng: "AI isn't an answer machine; it's a thinking accelerator." },
+                { chi: "AI的價值來自人的問題品質。", eng: "AI's value comes from question quality." },
+                { chi: "好提示詞比多提示詞更重要。", eng: "Better prompts matter more than more prompts." },
+                { chi: "問題越清楚，答案越精準。", eng: "Clearer questions yield better answers." },
+                { chi: "AI能放大優點，也會放大錯誤。", eng: "AI amplifies both strengths and flaws." },
+                { chi: "模型比工具更重要。", eng: "Models matter more than tools." },
+                { chi: "思維比模型更重要。", eng: "Thinking matters more than models." },
+                { chi: "驗證比相信更重要。", eng: "Verification matters more than belief." },
+                { chi: "AI降低試錯成本。", eng: "AI reduces trial-and-error costs." },
+                { chi: "AI提高學習速度。", eng: "AI increases learning speed." },
+                { chi: "AI縮短創作時間。", eng: "AI shortens creation time." },
+                { chi: "AI提高決策效率。", eng: "AI improves decision efficiency." },
+                { chi: "AI放大創造力。", eng: "AI amplifies creativity." },
+                { chi: "AI放大執行力。", eng: "AI amplifies execution." },
+                { chi: "AI放大溝通能力。", eng: "AI amplifies communication." },
+                { chi: "AI放大教學能力。", eng: "AI amplifies teaching." },
+                { chi: "AI放大寫作能力。", eng: "AI amplifies writing." },
+                { chi: "AI放大分析能力。", eng: "AI amplifies analysis." },
+                { chi: "AI放大研究能力。", eng: "AI amplifies research." },
+                { chi: "AI放大整理能力。", eng: "AI amplifies organization." },
+                { chi: "AI放大翻譯能力。", eng: "AI amplifies translation." },
+                { chi: "AI放大程式能力。", eng: "AI amplifies programming." },
+                { chi: "AI放大商業能力。", eng: "AI amplifies business skills." },
+                { chi: "AI讓重複工作自動化。", eng: "AI automates repetitive work." },
+                { chi: "AI讓知識整理系統化。", eng: "AI systematizes knowledge organization." },
+                { chi: "AI讓內容生產規模化。", eng: "AI scales content production." },
+                { chi: "AI讓教育個人化。", eng: "AI personalizes education." },
+                { chi: "AI讓學習全天候進行。", eng: "AI enables 24/7 learning." },
+                { chi: "AI讓每一次創作都能再利用。", eng: "AI lets every creation be reused." },
+                { chi: "AI讓每一份知識都能封裝。", eng: "AI lets every knowledge be packaged." },
+                { chi: "AI讓每一個流程都能優化。", eng: "AI lets every process be optimized." },
+                { chi: "AI讓每一項經驗都能沉澱。", eng: "AI lets every experience be preserved." },
+                { chi: "AI讓每一個案例都能學習。", eng: "AI lets every case be learned from." },
+                { chi: "AI不能取代判斷力。", eng: "AI can't replace judgment." },
+                { chi: "AI不能取代價值觀。", eng: "AI can't replace values." },
+                { chi: "AI不能取代責任。", eng: "AI can't replace responsibility." },
+                { chi: "AI不能取代人際信任。", eng: "AI can't replace interpersonal trust." },
+                { chi: "AI不能取代真誠陪伴。", eng: "AI can't replace genuine companionship." },
+                { chi: "AI需要人提供方向。", eng: "AI needs humans for direction." },
+                { chi: "AI需要人設定目標。", eng: "AI needs humans for goal-setting." },
+                { chi: "AI需要人驗證結果。", eng: "AI needs humans for verification." },
+                { chi: "AI需要人更新模型。", eng: "AI needs humans to update models." },
+                { chi: "AI需要人做最後決策。", eng: "AI needs humans for final decisions." },
+                { chi: "AI最適合處理大量資訊。", eng: "AI excels at handling massive information." },
+                { chi: "AI最適合建立知識庫。", eng: "AI excels at building knowledge bases." },
+                { chi: "AI最適合整理教材。", eng: "AI excels at organizing materials." },
+                { chi: "AI最適合建立SOP。", eng: "AI excels at creating SOPs." },
+                { chi: "AI最適合生成初稿。", eng: "AI excels at drafting." },
+                { chi: "AI最適合整理會議紀錄。", eng: "AI excels at organizing meeting notes." },
+                { chi: "AI最適合分析資料。", eng: "AI excels at analyzing data." },
+                { chi: "AI最適合設計流程。", eng: "AI excels at designing processes." },
+                { chi: "AI最適合建立檢查清單。", eng: "AI excels at creating checklists." },
+                { chi: "AI最適合建立能力地圖。", eng: "AI excels at mapping abilities." },
+                { chi: "每天使用AI，能力會持續複利。", eng: "Daily AI use compounds abilities." },
+                { chi: "每天更新提示詞，效率會持續提升。", eng: "Daily prompt updates raise efficiency." },
+                { chi: "每天累積AI工作流程，未來節省更多時間。", eng: "Daily workflow accumulation saves future time." },
+                { chi: "每天建立AI知識庫，未來降低搜尋成本。", eng: "Daily knowledge base building reduces search costs." },
+                { chi: "每天建立AI模板，未來提高輸出品質。", eng: "Daily template creation improves output quality." },
+                { chi: "AI是時間槓桿。", eng: "AI is time leverage." },
+                { chi: "AI是知識槓桿。", eng: "AI is knowledge leverage." },
+                { chi: "AI是創造力槓桿。", eng: "AI is creativity leverage." },
+                { chi: "AI是決策槓桿。", eng: "AI is decision leverage." },
+                { chi: "AI是商業槓桿。", eng: "AI is business leverage." },
+                { chi: "AI是教育槓桿。", eng: "AI is education leverage." },
+                { chi: "AI是健康槓桿。", eng: "AI is health leverage." },
+                { chi: "AI是研究槓桿。", eng: "AI is research leverage." },
+                { chi: "AI是品牌槓桿。", eng: "AI is brand leverage." },
+                { chi: "AI是人生槓桿。", eng: "AI is life leverage." },
+                { chi: "不會使用AI，競爭力會逐漸下降。", eng: "Not using AI gradually reduces competitiveness." },
+                { chi: "會建立AI系統，比只會使用AI更重要。", eng: "Building AI systems matters more than just using AI." },
+                { chi: "建立AI工作流，比單次使用更有價值。", eng: "AI workflows are more valuable than single uses." },
+                { chi: "建立AI Agent，比單一聊天更有槓桿。", eng: "AI Agents have more leverage than single chats." },
+                { chi: "建立AI知識母體，比零散資料更有效。", eng: "AI knowledge bases are more effective than scattered data." },
+                { chi: "AI真正放大的不是速度，而是能力密度。", eng: "AI amplifies capability density, not just speed." },
+                { chi: "AI真正節省的不是時間，而是認知成本。", eng: "AI saves cognitive cost, not just time." },
+                { chi: "AI真正創造的是更多高價值時間。", eng: "AI creates more high-value time." },
+                { chi: "AI真正改變的是工作模式。", eng: "AI transforms work models." },
+                { chi: "AI真正提升的是決策品質。", eng: "AI improves decision quality." },
+                { chi: "AI真正累積的是智慧資產。", eng: "AI accumulates wisdom assets." },
+                { chi: "AI真正放大的是持續學習能力。", eng: "AI amplifies continuous learning." },
+                { chi: "AI真正建立的是第二大腦。", eng: "AI creates a second brain." },
+                { chi: "AI真正形成的是能力作業系統。", eng: "AI forms an ability OS." },
+                { chi: "AI真正創造的是可持續競爭力。", eng: "AI creates sustainable advantage." },
+                { chi: "把AI當工具，只能提升效率。", eng: "Treating AI as a tool only improves efficiency." },
+                { chi: "把AI當夥伴，可以提升能力。", eng: "Treating AI as a partner improves ability." },
+                { chi: "把AI當系統，可以建立事業。", eng: "Treating AI as a system builds businesses." },
+                { chi: "把AI當平台，可以放大影響力。", eng: "Treating AI as a platform amplifies influence." },
+                { chi: "把AI當知識庫，可以降低遺忘成本。", eng: "Treating AI as a knowledge base reduces forgetting costs." },
+                { chi: "把AI當教練，可以提升成長速度。", eng: "Treating AI as a coach accelerates growth." },
+                { chi: "把AI當顧問，可以改善決策品質。", eng: "Treating AI as an advisor improves decisions." },
+                { chi: "把AI當Agent，可以自動完成大量工作。", eng: "Treating AI as an Agent automates vast work." },
+                { chi: "AI槓桿的本質，是用智慧放大有限的人力與時間。", eng: "AI leverage amplifies limited human time with intelligence." },
+                { chi: "真正的AI高手，不是最會問AI，而是最會把AI整合成持續創造價值的系統。", eng: "True AI mastery isn't asking better; it's building continuous value systems." }
+            ],
+            automation: [
+                { chi: "每天起床先完成今天最重要的一件事。", eng: "Complete the most important task first thing daily." },
+                { chi: "每天安排90分鐘深度工作。", eng: "Schedule 90 minutes of deep work daily." },
+                { chi: "每天規劃明天的三件最重要任務。", eng: "Plan tomorrow's three most important tasks daily." },
+                { chi: "每天使用行事曆安排所有重要工作。", eng: "Use calendars for all important work daily." },
+                { chi: "每天先完成高價值工作再處理雜事。", eng: "Complete high-value work before other tasks daily." },
+                { chi: "每天設定工作截止時間。", eng: "Set work deadlines daily." },
+                { chi: "每天記錄時間使用狀況。", eng: "Record time usage daily." },
+                { chi: "每天分析時間浪費原因。", eng: "Analyze time waste causes daily." },
+                { chi: "每天刪除一項低價值工作。", eng: "Delete one low-value task daily." },
+                { chi: "每天拒絕一件不重要的事情。", eng: "Refuse one unimportant thing daily." },
+                { chi: "每天把重複工作寫成SOP。", eng: "Document repetitive work as SOP daily." },
+                { chi: "每天優化一項工作流程。", eng: "Optimize one workflow daily." },
+                { chi: "每天將一項工作交給AI協助。", eng: "Delegate one task to AI daily." },
+                { chi: "每天建立一個AI提示詞。", eng: "Create one AI prompt daily." },
+                { chi: "每天測試一個AI工作流程。", eng: "Test one AI workflow daily." },
+                { chi: "每天建立一份可重複使用的模板。", eng: "Create one reusable template daily." },
+                { chi: "每天把一次成果變成可重複利用的資產。", eng: "Convert one result into reusable assets daily." },
+                { chi: "每天整理一篇知識文章。", eng: "Organize one knowledge article daily." },
+                { chi: "每天錄製一段教學影片。", eng: "Record one teaching video daily." },
+                { chi: "每天累積一份教材。", eng: "Accumulate one teaching material daily." },
+                { chi: "每天更新APP一個內容。", eng: "Update one app content daily." },
+                { chi: "每天新增一個知識節點。", eng: "Add one knowledge node daily." },
+                { chi: "每天建立一張知識卡。", eng: "Create one knowledge card daily." },
+                { chi: "每天建立一份心智圖。", eng: "Create one mind map daily." },
+                { chi: "每天建立一份流程圖。", eng: "Create one process diagram daily." },
+                { chi: "每天閱讀30分鐘。", eng: "Read for 30 minutes daily." },
+                { chi: "每天學習一個新概念。", eng: "Learn one new concept daily." },
+                { chi: "每天練習一項核心技能。", eng: "Practice one core skill daily." },
+                { chi: "每天更新一個世界模型。", eng: "Update one world model daily." },
+                { chi: "每天反思一項錯誤。", eng: "Reflect on one mistake daily." },
+                { chi: "每天完成一次刻意練習。", eng: "Do one deliberate practice daily." },
+                { chi: "每天背10個英文單字。", eng: "Learn 10 English words daily." },
+                { chi: "每天練習英文口說15分鐘。", eng: "Practice English speaking 15 minutes daily." },
+                { chi: "每天使用AI學英文。", eng: "Learn English with AI daily." },
+                { chi: "每天整理英文錯題。", eng: "Organize English mistakes daily." },
+                { chi: "每天閱讀一篇英文文章。", eng: "Read one English article daily." },
+                { chi: "每天運動30分鐘。", eng: "Exercise 30 minutes daily." },
+                { chi: "每天步行8000步以上。", eng: "Walk 8000+ steps daily." },
+                { chi: "每天睡滿7至8小時。", eng: "Sleep 7-8 hours daily." },
+                { chi: "每天固定睡眠時間。", eng: "Keep fixed sleep time daily." },
+                { chi: "每天固定起床時間。", eng: "Keep fixed wake time daily." },
+                { chi: "每天補充足夠水分。", eng: "Drink enough water daily." },
+                { chi: "每天補充足夠蛋白質。", eng: "Get enough protein daily." },
+                { chi: "每天補充需要的營養素。", eng: "Get needed nutrients daily." },
+                { chi: "每天曬太陽15分鐘。", eng: "Get sunlight 15 minutes daily." },
+                { chi: "每天做5分鐘深呼吸。", eng: "Do deep breathing 5 minutes daily." },
+                { chi: "每天做10分鐘伸展。", eng: "Stretch 10 minutes daily." },
+                { chi: "每天讓自己離開手機30分鐘。", eng: "Disconnect from phone 30 minutes daily." },
+                { chi: "每天安排資訊斷食時間。", eng: "Schedule information fasting daily." },
+                { chi: "每天安排安靜思考時間。", eng: "Schedule quiet thinking time daily." },
+                { chi: "每天關閉所有非必要通知。", eng: "Turn off all unnecessary notifications daily." },
+                { chi: "每天只固定時間查看社群。", eng: "Check social media at set times daily." },
+                { chi: "每天只固定時間回覆訊息。", eng: "Reply to messages at set times daily." },
+                { chi: "每天避免多工處理。", eng: "Avoid multitasking daily." },
+                { chi: "每天一次只完成一件重要工作。", eng: "Do only one important task at a time daily." },
+                { chi: "每天保持工作桌面整潔。", eng: "Keep workspace clean daily." },
+                { chi: "每天整理電腦桌面。", eng: "Organize computer desktop daily." },
+                { chi: "每天整理雲端資料。", eng: "Organize cloud files daily." },
+                { chi: "每天建立檔案命名規則。", eng: "Establish file naming rules daily." },
+                { chi: "每天備份重要資料。", eng: "Back up important data daily." },
+                { chi: "每天建立一項可重複收入來源。", eng: "Build one repeatable income source daily." },
+                { chi: "每天改善一項會員服務。", eng: "Improve one member service daily." },
+                { chi: "每天追蹤一位會員成果。", eng: "Track one member's progress daily." },
+                { chi: "每天分享一則健康知識。", eng: "Share one health fact daily." },
+                { chi: "每天分享一則英文知識。", eng: "Share one English fact daily." },
+                { chi: "每天分享一則AI知識。", eng: "Share one AI fact daily." },
+                { chi: "每天分享一則人生智慧。", eng: "Share one life wisdom daily." },
+                { chi: "每天建立一項品牌資產。", eng: "Build one brand asset daily." },
+                { chi: "每天建立一項信任證據。", eng: "Build one trust evidence daily." },
+                { chi: "每天增加一位高品質人脈。", eng: "Add one quality connection daily." },
+                { chi: "每週完成一本書的摘要。", eng: "Complete one book summary weekly." },
+                { chi: "每週錄製一支教學影片。", eng: "Record one teaching video weekly." },
+                { chi: "每週完成一篇長文。", eng: "Complete one long article weekly." },
+                { chi: "每週完成一個作品。", eng: "Complete one work weekly." },
+                { chi: "每週新增一個APP功能。", eng: "Add one app feature weekly." },
+                { chi: "每週建立一套新流程。", eng: "Build one new process weekly." },
+                { chi: "每週優化一次課程。", eng: "Optimize course once weekly." },
+                { chi: "每週分析一次數據。", eng: "Analyze data once weekly." },
+                { chi: "每週淘汰一項低價值工作。", eng: "Eliminate one low-value task weekly." },
+                { chi: "每週建立一項自動化流程。", eng: "Create one automation weekly." },
+                { chi: "每月建立一項數位資產。", eng: "Build one digital asset monthly." },
+                { chi: "每月完成一本書。", eng: "Complete one book monthly." },
+                { chi: "每月建立一門課程。", eng: "Create one course monthly." },
+                { chi: "每月建立一個AI Agent。", eng: "Create one AI Agent monthly." },
+                { chi: "每月建立一套知識系統。", eng: "Build one knowledge system monthly." },
+                { chi: "每月建立一項可複製商業模式。", eng: "Create one replicable business model monthly." },
+                { chi: "每月增加一項高價值技能。", eng: "Add one high-value skill monthly." },
+                { chi: "每月完成一項大型專案。", eng: "Complete one major project monthly." },
+                { chi: "每月回顧一次人生目標。", eng: "Review life goals monthly." },
+                { chi: "每月更新一次能力地圖。", eng: "Update ability map monthly." },
+                { chi: "每次成功整理成SOP。", eng: "Document every success as SOP." },
+                { chi: "每次失敗建立錯題本。", eng: "Document every failure for learning." },
+                { chi: "每次教學整理成教材。", eng: "Convert every teaching into materials." },
+                { chi: "每次創作建立模板。", eng: "Create templates from every creation." },
+                { chi: "每次突破分享給更多人。", eng: "Share every breakthrough widely." },
+                { chi: "每次合作建立標準流程。", eng: "Standardize every collaboration." },
+                { chi: "每次決策記錄推理過程。", eng: "Document decision reasoning." },
+                { chi: "每次學習整理成知識庫。", eng: "Build knowledge bases from learning." },
+                { chi: "每天完成一件未來仍會持續產生價值的事情。", eng: "Complete one thing daily that creates future value." },
+                { chi: "每天問自己：「今天做的哪一件事，五年後仍然會持續替我創造價值？」", eng: "Ask daily: 'What I did today will still create value in 5 years?'" }
+            ]
+        };
+        
+        // Render items for each section
+        function renderItems(modelName, items) {
+            const container = document.getElementById(`${modelName}-items`);
+            container.innerHTML = '';
+            
+            items.forEach((item, index) => {
+                const itemEl = document.createElement('div');
+                itemEl.className = 'item';
+                itemEl.innerHTML = `
+                    <div class="item-header">
+                        <span class="item-number">${(index + 1).toString().padStart(3, '0')}</span>
+                        <span class="item-text">${item.chi}</span>
+                        <span class="item-toggle">▼</span>
+                    </div>
+                    <div class="item-content">
+                        <div class="item-body">
+                            <div class="chinese-text">${item.chi}</div>
+                            <div style="display: flex; gap: 10px; align-items: center;">
+                                <div class="english-text">${item.eng}</div>
+                                <button class="tts-button" data-text="${item.eng}">🔊</button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+                itemEl.querySelector('.item-header').addEventListener('click', () => {
+                    itemEl.classList.toggle('expanded');
+                });
+                
+                itemEl.querySelector('.tts-button').addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    speakText(item.eng, e.target);
+                });
+                
+                container.appendChild(itemEl);
+            });
+        }
+        
+        // Text-to-Speech function
+        function speakText(text, button) {
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.cancel();
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.lang = 'en-US';
+                utterance.rate = 1;
+                utterance.pitch = 1;
+                
+                button.classList.add('speaking');
+                
+                utterance.onend = () => {
+                    button.classList.remove('speaking');
+                };
+                
+                window.speechSynthesis.speak(utterance);
+            }
+        }
+        
+        // Tab switching
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                document.querySelectorAll('.content-section').forEach(s => s.classList.remove('active'));
+                
+                btn.classList.add('active');
+                const tabName = btn.dataset.tab;
+                document.getElementById(tabName).classList.add('active');
+                
+                if (!document.getElementById(`${tabName}-items`).children.length) {
+                    renderItems(tabName, modelData[tabName]);
+                }
+            });
+        });
+        
+        // Initialize first tab
+        renderItems('compound', modelData.compound);
+    </script>
+</body>
+</html>
