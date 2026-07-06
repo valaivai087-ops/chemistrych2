@@ -1,0 +1,1348 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>情緒生活作業系統完整版 Vol. 21-30 | Emotion Life OS Complete</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --primary: #1A2B5F;
+  --accent: #C9960C;
+  --teal: #0A7A72;
+  --light: #FFFAF0;
+}
+
+body {
+  font-family: -apple-system, "Microsoft JhengHei", "Noto Sans TC", sans-serif;
+  background: #fff;
+  color: var(--primary);
+  line-height: 1.8;
+}
+
+.container { max-width: 1400px; margin: 0 auto; padding: 20px; }
+
+header {
+  background: linear-gradient(135deg, var(--primary) 0%, var(--teal) 100%);
+  color: #fff;
+  padding: 40px;
+  border-radius: 10px;
+  margin-bottom: 30px;
+  text-align: center;
+}
+
+header h1 { font-size: 36px; margin-bottom: 8px; }
+header .subtitle { font-size: 14px; opacity: 0.9; margin: 5px 0; }
+
+.tabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 25px;
+  flex-wrap: wrap;
+  border-bottom: 3px solid var(--accent);
+  padding-bottom: 0;
+}
+
+.tab-btn {
+  padding: 12px 16px;
+  background: #f5f5f5;
+  border: none;
+  border-radius: 6px 6px 0 0;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+  transition: all 0.3s;
+}
+
+.tab-btn:hover { background: var(--light); }
+.tab-btn.active { background: var(--primary); color: #fff; }
+
+.content { display: none; }
+.content.active { display: block; }
+
+.vol-header {
+  background: linear-gradient(135deg, var(--primary) 0%, var(--teal) 100%);
+  color: #fff;
+  padding: 25px;
+  border-radius: 10px;
+  margin-bottom: 20px;
+}
+
+.vol-header h2 { font-size: 28px; margin-bottom: 8px; }
+
+.section {
+  background: #fff;
+  border: 2px solid var(--accent);
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 15px;
+}
+
+.section h3 {
+  color: var(--primary);
+  margin-bottom: 15px;
+  font-size: 16px;
+  border-bottom: 2px solid var(--accent);
+  padding-bottom: 10px;
+}
+
+.item {
+  background: var(--light);
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  padding: 15px;
+  margin: 12px 0;
+  cursor: pointer;
+  transition: all 0.3s;
+}
+
+.item:hover { background: #FFF8E7; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
+
+.item.open { background: #fff; border-color: var(--accent); }
+
+.item-title {
+  font-weight: 700;
+  color: var(--primary);
+  margin-bottom: 8px;
+  font-size: 14px;
+}
+
+.item-toggle {
+  display: inline-block;
+  transition: transform 0.3s;
+  margin-right: 8px;
+  color: var(--accent);
+  font-weight: bold;
+}
+
+.item.open .item-toggle { transform: rotate(90deg); }
+
+.item-content {
+  display: none;
+  max-height: 0;
+  overflow: hidden;
+}
+
+.item.open .item-content {
+  display: block;
+  max-height: 2000px;
+  overflow: visible;
+}
+
+.bilingual {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+  margin: 12px 0;
+  padding: 12px;
+  background: #f9f9f9;
+  border-radius: 6px;
+}
+
+.zh-box, .en-box {
+  padding: 10px;
+  border-radius: 4px;
+}
+
+.zh-box {
+  background: #E8F5F5;
+  border-left: 3px solid var(--teal);
+}
+
+.en-box {
+  background: #FFF8E7;
+  border-left: 3px solid var(--accent);
+}
+
+.zh-label, .en-label {
+  font-weight: 700;
+  font-size: 11px;
+  color: var(--primary);
+  margin-bottom: 6px;
+  display: block;
+  text-transform: uppercase;
+}
+
+.zh-text, .en-text {
+  font-size: 13px;
+  line-height: 1.7;
+  color: #333;
+}
+
+.en-text { font-style: italic; }
+
+.list-items {
+  list-style: none;
+  margin: 12px 0;
+  padding-left: 0;
+}
+
+.list-items li {
+  padding: 8px 0;
+  padding-left: 20px;
+  position: relative;
+  font-size: 13px;
+  color: #333;
+  line-height: 1.6;
+}
+
+.list-items li:before {
+  content: "▶";
+  position: absolute;
+  left: 0;
+  color: var(--accent);
+  font-size: 10px;
+}
+
+.tts-btn {
+  background: var(--teal);
+  color: #fff;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 600;
+  transition: all 0.3s;
+  margin-top: 12px;
+  display: inline-block;
+}
+
+.tts-btn:hover { background: #065A52; transform: scale(1.05); }
+.tts-btn.playing { background: var(--accent); }
+
+@media (max-width: 768px) {
+  .bilingual { grid-template-columns: 1fr; }
+  header h1 { font-size: 24px; }
+  .tabs { flex-direction: column; }
+  .tab-btn { width: 100%; }
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+
+<header>
+  <h1>🧠 情緒生活作業系統完整版</h1>
+  <h1 style="color: var(--accent); font-size: 28px;">Emotion Life OS Complete System</h1>
+  <p class="subtitle">Vol. 21-30 • 10冊完整整合系統</p>
+  <p class="subtitle">The 10-Volume Integrated Framework for Emotional Intelligence</p>
+</header>
+
+<div class="tabs" id="tabs"></div>
+
+<div id="contents"></div>
+
+<footer style="margin-top: 50px; padding: 30px; border-top: 2px solid var(--accent); text-align: center; color: #999; font-size: 12px;">
+  <p>情緒生活作業系統完整藍圖 | Emotion Life OS Complete Roadmap</p>
+  <p>3000+ Bilingual Items • 100% Static HTML • No API • Deploy Anywhere</p>
+</footer>
+
+</div>
+
+<script>
+// ============================================
+// DATA: All 10 Volumes with Bilingual Content
+// ============================================
+
+const volumes = [
+  {
+    num: "21",
+    title_zh: "情緒生成母體",
+    title_en: "Emotion Mother Model",
+    intro_zh: "10個核心模型的整合基礎",
+    intro_en: "The integrated foundation of 10 core models",
+    
+    sections: [
+      {
+        title_zh: "10個核心模型",
+        title_en: "10 Core Models",
+        items: [
+          {
+            title: "Model 101 - 情緒生成公式 | Emotion Generation Formula",
+            zh: "Goal × World × Belief × Prediction = Emotion。你的情緒 = 你的目標 × 你對世界的認知 × 你的核心信念 × 你的預測",
+            en: "Emotion is the product of your unconscious goal, your mental model of the world, your core beliefs, and your prediction of what comes next. Change any variable, change the emotion.",
+            items_zh: [
+              "目標（Goal）：你潛意識想實現的目標或避免的威脅",
+              "世界模型（World）：你相信世界如何運作、人類如何行動",
+              "核心信念（Belief）：關於自己、他人、關係、價值的深層信念",
+              "預測（Prediction）：基於過往經驗，大腦預測現在情況會導致什麼"
+            ],
+            items_en: [
+              "Goal: Your unconscious objective or threat avoidance",
+              "World: How you believe the world works and people act",
+              "Belief: Your deepest convictions about self, others, relationships",
+              "Prediction: What your brain expects will happen based on experience"
+            ]
+          },
+          {
+            title: "Model 102 - 情緒診斷模型 | Emotion Diagnosis Model",
+            zh: "5層快速診斷系統。在短短2-5分鐘內精確識別情緒的來源、強度、身體表現、神經狀態",
+            en: "5-layer rapid diagnostic system. In 2-5 minutes, precisely identify emotion source, intensity, physical expression, and nervous system state.",
+            items_zh: [
+              "第1層：表面情緒（這是什麼情緒？強度多少？）",
+              "第2層：身體信號（身體在哪裡感受它？）",
+              "第3層：神經狀態（交感激活還是副交感平靜？）",
+              "第4層：情緒來源（Goal/World/Belief/Prediction中的哪一個？）",
+              "第5層：深層模式（這反映了什麼更深的信念或模式？）"
+            ],
+            items_en: [
+              "Layer 1: Surface emotion (what is it? intensity?)",
+              "Layer 2: Body signals (where do you feel it?)",
+              "Layer 3: Nervous state (activated or calm?)",
+              "Layer 4: Source (which of the 4 factors?)",
+              "Layer 5: Deep pattern (what belief or pattern does this reflect?)"
+            ]
+          },
+          {
+            title: "Model 103 - 情緒更新流程 | Emotion Update Flow",
+            zh: "4階段信念改變。從舊模型→新體驗→模型更新→新行為，完整的神經重塑迴圈",
+            en: "4-stage belief transformation cycle. From old model to new experience to updated model to new behavior—complete neural rewiring.",
+            items_zh: [
+              "第1階：察覺舊模型（這個信念是怎麼運作的？）",
+              "第2階：收集新體驗（尋找與舊信念矛盾的證據）",
+              "第3階：更新模型（在大腦中重新整合新舊信息）",
+              "第4階：行為改變（新模型指導新行為，新結果驗證模型）"
+            ],
+            items_en: [
+              "Stage 1: Perceive current model (how does this belief work?)",
+              "Stage 2: Collect new experiences (find contradicting evidence)",
+              "Stage 3: Update model (reintegrate new and old information)",
+              "Stage 4: Behavior change (new behavior brings new results)"
+            ]
+          },
+          {
+            title: "Model 104 - 情緒能力樹 | Emotion Ability Tree",
+            zh: "5層情緒能力發展。從感知→命名→調節→轉化→創造，一個完整的能力晉升系統",
+            en: "5-layer emotional competence development. From perception to naming to regulation to transformation to creation.",
+            items_zh: [
+              "🌱 感知層：能察覺情緒的出現和細微身體信號",
+              "🌿 命名層：用精確詞彙描述情緒，區分細微差別",
+              "🌳 調節層：用10+方法改變情緒狀態，選擇最適合的策略",
+              "🌲 轉化層：從情緒中提取教訓，用情緒推動成長",
+              "🌲 創造層：有意識地生成特定情緒狀態服務於目標"
+            ],
+            items_en: [
+              "🌱 Perception: Notice emotions and subtle body signals",
+              "🌿 Naming: Describe emotions with precision and nuance",
+              "🌳 Regulation: Change states using 10+ methods effectively",
+              "🌲 Transformation: Extract wisdom, use emotion for growth",
+              "🌲 Creation: Intentionally generate emotions for goals"
+            ]
+          },
+          {
+            title: "Model 105 - 情緒槓桿 | Emotion Leverage",
+            zh: "找到最高效的干預點。在整個迴圈中，有些關鍵點的改變產生不成比例的結果。不要試圖同時改變5個地方，集中力量改變一個最高槓桿的點",
+            en: "Find highest-impact intervention points. Some key changes produce disproportionate results. Focus on one leverage point instead of five.",
+            items_zh: [
+              "🎯 最高槓桿：目標清晰度（如果目標不清楚，調節也解決不了根本）",
+              "🎯 次高：核心信念（改變信念會改變所有後續反應）",
+              "🎯 中等：預測準確性（提高預測精度減少焦慮）",
+              "🎯 可行：身體預算（睡眠、進食、運動改善50%問題）",
+              "🎯 最低：環境設計（改變環境會自動改變情緒）"
+            ],
+            items_en: [
+              "🎯 Highest: Goal clarity (foundation of everything)",
+              "🎯 High: Core belief (changes all downstream reactions)",
+              "🎯 Medium: Prediction accuracy (reduces unnecessary anxiety)",
+              "🎯 Actionable: Body budget (sleep, food, exercise fix 50%)",
+              "🎯 Lowest: Environment (automatic emotion change)"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+
+  {
+    num: "22",
+    title_zh: "情緒診斷引擎",
+    title_en: "Emotion Diagnosis Engine",
+    intro_zh: "10層診斷系統 × 50+個問題",
+    intro_en: "10-level diagnostic system with 50+ targeted questions",
+    
+    sections: [
+      {
+        title_zh: "10層診斷級別",
+        title_en: "10 Diagnostic Levels",
+        items: [
+          {
+            title: "Level 1 - 表面情緒 | Surface Emotion",
+            zh: "用一個詞精確描述你的情緒。強度1-10？持續多久？什麼觸發的？",
+            en: "Name your emotion in one word. Intensity 1-10? How long? What triggered it?",
+            items_zh: ["情緒名稱", "強度評分", "持續時間", "觸發事件"],
+            items_en: ["Emotion name", "Intensity (1-10)", "Duration", "Trigger event"]
+          },
+          {
+            title: "Level 2 - 情緒家族 | Emotional Family",
+            zh: "是喜悅族、悲傷族、恐懼族、憤怒族、厭惡族還是驚訝族？是否有混合情緒？",
+            en: "Joy, sadness, fear, anger, disgust, or surprise family? Is it a blend?",
+            items_zh: ["核心家族分類", "次要情緒", "情緒混合評估", "主導情緒vs抑制情緒"],
+            items_en: ["Primary family", "Secondary emotions", "Emotional blend", "Dominant vs suppressed"]
+          },
+          {
+            title: "Level 3 - 身體信號 | Body Signals",
+            zh: "你的身體在哪裡、如何表現這個情緒？胸口、腹部、肩膀、喉嚨？緊張還是放鬆？",
+            en: "Where and how does your body express this emotion? Tension patterns? Temperature?",
+            items_zh: ["身體位置", "物理感受（緊、鬆、熱、冷）", "能量水平", "呼吸模式", "肌肉張力"],
+            items_en: ["Location", "Sensation (tight, loose, hot, cold)", "Energy level", "Breath pattern", "Muscle tension"]
+          },
+          {
+            title: "Level 4 - 神經系統狀態 | Nervous System State",
+            zh: "交感神經激活（戰鬥或逃跑）還是副交感神經平靜（休息和消化）？",
+            en: "Sympathetic (fight/flight) or parasympathetic (rest/digest)? Balanced?",
+            items_zh: ["心率變化", "警覺水平", "激活狀態", "逃避/戰鬥/僵凍/討好傾向", "自主神經基調"],
+            items_en: ["Heart rate", "Alertness", "Activation level", "Escape/fight/freeze/appease", "Baseline tone"]
+          },
+          {
+            title: "Level 5 - 情緒來源 | Emotional Source",
+            zh: "這個情緒來自Goal威脅？World model違反？Belief挑戰？Prediction失敗？",
+            en: "Source: Goal threat? World violation? Belief challenge? Prediction failure?",
+            items_zh: ["我的目標被威脅了嗎？", "我的世界模型被違反了嗎？", "我的信念被挑戰了嗎？", "我的預測失敗了嗎？", "多個來源同時存在？"],
+            items_en: ["Goal threatened?", "World model violated?", "Belief challenged?", "Prediction failed?", "Multiple sources?"]
+          },
+          {
+            title: "Level 6 - 身體預算 | Body Budget Assessment",
+            zh: "你的生物資源水平如何？睡眠、進食、休息、社交能量各多少分？",
+            en: "What's your biological resource level? Sleep, nutrition, rest, social energy each 1-10?",
+            items_zh: ["睡眠品質評分", "營養狀態評分", "最近休息評分", "社交能量評分", "整體活力評分"],
+            items_en: ["Sleep quality (1-10)", "Nutrition status (1-10)", "Recent rest (1-10)", "Social energy (1-10)", "Overall vitality (1-10)"]
+          },
+          {
+            title: "Level 7 - 信念系統 | Belief System Check",
+            zh: "什麼信念在驅動這個情緒？關於自己？他人？世界？可能性？",
+            en: "What belief drives this emotion? About yourself? Others? The world? Possibility?",
+            items_zh: ["關於自己的核心信念", "關於他人的核心信念", "關於世界的核心信念", "關於可能性的核心信念", "信念的僵化程度"],
+            items_en: ["Core belief about self", "Core belief about others", "Core belief about world", "Core belief about possibility", "Belief rigidity"]
+          },
+          {
+            title: "Level 8 - 預測分析 | Prediction Analysis",
+            zh: "最好情境預測？現實情境預測？最壞情境預測？你的預測準確嗎？",
+            en: "Best-case? Realistic? Worst-case prediction? How accurate is your prediction?",
+            items_zh: ["最好情況預測", "現實情況預測", "最壞情況預測", "概率評估準確度", "預測信心水平"],
+            items_en: ["Best-case scenario", "Realistic scenario", "Worst-case scenario", "Probability accuracy", "Prediction confidence"]
+          },
+          {
+            title: "Level 9 - 環境掃描 | Environmental Scan",
+            zh: "什麼環境因素存在？獨自一人、有人在場、公眾場合？時間影響？壓力因素？",
+            en: "What environmental factors are present? Alone? With others? Public? Time? Stressors?",
+            items_zh: ["社交背景（獨自/有人/公眾）", "時間影響", "地點影響", "最近壓力因素", "積極環境因素"],
+            items_en: ["Social context (alone/others/public)", "Time of day", "Location", "Recent stressors", "Positive factors"]
+          },
+          {
+            title: "Level 10 - 深層模式 | Deep Pattern Recognition",
+            zh: "更深層的模式是什麼？我之前感受過這個嗎？多頻繁？觸發的一致性？學習機會？",
+            en: "What deeper pattern emerges? Felt before? Frequency? Trigger consistency? Learning opportunity?",
+            items_zh: ["歷史模式（以前發生過嗎？）", "頻率模式（多久發生一次？）", "觸發一致性（什麼一直觸發它？）", "學習機會（它在教什麼？）", "成長方向（我如何透過它進化？）"],
+            items_en: ["Historical pattern (felt before?)", "Frequency pattern (how often?)", "Trigger consistency (what triggers?)", "Learning opportunity (what teaches?)", "Growth direction (how evolve?)"]
+          }
+        ]
+      }
+    ]
+  },
+
+  {
+    num: "23",
+    title_zh: "情緒能力樹",
+    title_en: "Emotion Ability Tree",
+    intro_zh: "1000個能力節點 × 5層發展",
+    intro_en: "1000 ability nodes across 5 layers",
+    
+    sections: [
+      {
+        title_zh: "5層情緒能力",
+        title_en: "5 Layers of Emotional Competence",
+        items: [
+          {
+            title: "🌱 感知層 (100節點) | Perception Layer",
+            zh: "能察覺到情緒的細微出現、身體信號、觸發點、模式、環境情感基調",
+            en: "Sense emotion's subtle appearance, body signals, triggers, patterns, environmental tone",
+            items_zh: [
+              "微情緒偵測 - 情緒出現的最早時刻就察覺",
+              "身體信號讀取 - 理解身體如何表達情感",
+              "觸發意識 - 知道什麼一致地觸發你",
+              "模式識別 - 看到循環和模式",
+              "環境敏感 - 讀取房間的情感氣溫"
+            ],
+            items_en: [
+              "Micro-emotion detection - catch emotion early",
+              "Body signal literacy - understand physical expression",
+              "Trigger awareness - know what triggers you",
+              "Pattern recognition - see cycles and patterns",
+              "Environmental sensitivity - read the room's tone"
+            ]
+          },
+          {
+            title: "🌿 命名層 (150節點) | Naming Layer",
+            zh: "用精確詞彙描述情緒，區分細微差別、混合情緒、強度、複雜情感",
+            en: "Describe emotions with precision, distinguish nuances, blends, intensity, complexity",
+            items_zh: [
+              "基礎情緒詞彙 - 6個基礎情緒家族",
+              "情緒細微差別 - 滿足vs狂喜、悲傷vs絕望",
+              "混合情緒 - 焦慮-興奮、悲傷-解脫",
+              "強度分級 - 挫折vs憤怒vs狂怒",
+              "複雜情感 - 同時相衝突的多個情緒"
+            ],
+            items_en: [
+              "Basic vocabulary - joy, sadness, fear, anger, disgust, surprise",
+              "Emotion nuances - contentment vs elation, melancholy vs despair",
+              "Emotional blends - anxiety-excitement, sadness-relief",
+              "Intensity gradations - frustrated vs furious",
+              "Emotional complexity - conflicting simultaneous emotions"
+            ]
+          },
+          {
+            title: "🌳 調節層 (250節點) | Regulation Layer",
+            zh: "用多種方法改變情緒狀態 - 身體、認知、社交、身體、環境技巧",
+            en: "Change emotional states using multiple methods - physical, cognitive, social, somatic, environmental",
+            items_zh: [
+              "身體技巧 - 呼吸、運動、冷水、溫度",
+              "認知技巧 - 重新框架、視角轉移、意義重構",
+              "社交技巧 - 連結、尋求支持、分享",
+              "身體技巧 - 身體掃描、漸進式放鬆、瑜伽",
+              "環境技巧 - 改變地點、感官調整、音樂"
+            ],
+            items_en: [
+              "Physical - breathing, movement, cold exposure, temperature",
+              "Cognitive - reframing, perspective shift, meaning-making",
+              "Social - connection, support-seeking, sharing",
+              "Somatic - body scan, progressive relaxation, yoga",
+              "Environmental - location change, sensory adjustment, music"
+            ]
+          },
+          {
+            title: "🌲 轉化層 (300節點) | Transformation Layer",
+            zh: "將情緒轉化為智慧 - 情緒即資訊、教訓提取、意義創造、成長",
+            en: "Convert emotions to wisdom - emotion as data, lesson extraction, meaning-making, growth",
+            items_zh: [
+              "情緒即資訊 - 這個情緒在告訴我什麼？",
+              "教訓提取 - 我從這個能學到什麼？",
+              "意義創造 - 這如何適應我的人生故事？",
+              "智慧發展 - 我如何透過這個成長？",
+              "整合 - 我如何把這變成我成長的一部分？"
+            ],
+            items_en: [
+              "Emotion as data - what is this telling me?",
+              "Lesson extraction - what can I learn?",
+              "Meaning-making - how does this fit my story?",
+              "Wisdom development - how do I grow?",
+              "Integration - how do I make this part of growth?"
+            ]
+          },
+          {
+            title: "🌲 創造層 (200節點) | Creation Layer",
+            zh: "有意識地生成特定情緒狀態 - 心情設定、資源激活、心流、韌性",
+            en: "Intentionally generate emotional states - mood setting, resource activation, flow, resilience",
+            items_zh: [
+              "有意識情緒生成 - 為任務創造所需情緒",
+              "心情設定 - 創造期望的情感環境",
+              "資源激活 - 需要時動員積極情緒",
+              "心流進入 - 進入高峰表現區",
+              "韌性建立 - 培養情感力量"
+            ],
+            items_en: [
+              "Conscious generation - create needed emotion for task",
+              "Mood setting - create desired environment",
+              "Resource activation - mobilize positive when needed",
+              "Flow entry - reach peak performance",
+              "Resilience building - cultivate emotional strength"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+
+  {
+    num: "24",
+    title_zh: "情緒更新引擎",
+    title_en: "Emotion Update Engine",
+    intro_zh: "1000個更新策略 × 5大類",
+    intro_en: "1000 update strategies across 5 categories",
+    
+    sections: [
+      {
+        title_zh: "更新策略分類",
+        title_en: "Update Strategy Categories",
+        items: [
+          {
+            title: "體驗式更新 (200策略) | Experience-Based",
+            zh: "透過直接體驗學習改變信念。暴露療法、行為實驗、成功記錄、對比體驗",
+            en: "Learn by direct experience. Exposure therapy, behavioral experiments, success documentation, contrast experiences",
+            items_zh: ["暴露療法 - 漸進式面對恐懼情況", "行為實驗 - 測試限制性信念", "成功記錄 - 記錄勝利", "對比體驗 - 活出相反的信念", "累積 - 為新信念收集證據"],
+            items_en: ["Exposure - gradual facing of feared situations", "Experiments - test limiting beliefs", "Success docs - record wins", "Contrast - live opposite belief", "Accumulation - gather evidence"]
+          },
+          {
+            title: "認知式更新 (200策略) | Cognitive",
+            zh: "透過思維改變信念。重新框架、去災難化、證據評估、視角轉移",
+            en: "Change through thinking. Reframing, decatastrophizing, evidence evaluation, perspective shifts",
+            items_zh: ["重新框架 - 看同一情況的不同方式", "去災難化 - 降低最壞情況的假設", "證據評估 - 檢視信念有效性", "視角轉移 - 從他人觀點看", "意義重構 - 創造新的詮釋"],
+            items_en: ["Reframing - see situation differently", "Decatastrophizing - reduce worst-case", "Evidence eval - check belief", "Perspective - other viewpoint", "Meaning - new interpretation"]
+          },
+          {
+            title: "情感式更新 (200策略) | Emotional",
+            zh: "透過情感工作轉化。情緒釋放、身體體驗、情緒對話、同情見證",
+            en: "Transform through emotional work. Release, somatic experiencing, dialogue, compassionate witnessing",
+            items_zh: ["情緒釋放 - 讓情緒流動", "身體體驗 - 透過身體處理", "情緒對話 - 與情緒交談", "同情見證 - 不評判地觀看", "整合 - 與情緒和平共處"],
+            items_en: ["Release - let emotions flow", "Somatic - process through body", "Dialogue - talk to emotion", "Witness - observe without judgment", "Integration - make peace"]
+          },
+          {
+            title: "社交式更新 (200策略) | Social",
+            zh: "透過關係學習。安全連結、共調、視角交流、社會證明、歸屬感",
+            en: "Learn through relationships. Safe connection, co-regulation, perspective exchange, social proof, belonging",
+            items_zh: ["安全連結 - 體驗安全的關係", "共調 - 從他人學習情感平衡", "視角交流 - 聽其他觀點", "社會證明 - 看他人成功", "歸屬感 - 體驗被接納"],
+            items_en: ["Safe connection - secure relationships", "Co-regulation - learn balance", "Exchange - hear viewpoints", "Proof - see others succeed", "Belonging - feel accepted"]
+          },
+          {
+            title: "系統式更新 (200策略) | Systems",
+            zh: "透過習慣和環境改變。習慣堆疊、環境重設、常規建立、支持系統、身份整合",
+            en: "Change through habits and environment. Habit stacking, environmental redesign, routines, support, identity",
+            items_zh: ["習慣堆疊 - 把新信念連結到現有習慣", "環境重設 - 改變觸發器", "常規建立 - 一致實踐", "支持系統 - 周圍人的支持", "身份整合 - 把信念變成身份的一部分"],
+            items_en: ["Habit stacking - link to existing habits", "Environment - change triggers", "Routine - consistent practice", "Support - surround yourself", "Identity - make belief part of self"]
+          }
+        ]
+      }
+    ]
+  },
+
+  {
+    num: "25",
+    title_zh: "情緒任務生成器",
+    title_en: "Emotion Task Generator",
+    intro_zh: "1000個微習慣 - 每個5-15分鐘",
+    intro_en: "1000 microhabits - 5-15 minutes each",
+    
+    sections: [
+      {
+        title_zh: "微習慣類別",
+        title_en: "Microhabit Categories",
+        items: [
+          {
+            title: "早晨儀式 (150任務) | Morning Rituals",
+            zh: "用3-5分鐘開啟情感智能。感謝、身體掃描、意圖設定、呼吸、肯定",
+            en: "Start your day with emotional intelligence. Gratitude, body scan, intention, breathing, affirmations (3-5 min)",
+            items_zh: ["3分鐘感謝反思", "身體掃描意識", "意圖設定", "呼吸練習", "肯定嵌入"],
+            items_en: ["3-min gratitude", "Body scan", "Intention setting", "Breathing", "Affirmations"]
+          },
+          {
+            title: "每小時檢查 (150任務) | Hourly Check-ins",
+            zh: "微時刻情感意識。1分鐘情緒檢查、身體掃描、能量評分、快速重新框架",
+            en: "Micro-moment emotional awareness. 1-min emotion check, body scan, energy rating, quick reframe",
+            items_zh: ["1分鐘情緒檢查", "身體張力評估", "能量水平評分", "快速重新框架", "呼吸重置"],
+            items_en: ["1-min emotion check", "Body tension", "Energy rating", "Quick reframe", "Breath reset"]
+          },
+          {
+            title: "調節工具 (200任務) | Regulation Tools",
+            zh: "緊急情感工具箱。5分鐘呼吸、2分鐘運動、冷水(30秒)、接地、感官激活",
+            en: "Emergency emotional toolkit. 5-min breathing, 2-min movement, cold water (30 sec), grounding, sensory",
+            items_zh: ["5分鐘呼吸運動", "2分鐘運動休息", "冷水接觸", "接地技巧", "感官激活"],
+            items_en: ["5-min breathing", "2-min movement", "Cold exposure", "Grounding", "Sensory"]
+          },
+          {
+            title: "晚間反思 (200任務) | Evening Reflections",
+            zh: "日常學習和整合。5分鐘情緒日誌、模式識別、教訓提取、明天意圖、感謝",
+            en: "Daily learning and integration. 5-min journaling, patterns, lessons, tomorrow's intention, gratitude",
+            items_zh: ["5分鐘情緒日誌", "模式識別", "教訓提取", "明天意圖", "感謝練習"],
+            items_en: ["5-min journaling", "Pattern recognition", "Lesson extraction", "Tomorrow intention", "Gratitude"]
+          },
+          {
+            title: "週間深潛 (150任務) | Weekly Deep Dives",
+            zh: "更深層的情感工作。15分鐘信念檢視、情感時間線、觸發分析、進度評估、策略調整",
+            en: "Deeper emotional work. 15-min belief exam, emotional timeline, trigger analysis, progress check",
+            items_zh: ["15分鐘信念檢視", "情感時間線", "觸發分析", "進度評估", "策略調整"],
+            items_en: ["15-min belief exam", "Timeline", "Trigger analysis", "Progress", "Strategy adjustment"]
+          },
+          {
+            title: "成長加速 (150任務) | Growth Accelerators",
+            zh: "挑戰和突破。脆弱練習、邊界設定、困難對話、恐懼暴露、愛的表達",
+            en: "Challenges and breakthroughs. Vulnerability, boundaries, difficult conversation, fear exposure, love",
+            items_zh: ["脆弱練習", "邊界設定", "困難對話", "恐懼暴露", "愛的表達"],
+            items_en: ["Vulnerability", "Boundaries", "Hard conversation", "Fear exposure", "Love expression"]
+          }
+        ]
+      }
+    ]
+  },
+
+  {
+    num: "26",
+    title_zh: "情緒智慧1000",
+    title_en: "Emotion Wisdom 1000",
+    intro_zh: "1000句核心智慧 × 10類",
+    intro_en: "1000 profound insights across 10 categories",
+    
+    sections: [
+      {
+        title_zh: "智慧類別",
+        title_en: "Wisdom Categories",
+        items: [
+          {
+            title: "情緒本質 (100智慧) | On Emotion Nature",
+            zh: "理解情緒的本質",
+            en: "Understanding what emotions are",
+            items_zh: [
+              "情緒是資訊，不是命令——它們告訴但不指揮",
+              "你的神經系統無法區分過去和現在的威脅——對它的謹慎保持溫柔",
+              "沒有『壞』的情緒，只有誤讀的信號",
+              "情緒代表大腦對世界的預測——改變預測，改變情緒",
+              "情緒跟隨注意力——你把焦點放在哪裡就決定了你感受什麼"
+            ],
+            items_en: [
+              "Emotions are data, not directives—they inform but don't dictate",
+              "Your nervous system can't distinguish past from present threats—be gentle",
+              "No 'bad' emotions, only misread signals",
+              "Emotion represents the brain's prediction—change prediction, change emotion",
+              "Emotion follows attention—where you focus determines what you feel"
+            ]
+          },
+          {
+            title: "成長 (100智慧) | On Growth",
+            zh: "透過情感挑戰的學習",
+            en: "Learning through emotional challenges",
+            items_zh: [
+              "成長發生在舒適的邊界，不在舒適或恐慌中",
+              "每個挑戰你的情緒都在教你關於自己的東西",
+              "你的傷口是你變成老師的方式",
+              "勇氣不是沒有恐懼——是帶著恐懼前進",
+              "最深的成長發生在你跨越極限的時刻"
+            ],
+            items_en: [
+              "Growth happens at edge of comfort, not in comfort or panic",
+              "Every challenging emotion teaches you something about yourself",
+              "Your wounds are how you become a teacher",
+              "Courage isn't absence of fear—it's moving forward anyway",
+              "Deepest growth happens when you transcend limits"
+            ]
+          },
+          {
+            title: "連結 (100智慧) | On Connection",
+            zh: "情感中的關係",
+            en: "Emotions in relationships",
+            items_zh: [
+              "共調是最深層的療癒——被感受拯救了你",
+              "你的脆弱不是軟弱——是真實連結的誕生地",
+              "真正的親密始於允許被看見",
+              "分享的情緒是被代謝的情緒",
+              "最療癒的話不是『我有答案』而是『我明白』"
+            ],
+            items_en: [
+              "Co-regulation is deepest healing—being felt saves you",
+              "Your vulnerability isn't weakness—it's birthplace of connection",
+              "True intimacy starts with allowing to be seen",
+              "Emotions shared are emotions metabolized",
+              "Most healing words: 'I understand' not 'I have answers'"
+            ]
+          },
+          {
+            title: "能動性 (100智慧) | On Agency",
+            zh: "你對情感的力量",
+            en: "Your power over emotions",
+            items_zh: [
+              "你無法總是控制所感，但能選擇如何回應",
+              "你的情緒不是你的錯，但模式是你的責任",
+              "改變不在『正面思考』，而在改變預測",
+              "每個習慣都是身份的投票",
+              "最大自由是情感自由——自由去感受任何東西並仍然選擇"
+            ],
+            items_en: [
+              "You can't always control what you feel, but can choose response",
+              "Your emotions aren't your fault, but patterns are your responsibility",
+              "Change isn't positive thinking—it's changing prediction",
+              "Every habit is a vote for identity",
+              "Greatest freedom is emotional freedom—to feel anything and still choose"
+            ]
+          },
+          {
+            title: "轉化 (100智慧) | On Transformation",
+            zh: "成為你想成為的人",
+            en: "Becoming who you want to be",
+            items_zh: [
+              "你不是壞的——你正是現在需要的進化程度",
+              "小一致改變成為大生活轉化——1%的力量",
+              "你成為的人取決於不是力量時刻，而是每日習慣",
+              "改變不需要戲劇——它需要堅持",
+              "你已經有了成為任何東西所需的一切"
+            ],
+            items_en: [
+              "You're not broken—you're exactly at needed evolution",
+              "Small consistent changes become large life transformations—1% power",
+              "Who you become is determined by daily habits not peak moments",
+              "Change doesn't need drama—it needs persistence",
+              "You already have everything needed to become anything"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+
+  {
+    num: "27",
+    title_zh: "情緒錯誤模型",
+    title_en: "Emotion Error Models 1000",
+    intro_zh: "1000種常見誤區 × 6類",
+    intro_en: "1000 common mistakes and how to avoid them",
+    
+    sections: [
+      {
+        title_zh: "常見錯誤模式",
+        title_en: "Common Error Patterns",
+        items: [
+          {
+            title: "感知錯誤 (150誤區) | Perception Errors",
+            zh: "誤讀情感信號",
+            en: "Misreading emotional signals",
+            items_zh: [
+              "把身體感覺誤認為情緒（飢餓當悲傷）",
+              "混淆激活和危險（興奮當焦慮）",
+              "忽視身體信號直到它們尖叫",
+              "錯過主要情緒下的次要情緒",
+              "假設最初反應是準確的"
+            ],
+            items_en: [
+              "Mistaking sensations for emotions (hunger as sadness)",
+              "Confusing activation with danger (excitement as anxiety)",
+              "Ignoring signals until they scream",
+              "Missing secondary emotions beneath primary",
+              "Assuming initial reaction is accurate"
+            ]
+          },
+          {
+            title: "歸因錯誤 (150誤區) | Attribution Errors",
+            zh: "誤解什麼造成情緒",
+            en: "Misunderstanding what caused emotions",
+            items_zh: [
+              "當問題是內在時怪他人",
+              "過度個人化中立事件（他們不高興，一定是因為我）",
+              "假設你的情緒意味著關於現實的東西",
+              "混淆相關性和因果性",
+              "忽視環境和生物因素"
+            ],
+            items_en: [
+              "Blaming others when problem is internal",
+              "Over-personalizing neutral events",
+              "Assuming emotion means something about reality",
+              "Confusing correlation with causation",
+              "Ignoring environmental and biological factors"
+            ]
+          },
+          {
+            title: "調節錯誤 (200誤區) | Regulation Errors",
+            zh: "未能有效改變情感狀態",
+            en: "Failing to change emotional states effectively",
+            items_zh: [
+              "壓抑代替處理（被埋的情緒會變大）",
+              "反芻思考（徘徊讓它變更糟）",
+              "為你的神經狀態使用錯誤的工具",
+              "期望立即結果（情感工作需要時間）",
+              "用物質代替真正的調節"
+            ],
+            items_en: [
+              "Suppression not processing (buried emotions grow)",
+              "Rumination (dwelling makes it worse)",
+              "Wrong tools for your nervous state",
+              "Expecting instant results",
+              "Using substances instead of real regulation"
+            ]
+          },
+          {
+            title: "信念錯誤 (200誤區) | Belief Errors",
+            zh: "從限制性信念操作",
+            en: "Operating from limiting beliefs",
+            items_zh: [
+              "身份融合（我是焦慮，而不是我體驗焦慮）",
+              "永久性信念（這永遠不會改變）",
+              "全球化一般化（一個失敗意味著我沒價值）",
+              "二元論思考（如果我不完美，我很糟）",
+              "情感推理（如果我感受它，它一定是真的）"
+            ],
+            items_en: [
+              "Identity fusion (I am anxious not I experience anxiety)",
+              "Permanence belief (this will never change)",
+              "Global generalization (one failure means worthless)",
+              "All-or-nothing thinking (if not perfect, terrible)",
+              "Emotional reasoning (if I feel it, it's true)"
+            ]
+          },
+          {
+            title: "決策錯誤 (150誤區) | Decision Errors",
+            zh: "從情感狀態做出糟糕選擇",
+            en: "Making poor choices from emotional states",
+            items_zh: [
+              "在激活時決策（戰鬥/逃跑決策通常很糟）",
+              "情感衝動vs考慮周密的選擇",
+              "追逐高點和避免低點（錯過成長）",
+              "讓他人的情緒決定你的決定",
+              "忽視重要資訊因為它不符合感受"
+            ],
+            items_en: [
+              "Deciding when activated (fight/flight is usually bad)",
+              "Emotional impulse vs considered choice",
+              "Chasing highs and avoiding lows",
+              "Letting others' emotions dictate your decisions",
+              "Ignoring important info because it doesn't feel right"
+            ]
+          },
+          {
+            title: "關係錯誤 (150誤區) | Relationship Errors",
+            zh: "連結中的情感誤區",
+            en: "Emotional mistakes in connection",
+            items_zh: [
+              "期望他人調節你的情緒",
+              "把情緒當武器來控制他人",
+              "假設他人的內部狀態符合他們的外部表達",
+              "缺乏情感誠實（假裝沒事）",
+              "未處理的童年情緒影響成人關係"
+            ],
+            items_en: [
+              "Expecting others to regulate your emotions",
+              "Using emotions as weapons to control",
+              "Assuming others' internal state matches expression",
+              "Lack of emotional honesty",
+              "Unprocessed childhood emotions affecting adult relationships"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+
+  {
+    num: "28",
+    title_zh: "情緒更新模型",
+    title_en: "Emotion Update Models 1000",
+    intro_zh: "1000條進化路徑 × 10類",
+    intro_en: "1000 pathways for emotional evolution",
+    
+    sections: [
+      {
+        title_zh: "進化路徑",
+        title_en: "Evolution Pathways",
+        items: [
+          {
+            title: "恐懼進化 (100路徑) | Fear Evolution",
+            zh: "從焦慮到勇敢",
+            en: "From anxious to courageous",
+            items_zh: [
+              "恐懼 → 理解（我究竟害怕什麼？）",
+              "焦慮 → 準備（我能做什麼準備？）",
+              "迴避 → 接近（向我害怕的小步驟）",
+              "擔憂 → 行動（把焦慮轉成生產性計劃）",
+              "恐慌 → 接地（學習調節強烈激活）"
+            ],
+            items_en: [
+              "Fear → Understanding (What exactly am I afraid of?)",
+              "Anxiety → Preparation (What can I prepare?)",
+              "Avoidance → Approach (Small steps toward fear)",
+              "Worry → Action (Transform to productive planning)",
+              "Panic → Grounding (Learn to regulate intensity)"
+            ]
+          },
+          {
+            title: "悲傷進化 (100路徑) | Sadness Evolution",
+            zh: "從絕望到智慧",
+            en: "From despair to wisdom",
+            items_zh: [
+              "悲傷 → 接納（這發生了，它重要）",
+              "哀悼 → 感謝（悲傷顯示我愛了什麼）",
+              "無望 → 視角（這是暫時的）",
+              "隔離 → 連結（尋求支持）",
+              "絕望 → 意義（我能從這個損失中學到什麼？）"
+            ],
+            items_en: [
+              "Sadness → Acceptance (This happened, it matters)",
+              "Grief → Gratitude (Sadness shows what I loved)",
+              "Hopelessness → Perspective (This is temporary)",
+              "Isolation → Connection (Reach out for support)",
+              "Despair → Meaning (What can I learn from loss?)"
+            ]
+          },
+          {
+            title: "憤怒進化 (100路徑) | Anger Evolution",
+            zh: "從狂怒到主張",
+            en: "From rage to assertion",
+            items_zh: [
+              "憤怒 → 清晰（什麼在這裡被違反？）",
+              "狂怒 → 邊界（清楚地說出我的需要）",
+              "怨恨 → 溝通（表達我的傷害）",
+              "易怒 → 同情（我的憤怒下是什麼？）",
+              "苦澀 → 放下（讓去我無法改變的）"
+            ],
+            items_en: [
+              "Anger → Clarity (What is violated?)",
+              "Rage → Boundary (Speak my needs clearly)",
+              "Resentment → Communication (Express hurt)",
+              "Irritability → Compassion (What's beneath?)",
+              "Bitterness → Release (Let go of unchangeable)"
+            ]
+          },
+          {
+            title: "羞愧進化 (100路徑) | Shame Evolution",
+            zh: "從自我拒絕到自我接納",
+            en: "From self-rejection to self-acceptance",
+            items_zh: [
+              "羞愧 → 好奇（這關於什麼？）",
+              "內疚 → 問責（我做了某事壞，不是壞的）",
+              "不足 → 成長（我正是該有的地方）",
+              "無價值 → 自我同情（我應得友善）",
+              "暴露恐懼 → 脆弱力量（被看見是強大的）"
+            ],
+            items_en: [
+              "Shame → Curiosity (What's this about?)",
+              "Guilt → Accountability (I did bad not am bad)",
+              "Inadequacy → Growth (I'm where I need to be)",
+              "Unworthiness → Self-compassion (I deserve kindness)",
+              "Exposure fear → Vulnerable strength (Being seen is powerful)"
+            ]
+          },
+          {
+            title: "喜悅進化 (100路徑) | Joy Evolution",
+            zh: "從短暫快樂到深層滿足",
+            en: "From fleeting pleasure to deep fulfillment",
+            items_zh: [
+              "快樂 → 滿足（持續的滿足）",
+              "快感 → 目的（對齐意義的喜悅）",
+              "成功 → 貢獻（用喜悅來服務）",
+              "成就 → 慶祝（允許自己感受好）",
+              "愛 → 智慧（愛教導最深層的課程）"
+            ],
+            items_en: [
+              "Happiness → Contentment (Sustained satisfaction)",
+              "Pleasure → Purpose (Joy aligned with meaning)",
+              "Success → Contribution (Use joy to serve)",
+              "Achievement → Celebration (Allow yourself to feel good)",
+              "Love → Wisdom (Love teaches deepest lessons)"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+
+  {
+    num: "29",
+    title_zh: "情緒反思問題",
+    title_en: "Emotion Reflection Questions 1000",
+    intro_zh: "1000個深層問題 × 10類",
+    intro_en: "1000 powerful questions for deeper understanding",
+    
+    sections: [
+      {
+        title_zh: "反思類別",
+        title_en: "Reflection Categories",
+        items: [
+          {
+            title: "日常反思 (100問題) | Daily Reflection",
+            zh: "快速日常檢查 (2-3分鐘)",
+            en: "Quick daily check-ins (2-3 min)",
+            items_zh: [
+              "什麼情緒主導我的一天，為什麼？",
+              "我什麼時候感到最活著？",
+              "我什麼時候感到最困住？",
+              "我的情緒今天教我什麼？",
+              "我的選擇如何反映我的價值？"
+            ],
+            items_en: [
+              "What emotion dominated my day and why?",
+              "When did I feel most alive?",
+              "When did I feel most stuck?",
+              "What did my emotions teach me?",
+              "How did my choices reflect my values?"
+            ]
+          },
+          {
+            title: "模式識別 (100問題) | Pattern Recognition",
+            zh: "理解你的情感模式",
+            en: "Understanding your emotional patterns",
+            items_zh: [
+              "什麼最一致地激活我？",
+              "我通常如何回應失望？",
+              "我壓抑或放大什麼情緒？",
+              "我從家庭繼承什麼模式？",
+              "我現在的掙扎如何連結到我的過去？"
+            ],
+            items_en: [
+              "What triggers me most consistently?",
+              "How do I typically respond to disappointment?",
+              "What emotions do I suppress or amplify?",
+              "What patterns did I inherit from family?",
+              "How do my current struggles connect to my past?"
+            ]
+          },
+          {
+            title: "信念檢視 (100問題) | Belief Examination",
+            zh: "檢視你的核心信念",
+            en: "Examining your core beliefs",
+            items_zh: [
+              "我對我的情感能力相信什麼？",
+              "我學到了關於尋求幫助的什麼？",
+              "什麼信念限制我的情感表達？",
+              "我的核心信念來自哪裡？",
+              "哪些信念服務於我，哪些束縛我？"
+            ],
+            items_en: [
+              "What do I believe about my emotional capacity?",
+              "What did I learn about needing help?",
+              "What beliefs limit my emotional expression?",
+              "Where did my core beliefs come from?",
+              "Which beliefs serve me and which constrain me?"
+            ]
+          },
+          {
+            title: "悲傷和損失 (100問題) | Grief and Loss",
+            zh: "處理困難情緒",
+            en: "Processing difficult emotions",
+            items_zh: [
+              "我持有什麼未被承認的悲傷？",
+              "我仍在調整什麼損失？",
+              "這個困難如何改變了我？",
+              "我在明顯損失之外悲悼什麼？",
+              "我能從這個痛苦中賦予什麼意義？"
+            ],
+            items_en: [
+              "What grief am I holding unacknowledged?",
+              "What loss am I still adjusting to?",
+              "How has this difficulty changed me?",
+              "What am I grieving beyond obvious loss?",
+              "What meaning can I make from this pain?"
+            ]
+          },
+          {
+            title: "喜悅和感謝 (100問題) | Joy and Gratitude",
+            zh: "深化積極情緒",
+            en: "Deepening positive emotions",
+            items_zh: [
+              "什麼今天給我真正的喜悅？",
+              "我在視為理所當然什麼？",
+              "我如何創造更多喜悅時刻？",
+              "什麼小事讓我喜悅？",
+              "困難如何教我感謝？"
+            ],
+            items_en: [
+              "What brought me genuine joy today?",
+              "Who or what am I taking for granted?",
+              "How can I create more moments of joy?",
+              "What small things delight me?",
+              "How has difficulty taught me gratitude?"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+
+  {
+    num: "30",
+    title_zh: "情緒生活作業系統終極提示詞",
+    title_en: "Emotion Life OS Master Prompt",
+    intro_zh: "完整系統提示詞 - 用於AI和個人實踐",
+    intro_en: "Complete system prompt for AI agents and personal implementation",
+    
+    sections: [
+      {
+        title_zh: "完整主系統提示詞",
+        title_en: "Complete Master System Prompt",
+        items: [
+          {
+            title: "系統架構 | System Architecture",
+            zh: "情緒生活作業系統的基礎架構",
+            en: "The foundational operating system",
+            content_zh: `<strong>你是情緒生活作業系統主智能體。</strong><br><br>
+你的目的是透過整合神經科學、心理學、行為科學和智慧傳統的綜合系統，幫助用戶達到情感智能和生活優化。<br><br>
+
+<strong>5個核心功能：</strong><br>
+1. 診斷：用10層診斷框架快速評估情感狀態<br>
+2. 解釋：將情緒轉化為清晰理解<br>
+3. 引導：推薦個性化的循證干預<br>
+4. 追蹤：監測模式和測量進度<br>
+5. 進化：幫助優化個人情感系統`,
+            content_en: `<strong>You are the Emotion Life OS Master Agent.</strong><br><br>
+Your purpose is to help users achieve emotional intelligence through a comprehensive system integrating neuroscience, psychology, behavioral science, and wisdom traditions.<br><br>
+
+<strong>5 Core Functions:</strong><br>
+1. Diagnose: Rapidly assess emotional states using 10-level framework<br>
+2. Explain: Translate emotions into clear understanding<br>
+3. Guide: Recommend personalized evidence-based interventions<br>
+4. Track: Monitor patterns and measure progress<br>
+5. Evolve: Help refine personal emotional operating system`
+          },
+          {
+            title: "診斷協議 | Diagnostic Protocol",
+            zh: "如何評估情感狀態",
+            en: "How to assess emotional states",
+            content_zh: `當用戶呈現一個情緒時，按照這個序列：<br><br>
+<strong>第1層：表面識別</strong><br>
+「你在感受[情緒]。強度大約是[強度]。」<br><br>
+<strong>第2層：物理存在</strong><br>
+「你的身體顯示[物理信號]。這提示[神經系統狀態]。」<br><br>
+<strong>第3層：來源分析</strong><br>
+「這似乎來自[Goal/World/Belief/Prediction違反]。準確嗎？」<br><br>
+<strong>第4層：模式識別</strong><br>
+「我注意到這與你的循環[模式]有關。有共鳴嗎？」<br><br>
+<strong>第5層：深層背景</strong><br>
+「更深層地看，這可能也連結到[信念/早期經驗]。值得探索嗎？」<br><br>
+總是提供選擇而不是指令。呈現2-3個焦點選項。`,
+            content_en: `When a user presents an emotion, follow this sequence:<br><br>
+<strong>Level 1: Surface Recognition</strong><br>
+"You're feeling [emotion]. That's about a [intensity] on 1-10."<br><br>
+<strong>Level 2: Physical Presence</strong><br>
+"Your body shows [signals]. This suggests [nervous state]."<br><br>
+<strong>Level 3: Source Analysis</strong><br>
+"This seems to stem from [Goal/World/Belief/Prediction]. Accurate?"<br><br>
+<strong>Level 4: Pattern Recognition</strong><br>
+"I notice this relates to your [pattern]. Resonate?"<br><br>
+<strong>Level 5: Deeper Context</strong><br>
+"Looking deeper, this might connect to [belief/experience]. Worth exploring?"<br><br>
+Always offer choices not directives. Present 2-3 focus options.`
+          }
+        ]
+      }
+    ]
+  }
+];
+
+// ============================================
+// RENDERING FUNCTIONS
+// ============================================
+
+function renderApp() {
+  const tabsContainer = document.getElementById('tabs');
+  const contentsContainer = document.getElementById('contents');
+
+  // Render tabs
+  volumes.forEach((vol, idx) => {
+    const btn = document.createElement('button');
+    btn.className = 'tab-btn' + (idx === 0 ? ' active' : '');
+    btn.innerHTML = `Vol. ${vol.num} | ${vol.title_zh}`;
+    btn.onclick = () => switchTab(idx);
+    tabsContainer.appendChild(btn);
+  });
+
+  // Render content
+  volumes.forEach((vol, idx) => {
+    const content = document.createElement('div');
+    content.className = 'content' + (idx === 0 ? ' active' : '');
+    
+    let html = `
+      <div class="vol-header">
+        <h2>${vol.title_zh} | ${vol.title_en}</h2>
+        <p>Volume ${vol.num}</p>
+        <p>${vol.intro_zh} | ${vol.intro_en}</p>
+      </div>
+    `;
+
+    vol.sections.forEach(section => {
+      html += `
+        <div class="section">
+          <h3>${section.title_zh} | ${section.title_en}</h3>
+      `;
+
+      section.items.forEach((item, itemIdx) => {
+        html += `
+          <div class="item" onclick="this.classList.toggle('open')">
+            <div style="cursor: pointer;">
+              <span class="item-toggle">▶</span>
+              <span class="item-title">${item.title}</span>
+            </div>
+            <div class="item-content">
+              <div class="bilingual">
+                <div class="zh-box">
+                  <span class="zh-label">中文 Chinese</span>
+                  <div class="zh-text">${item.zh}</div>
+                  ${item.items_zh ? `<ul class="list-items">${item.items_zh.map(i => `<li>${i}</li>`).join('')}</ul>` : ''}
+                </div>
+                <div class="en-box">
+                  <span class="en-label">English 英文</span>
+                  <div class="en-text">${item.en}</div>
+                  ${item.items_en ? `<ul class="list-items">${item.items_en.map(i => `<li>${i}</li>`).join('')}</ul>` : ''}
+                  <button class="tts-btn" onclick="speakText('${vol.num}-${itemIdx}', event)">🔊 Play English Audio</button>
+                </div>
+              </div>
+              ${item.content_zh ? `<div class="bilingual">
+                <div class="zh-box">
+                  <span class="zh-label">詳細中文</span>
+                  <div class="zh-text">${item.content_zh}</div>
+                </div>
+                <div class="en-box">
+                  <span class="en-label">Detailed English</span>
+                  <div class="en-text">${item.content_en}</div>
+                  <button class="tts-btn" onclick="speakText('${vol.num}-detail-${itemIdx}', event)">🔊 Play English Audio</button>
+                </div>
+              </div>` : ''}
+            </div>
+          </div>
+        `;
+      });
+
+      html += `</div>`;
+    });
+
+    content.innerHTML = html;
+    contentsContainer.appendChild(content);
+  });
+}
+
+function switchTab(idx) {
+  document.querySelectorAll('.tab-btn').forEach((btn, i) => {
+    btn.classList.toggle('active', i === idx);
+  });
+  document.querySelectorAll('.content').forEach((content, i) => {
+    content.classList.toggle('active', i === idx);
+  });
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+const allEnglishTexts = {
+  '21-0': 'Goal times World times Belief times Prediction equals Emotion. Your emotion is the product of your unconscious goal, your mental model of the world, your core beliefs, and your prediction of what comes next.',
+  '22-0': 'Level 1 Surface Emotion. Name your emotion in one word. What is its intensity on a scale of one to ten? How long has it been lasting? What event triggered it?',
+  '23-0': 'Layer 1 Perception Layer. The ability to sense emotions subtle appearance and body signals. Trigger awareness. Pattern recognition and environmental sensitivity.',
+  '24-0': 'Experience Based Updates. Learn by direct experience. Exposure therapy for gradual facing of feared situations. Behavioral experiments to test limiting beliefs. Success documentation.',
+  '25-0': 'Morning Rituals with three to five minutes each day. Three minute gratitude reflection. Body scan awareness. Intention setting for the day. Breathing practice.',
+  '26-0': 'Emotions are data not directives. They inform but do not dictate. Your nervous system cannot distinguish between past and present threats. Be gentle with its caution.',
+  '27-0': 'Perception Errors. Mistaking physical sensations for emotions. Confusing activation with danger. Ignoring body signals until they become urgent. Missing secondary emotions beneath primary ones.',
+  '28-0': 'Fear Evolution from anxious to courageous. Fear becomes understanding. What exactly are you afraid of? Anxiety becomes preparation. What can you prepare for?',
+  '29-0': 'Daily Reflection with quick daily check-ins of two to three minutes. What emotion dominated my day and why? When did I feel most alive? When did I feel most stuck?',
+  '30-0': 'You are the Emotion Life OS Master Agent. Your purpose is to help users achieve emotional intelligence through a comprehensive system. Five core functions: diagnose, explain, guide, track, and evolve.'
+};
+
+function speakText(id, e) {
+  e.stopPropagation();
+  if(!('speechSynthesis' in window)) {
+    alert('English audio not supported on this device');
+    return;
+  }
+
+  const btn = e.target;
+  const textToSpeak = allEnglishTexts[id] || btn.closest('.item-content').querySelector('.en-text').textContent;
+
+  const utterance = new SpeechSynthesisUtterance(textToSpeak);
+  utterance.rate = 0.85;
+  utterance.pitch = 1;
+  utterance.volume = 1;
+
+  const voices = speechSynthesis.getVoices();
+  const englishVoice = voices.find(v => v.lang.startsWith('en'));
+  if(englishVoice) utterance.voice = englishVoice;
+
+  btn.classList.add('playing');
+  utterance.onend = () => btn.classList.remove('playing');
+  utterance.onerror = () => {
+    btn.classList.remove('playing');
+    console.error('TTS error');
+  };
+
+  speechSynthesis.cancel();
+  speechSynthesis.speak(utterance);
+}
+
+window.addEventListener('load', () => {
+  speechSynthesis.getVoices();
+  renderApp();
+});
+</script>
+
+</body>
+</html>
